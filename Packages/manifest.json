@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "com.unity.package-manager-ui": "2.1.2",
+    "com.unity.progrids": "3.0.3-preview.4",
     "se.zifro.mellis": "https://github.com/zardan/compiler.git#upm",
     "se.zifro.ui": "https://github.com/zardan/ui.git#upm",
     "com.unity.modules.ai": "1.0.0",
