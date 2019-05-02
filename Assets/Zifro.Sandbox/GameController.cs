@@ -9,12 +9,19 @@ namespace Zifro.Sandbox
 		void Awake()
 		{
 			PMWrapper.SetCompilerFunctions(
+				new GetKeyDownFunction("knapp_höger", KeyCode.RightArrow),
+				new GetKeyDownFunction("knapp_vänster", KeyCode.LeftArrow),
+				new GetKeyDownFunction("knapp_upp", KeyCode.UpArrow),
+				new GetKeyDownFunction("knapp_ner", KeyCode.DownArrow),
+
 				new RotateFunction("sväng_höger", Rotation.Right),
 				new RotateFunction("sväng_vänster", Rotation.Left),
+
 				new MoveFunction("gå_framåt", Direction.Forward),
 				new MoveFunction("gå_bakåt", Direction.Backward),
 				new MoveFunction("gå_höger", Direction.Right),
 				new MoveFunction("gå_vänster", Direction.Left)
+
 				//new MoveFunction("gå_norr", Direction.North),
 				//new MoveFunction("gå_väst", Direction.West),
 				//new MoveFunction("gå_syd", Direction.South),
