@@ -22,7 +22,14 @@ namespace Zifro.Sandbox.ClrFunctions
 
 		public override IScriptType Invoke(params IScriptType[] arguments)
 		{
-			player.Rotate(rotation);
+			if (arguments.Length > 0 && arguments[0].TryConvert(out float scale))
+			{
+				player.Rotate(rotation, scale);
+			}
+			else
+			{
+				player.Rotate(rotation);
+			}
 
 			return null;
 		}

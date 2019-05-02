@@ -22,7 +22,15 @@ namespace Zifro.Sandbox.ClrFunctions
 
 		public override IScriptType Invoke(params IScriptType[] arguments)
 		{
-			player.Walk(direction);
+			if (arguments.Length > 0 && arguments[0].TryConvert(out float scale))
+			{
+				player.Walk(direction, scale);
+			}
+			else
+			{
+				player.Walk(direction);
+			}
+
 
 			return null;
 		}

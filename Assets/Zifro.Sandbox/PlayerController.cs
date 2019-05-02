@@ -20,7 +20,7 @@ namespace Zifro.Sandbox
 
 		float passedTime;
 
-		const int ROTATION_SCALE = 360 / FractionVector3.SCALE;
+		const int ROTATION_SCALE = 360 / 60;
 
 		void Start()
 		{
@@ -60,40 +60,40 @@ namespace Zifro.Sandbox
 			transform.rotation = Quaternion.Lerp(lastRotation, newRotation, passedTime);
 		}
 
-		public void Walk(Direction direction)
+		public void Walk(Direction direction, float scale = 1)
 		{
-			fractionPosition += GetDirectionFraction(direction) * Time.fixedDeltaTime;
+			fractionPosition += GetDirectionFraction(direction, scale) * Time.fixedDeltaTime;
 		}
 
-		public void Rotate(Rotation rotation)
+		public void Rotate(Rotation rotation, float scale = 1)
 		{
-			fractionRotation += GetRotationFraction(rotation);
+			fractionRotation += GetRotationFraction(rotation, scale);
 			newRotation = Quaternion.Euler(0, fractionRotation * ROTATION_SCALE, 0);
 		}
 
-		int GetRotationFraction(Rotation rotation)
+		int GetRotationFraction(Rotation rotation, float scale)
 		{
 			switch (rotation)
 			{
-			case Rotation.Right: return 1;
-			case Rotation.Left: return -1;
+			case Rotation.Right: return Mathf.RoundToInt(scale);
+			case Rotation.Left: return Mathf.RoundToInt(-scale);
 			default:
 				throw new ArgumentOutOfRangeException(nameof(rotation), rotation, null);
 			}
 		}
 
-		FractionVector3 GetDirectionFraction(Direction direction)
+		FractionVector3 GetDirectionFraction(Direction direction, float scale)
 		{
 			switch (direction)
 			{
-			case Direction.North: return new FractionVector3(0, 0, FractionVector3.SCALE);
-			case Direction.East: return new FractionVector3(FractionVector3.SCALE, 0, 0);
-			case Direction.South: return new FractionVector3(0, 0, -FractionVector3.SCALE);
-			case Direction.West: return new FractionVector3(-FractionVector3.SCALE, 0, 0);
-			case Direction.Forward: return (FractionVector3) transform.forward;
-			case Direction.Backward: return -(FractionVector3)transform.forward;
-			case Direction.Left: return -(FractionVector3) transform.right;
-			case Direction.Right: return (FractionVector3) transform.right;
+			case Direction.North: return new FractionVector3(0, 0, scale);
+			case Direction.East: return new FractionVector3(scale, 0, 0);
+			case Direction.South: return new FractionVector3(0, 0, -scale);
+			case Direction.West: return new FractionVector3(-scale, 0, 0);
+			case Direction.Forward: return (FractionVector3) (transform.forward * scale);
+			case Direction.Backward: return -(FractionVector3)(transform.forward * scale);
+			case Direction.Left: return -(FractionVector3)(transform.right * scale);
+			case Direction.Right: return (FractionVector3)(transform.right * scale);
 			default:
 				throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
 			}
