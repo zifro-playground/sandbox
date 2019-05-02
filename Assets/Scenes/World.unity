@@ -881,7 +881,6 @@ GameObject:
   m_Component:
   - component: {fileID: 927523679}
   - component: {fileID: 927523678}
-  - component: {fileID: 927523677}
   - component: {fileID: 927523676}
   m_Layer: 0
   m_Name: Camera
@@ -904,14 +903,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   theRect: {fileID: 6101998968251242174}
   runInEditor: 1
---- !u!81 &927523677
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 927523675}
-  m_Enabled: 1
 --- !u!20 &927523678
 Camera:
   m_ObjectHideFlags: 0
@@ -1597,6 +1588,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1633520998}
   - component: {fileID: 1633520997}
+  - component: {fileID: 1633520999}
   m_Layer: 0
   m_Name: CodeRunner
   m_TagString: Untagged
@@ -1630,6 +1622,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1633520999
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1633520996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f707df2bacb6bf48b47511e796a41e9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1652881124
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2483,7 +2487,7 @@ PrefabInstance:
     - target: {fileID: 6102112733852642830, guid: b77233bbb51d7484a8f476519563daaa,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.00012207031
+      value: 0.000015258789
       objectReference: {fileID: 0}
     - target: {fileID: 6207469563236129020, guid: b77233bbb51d7484a8f476519563daaa,
         type: 3}
@@ -2498,6 +2502,11 @@ PrefabInstance:
     - target: {fileID: 6102129150955245454, guid: b77233bbb51d7484a8f476519563daaa,
         type: 3}
       propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6102129150955245454, guid: b77233bbb51d7484a8f476519563daaa,
+        type: 3}
+      propertyPath: m_AnchorMin.y
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6101748216519830582, guid: b77233bbb51d7484a8f476519563daaa,

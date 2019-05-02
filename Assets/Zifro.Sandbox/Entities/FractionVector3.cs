@@ -75,6 +75,11 @@ namespace Zifro.Sandbox.Entities
 			return new FractionVector3(a.fractionX - b.fractionX, a.fractionY - b.fractionY, a.fractionZ - b.fractionZ);
 		}
 
+		public static FractionVector3 operator -(FractionVector3 a)
+		{
+			return new FractionVector3(-a.fractionX, -a.fractionY, -a.fractionZ);
+		}
+
 		public static FractionVector3 operator *(FractionVector3 a, int scale)
 		{
 			return new FractionVector3(a.fractionX * scale, a.fractionY * scale, a.fractionZ * scale);

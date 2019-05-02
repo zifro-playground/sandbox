@@ -4,14 +4,14 @@ using UnityEngine;
 
 namespace Zifro.Sandbox.ClrFunctions
 {
-	public class MoveFunction : ClrFunction
+	public class RotateFunction : ClrFunction
 	{
-		readonly Direction direction;
+		readonly Rotation rotation;
 		readonly PlayerController player;
 
-		public MoveFunction(string name, Direction direction) : base(name)
+		public RotateFunction(string name, Rotation rotation) : base(name)
 		{
-			this.direction = direction;
+			this.rotation = rotation;
 			player = Object.FindObjectOfType<PlayerController>();
 
 			if (!player)
@@ -22,7 +22,7 @@ namespace Zifro.Sandbox.ClrFunctions
 
 		public override IScriptType Invoke(params IScriptType[] arguments)
 		{
-			player.Walk(direction);
+			player.Rotate(rotation);
 
 			return null;
 		}

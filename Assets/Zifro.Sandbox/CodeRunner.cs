@@ -8,6 +8,7 @@ using Mellis.Lang.Python3;
 using PM;
 using PM.GlobalFunctions;
 using UnityEngine;
+using Zifro.Sandbox.Entities;
 
 namespace Zifro.Sandbox
 {
@@ -36,7 +37,7 @@ namespace Zifro.Sandbox
 			? lastLineNumber = processor.CurrentSource.FromRow
 			: lastLineNumber;
 
-		void Update()
+		void FixedUpdate()
 		{
 			if (processor == null||
 			    processor.State == ProcessState.Ended ||

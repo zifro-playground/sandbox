@@ -5,6 +5,10 @@
 		North,
 		East,
 		South,
-		West
+		West,
+		Forward,
+		Backward,
+		Left,
+		Right
 	}
 }
