@@ -1,0 +1,17 @@
+{
+    "name": "Zifro.Sandbox.Editor",
+    "references": [
+        "GUID:1176887ca91d0ab42a768e02cfb4276c"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": []
+}

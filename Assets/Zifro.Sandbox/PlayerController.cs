@@ -1,17 +1,18 @@
 ﻿using System;
 using UnityEngine;
+using Zifro.Sandbox.Entities;
 
 namespace Zifro.Sandbox
 {
 	public class PlayerController : MonoBehaviour
 	{
-		public Vector3Int intPosition;
+		public FractionVector3 fractionPosition;
 
 		void Start()
 		{
 			Vector3 position = transform.position;
 
-			intPosition = new Vector3Int(
+			fractionPosition = new Vector3Int(
 				Mathf.RoundToInt(position.x),
 				Mathf.RoundToInt(position.y),
 				Mathf.RoundToInt(position.z)
@@ -21,21 +22,15 @@ namespace Zifro.Sandbox
 #if UNITY_EDITOR
 		void OnValidate()
 		{
-			Vector3 position = transform.position;
-
-			intPosition = new Vector3Int(
-				Mathf.RoundToInt(position.x),
-				Mathf.RoundToInt(position.y),
-				Mathf.RoundToInt(position.z)
-			);
+			transform.position = fractionPosition;
 		}
 #endif
 
 		public void Walk(Direction direction)
 		{
-			intPosition += GetDirectionVectorInt(direction);
+			fractionPosition += GetDirectionVectorInt(direction);
 
-			transform.position = intPosition;
+			transform.position = fractionPosition;
 		}
 
 		Vector3Int GetDirectionVectorInt(Direction direction)
