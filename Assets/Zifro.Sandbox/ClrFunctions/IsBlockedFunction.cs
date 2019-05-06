@@ -27,8 +27,9 @@ namespace Zifro.Sandbox.ClrFunctions
 				scale = 1;
 			}
 
-			Vector3 point = player.fractionPosition + player.GetDirectionFraction(direction, scale);
-			bool isBlocked = world.IsPointInBlock(point);
+			Vector3 point = player.fractionPosition;
+			Vector3 vector = player.GetDirectionFraction(direction, scale);
+			bool isBlocked = world.TryRaycastBlocks(point, vector, scale, out RaycastHit _);
 
 			return Processor.Factory.Create(isBlocked);
 		}
