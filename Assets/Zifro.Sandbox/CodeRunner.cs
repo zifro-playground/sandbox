@@ -68,8 +68,9 @@ namespace Zifro.Sandbox
 			catch (Exception e)
 			{
 				Debug.LogException(e);
+				int lineNumber = currentLineNumber;
 				InternalStopRunning(StopStatus.RuntimeError);
-				PMWrapper.RaiseError(currentLineNumber, e.Message);
+				PMWrapper.RaiseError(lineNumber, e.Message);
 			}
 		}
 
@@ -96,7 +97,7 @@ namespace Zifro.Sandbox
 			catch (Exception e)
 			{
 				Debug.LogException(e);
-				PMWrapper.RaiseError(e.Message);
+				PMWrapper.RaiseError(currentLineNumber, e.Message);
 				return;
 			}
 
