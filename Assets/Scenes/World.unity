@@ -20283,9 +20283,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0.5
-    y: 0.03999996
-    width: 0.24833012
-    height: 0.7811112
+    y: 0.09161639
+    width: 0.45000005
+    height: 0.69346285
   near clip plane: 0.3
   far clip plane: 10
   field of view: 60
@@ -21005,9 +21005,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0.5
-    y: 0.03999996
-    width: 0.24833012
-    height: 0.7811112
+    y: 0.09161639
+    width: 0.45000005
+    height: 0.69346285
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -34510,7 +34510,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1536093730}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 2, z: 0}
+  m_LocalPosition: {x: 0, y: 1.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1660213384}
@@ -34533,7 +34533,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fractionPosition:
     <fractionX>k__BackingField: 0
-    <fractionY>k__BackingField: 40
+    <fractionY>k__BackingField: 30
     <fractionZ>k__BackingField: 0
 --- !u!1 &1540748216
 GameObject:
@@ -46669,7 +46669,7 @@ PrefabInstance:
     - target: {fileID: 6102112733852642830, guid: b77233bbb51d7484a8f476519563daaa,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: 0.000045776367
       objectReference: {fileID: 0}
     - target: {fileID: 6207469563236129020, guid: b77233bbb51d7484a8f476519563daaa,
         type: 3}

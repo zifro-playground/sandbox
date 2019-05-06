@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Runtime.InteropServices.WindowsRuntime;
 using PM;
 using UnityEngine;
 using Zifro.Sandbox.Entities;
@@ -9,18 +7,78 @@ namespace Zifro.Sandbox
 {
 	public class PlayerController : MonoBehaviour, IPMCompilerStarted, IPMCompilerStopped
 	{
+		const int ROTATION_SCALE = 360 / 60;
 		public FractionVector3 fractionPosition;
-		FractionVector3 startingFractionPosition;
-		Vector3 lastPosition;
 
 		int fractionRotation;
-		Quaternion newRotation;
+		Vector3 lastPosition;
 		Quaternion lastRotation;
-		int startingFractionRotation;
+		Quaternion newRotation;
 
 		float passedTime;
+		FractionVector3 startingFractionPosition;
+		int startingFractionRotation;
 
-		const int ROTATION_SCALE = 360 / 60;
+		void IPMCompilerStarted.OnPMCompilerStarted()
+		{
+			if (enabled)
+			{
+				ResetPositions();
+			}
+
+			enabled = true;
+			startingFractionPosition = fractionPosition;
+			lastPosition = startingFractionPosition;
+
+			startingFractionRotation = fractionRotation;
+			lastRotation = Quaternion.Euler(0, startingFractionRotation * ROTATION_SCALE, 0);
+		}
+
+		void IPMCompilerStopped.OnPMCompilerStopped(StopStatus status)
+		{
+			ResetPositions();
+		}
+
+		public void Walk(Direction direction, float scale = 1)
+		{
+			fractionPosition += GetDirectionFraction(direction, scale) * Time.fixedDeltaTime;
+		}
+
+		public void Rotate(Rotation rotation, float scale = 1)
+		{
+			fractionRotation += GetRotationFraction(rotation, scale);
+			newRotation = Quaternion.Euler(0, fractionRotation * ROTATION_SCALE, 0);
+		}
+
+		public int GetRotationFraction(Rotation rotation, float scale)
+		{
+			switch (rotation)
+			{
+			case Rotation.Right: return Mathf.RoundToInt(scale);
+			case Rotation.Left: return Mathf.RoundToInt(-scale);
+			default:
+				throw new ArgumentOutOfRangeException(nameof(rotation), rotation, null);
+			}
+		}
+
+		public FractionVector3 GetDirectionFraction(Direction direction, float scale)
+		{
+			switch (direction)
+			{
+			case Direction.North: return new FractionVector3(0, 0, scale);
+			case Direction.East: return new FractionVector3(scale, 0, 0);
+			case Direction.South: return new FractionVector3(0, 0, -scale);
+			case Direction.West: return new FractionVector3(-scale, 0, 0);
+			case Direction.Forward: return (FractionVector3)(transform.forward * scale);
+			case Direction.Backward: return -(FractionVector3)(transform.forward * scale);
+			case Direction.Left: return -(FractionVector3)(transform.right * scale);
+			case Direction.Right: return (FractionVector3)(transform.right * scale);
+			case Direction.Up: return new FractionVector3(0, scale, 0);
+			case Direction.Down: return new FractionVector3(0, -scale, 0);
+			default:
+				throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
+			}
+		}
 
 		void Start()
 		{
@@ -28,12 +86,7 @@ namespace Zifro.Sandbox
 			fractionRotation = (int)(self.eulerAngles.y / ROTATION_SCALE);
 			newRotation = self.rotation;
 
-			Vector3 position = self.position;
-			fractionPosition = new Vector3Int(
-				Mathf.RoundToInt(position.x),
-				Mathf.RoundToInt(position.y),
-				Mathf.RoundToInt(position.z)
-			);
+			fractionPosition = (FractionVector3)self.position;
 
 			enabled = false;
 		}
@@ -60,67 +113,7 @@ namespace Zifro.Sandbox
 			transform.rotation = Quaternion.Lerp(lastRotation, newRotation, passedTime);
 		}
 
-		public void Walk(Direction direction, float scale = 1)
-		{
-			fractionPosition += GetDirectionFraction(direction, scale) * Time.fixedDeltaTime;
-		}
-
-		public void Rotate(Rotation rotation, float scale = 1)
-		{
-			fractionRotation += GetRotationFraction(rotation, scale);
-			newRotation = Quaternion.Euler(0, fractionRotation * ROTATION_SCALE, 0);
-		}
-
-		int GetRotationFraction(Rotation rotation, float scale)
-		{
-			switch (rotation)
-			{
-			case Rotation.Right: return Mathf.RoundToInt(scale);
-			case Rotation.Left: return Mathf.RoundToInt(-scale);
-			default:
-				throw new ArgumentOutOfRangeException(nameof(rotation), rotation, null);
-			}
-		}
-
-		FractionVector3 GetDirectionFraction(Direction direction, float scale)
-		{
-			switch (direction)
-			{
-			case Direction.North: return new FractionVector3(0, 0, scale);
-			case Direction.East: return new FractionVector3(scale, 0, 0);
-			case Direction.South: return new FractionVector3(0, 0, -scale);
-			case Direction.West: return new FractionVector3(-scale, 0, 0);
-			case Direction.Forward: return (FractionVector3) (transform.forward * scale);
-			case Direction.Backward: return -(FractionVector3)(transform.forward * scale);
-			case Direction.Left: return -(FractionVector3)(transform.right * scale);
-			case Direction.Right: return (FractionVector3)(transform.right * scale);
-			default:
-				throw new ArgumentOutOfRangeException(nameof(direction), direction, null);
-			}
-		}
-
-		public void OnPMCompilerStarted()
-		{
-			if (enabled)
-			{
-				ResetPositions();
-			}
-
-			enabled = true;
-			startingFractionPosition = fractionPosition;
-			lastPosition = startingFractionPosition;
-
-			startingFractionRotation = fractionRotation;
-			lastRotation = Quaternion.Euler(0, startingFractionRotation * ROTATION_SCALE, 0);
-
-		}
-
-		public void OnPMCompilerStopped(StopStatus status)
-		{
-			ResetPositions();
-		}
-
-		private void ResetPositions()
+		void ResetPositions()
 		{
 			enabled = false;
 			fractionPosition = startingFractionPosition;

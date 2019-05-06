@@ -14,10 +14,7 @@ namespace Zifro.Sandbox.ClrFunctions
 			this.rotation = rotation;
 			player = Object.FindObjectOfType<PlayerController>();
 
-			if (!player)
-			{
-				PMWrapper.RaiseError("Hittade ingen spelare.");
-			}
+			Debug.Assert(player, "Unable to find " + nameof(PlayerController));
 		}
 
 		public override IScriptType Invoke(params IScriptType[] arguments)
