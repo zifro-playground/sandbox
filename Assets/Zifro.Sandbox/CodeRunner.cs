@@ -37,6 +37,13 @@ namespace Zifro.Sandbox
 			? lastLineNumber = processor.CurrentSource.FromRow
 			: lastLineNumber;
 
+		public VariableWindow variableWindow;
+
+		void Start()
+		{
+			Debug.Assert(variableWindow, "Variable window undefined.");
+		}
+
 		void FixedUpdate()
 		{
 			if (processor == null||
@@ -72,6 +79,8 @@ namespace Zifro.Sandbox
 				InternalStopRunning(StopStatus.RuntimeError);
 				PMWrapper.RaiseError(lineNumber, e.Message);
 			}
+
+			variableWindow.UpdateList(processor);
 		}
 
 		public void StartRunning()
