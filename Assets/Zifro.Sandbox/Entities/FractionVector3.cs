@@ -7,6 +7,7 @@ namespace Zifro.Sandbox.Entities
 	public struct FractionVector3 : IEquatable<FractionVector3>
 	{
 		public const int SCALE = 20;
+		public const float SCALE_INVERSE = 1/20f;
 
 		public FractionVector3(float x, float y, float z)
 		{

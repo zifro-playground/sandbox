@@ -30,7 +30,14 @@ namespace Zifro.Sandbox
 				new MoveFunction("gå_höger", Direction.Right),
 				new MoveFunction("gå_vänster", Direction.Left),
 				new MoveFunction("gå_upp", Direction.Up),
-				new MoveFunction("gå_ner", Direction.Down)
+				new MoveFunction("gå_ner", Direction.Down),
+
+				new MoveUntilBlockedFunction("gå_framåt_blockerad", Direction.Forward),
+				new MoveUntilBlockedFunction("gå_bakåt_blockerad", Direction.Backward),
+				new MoveUntilBlockedFunction("gå_höger_blockerad", Direction.Right),
+				new MoveUntilBlockedFunction("gå_vänster_blockerad", Direction.Left),
+				new MoveUntilBlockedFunction("gå_upp_blockerad", Direction.Up),
+				new MoveUntilBlockedFunction("gå_ner_blockerad", Direction.Down)
 
 				//new MoveFunction("gå_norr", Direction.North),
 				//new MoveFunction("gå_väst", Direction.West),
