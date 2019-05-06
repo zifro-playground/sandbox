@@ -20339,9 +20339,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0.5
-    y: 0.03999996
-    width: 0.44089592
-    height: 0.78111124
+    y: 0.114315994
+    width: 0.45000005
+    height: 0.65491724
   near clip plane: 0.3
   far clip plane: 10
   field of view: 60
@@ -21061,9 +21061,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0.5
-    y: 0.03999996
-    width: 0.44089592
-    height: 0.78111124
+    y: 0.114315994
+    width: 0.45000005
+    height: 0.65491724
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
@@ -21728,6 +21728,7 @@ GameObject:
   - component: {fileID: 998848207}
   - component: {fileID: 998848209}
   - component: {fileID: 998848208}
+  - component: {fileID: 998848210}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -21742,7 +21743,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 998848206}
-  m_LocalRotation: {x: 0.46193993, y: 0.1913416, z: -0.33141363, w: 0.8001031}
+  m_LocalRotation: {x: 0.46193972, y: 0.1913417, z: -0.33141357, w: 0.8001032}
   m_LocalPosition: {x: 0, y: 0, z: 106}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -21792,6 +21793,19 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 998848206}
   m_CullTransparentMesh: 0
+--- !u!114 &998848210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 998848206}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 595521077ffa02f4eb74ef7b99657dd4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eulerAngles: {x: 90, y: 0, z: 0}
 --- !u!1 &1006583651
 GameObject:
   m_ObjectHideFlags: 0
@@ -46431,7 +46445,7 @@ PrefabInstance:
     - target: {fileID: 6319720160536313000, guid: b77233bbb51d7484a8f476519563daaa,
         type: 3}
       propertyPath: m_Name
-      value: Playground UI No Levels
+      value: Playground UI Sandbox
       objectReference: {fileID: 0}
     - target: {fileID: 6207761270960967178, guid: b77233bbb51d7484a8f476519563daaa,
         type: 3}
@@ -46681,7 +46695,7 @@ PrefabInstance:
     - target: {fileID: 6101447437921290372, guid: b77233bbb51d7484a8f476519563daaa,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.00024414062
+      value: 0.00015258789
       objectReference: {fileID: 0}
     - target: {fileID: 6102089045957484678, guid: b77233bbb51d7484a8f476519563daaa,
         type: 3}
@@ -46726,7 +46740,7 @@ PrefabInstance:
     - target: {fileID: 6102112733852642830, guid: b77233bbb51d7484a8f476519563daaa,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.00015258789
+      value: 0.0001373291
       objectReference: {fileID: 0}
     - target: {fileID: 6207469563236129020, guid: b77233bbb51d7484a8f476519563daaa,
         type: 3}
