@@ -1,4 +1,4 @@
-﻿namespace Zifro.Sandbox
+﻿namespace Zifro.Sandbox.Entities
 {
 	public enum Rotation
 	{

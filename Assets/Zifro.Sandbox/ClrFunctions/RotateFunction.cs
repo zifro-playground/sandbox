@@ -1,6 +1,7 @@
 ﻿using Mellis;
 using Mellis.Core.Interfaces;
 using UnityEngine;
+using Zifro.Sandbox.Entities;
 
 namespace Zifro.Sandbox.ClrFunctions
 {
