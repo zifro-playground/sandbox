@@ -5,14 +5,14 @@ using Zifro.Sandbox.Entities;
 
 namespace Zifro.Sandbox.ClrFunctions
 {
-	public class MoveFunction : ClrFunction
+	public class RotateFunction : ClrFunction
 	{
-		readonly Direction direction;
+		readonly Rotation rotation;
 		readonly PlayerController player;
 
-		public MoveFunction(string name, Direction direction) : base(name)
+		public RotateFunction(string name, Rotation rotation) : base(name)
 		{
-			this.direction = direction;
+			this.rotation = rotation;
 			player = Object.FindObjectOfType<PlayerController>();
 
 			Debug.Assert(player, "Unable to find " + nameof(PlayerController));
@@ -22,11 +22,11 @@ namespace Zifro.Sandbox.ClrFunctions
 		{
 			if (arguments.Length > 0 && arguments[0].TryConvert(out float scale))
 			{
-				player.Walk(direction, scale);
+				player.Rotate(rotation, scale);
 			}
 			else
 			{
-				player.Walk(direction);
+				player.Rotate(rotation);
 			}
 
 			return null;
