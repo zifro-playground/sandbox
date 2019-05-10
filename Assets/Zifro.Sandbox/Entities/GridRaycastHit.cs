@@ -6,12 +6,13 @@ namespace Zifro.Sandbox.Entities
 {
 	public struct GridRaycastHit : IEquatable<GridRaycastHit>
 	{
-		public Vector3 point;
-		public Vector3 normal;
-		public Vector3 voxelPosition;
-		public Vector3Int voxelIndex;
-		public Vector3Int voxelNormal;
-		public float distance;
+		public Vector3 point { get; set; }
+		public Vector3 normal => world.VoxelNormalToWorld(voxelNormal);
+		public Vector3 voxelPosition => world.VoxelToWorld(voxelIndex);
+		public Vector3Int voxelIndex { get; set; }
+		public Vector3Int voxelNormal { get; set; }
+		public float distance { get; set; }
+		public GridWorld world { get; set; }
 
 		public override bool Equals(object obj)
 		{

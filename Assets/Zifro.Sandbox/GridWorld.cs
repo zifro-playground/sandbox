@@ -113,7 +113,7 @@ public class GridWorld : MonoBehaviour
 		{
 			return false;
 		}
-		
+
 		Destroy(grid[voxel.x, voxel.y, voxel.z]);
 		grid[voxel.x, voxel.y, voxel.z] = null;
 
@@ -249,15 +249,13 @@ public class GridWorld : MonoBehaviour
 					steppedIndex == 1 ? -step.y : 0,
 					steppedIndex == 2 ? -step.z : 0
 				);
-				Vector3 hitNormalWorld = transform.TransformDirection(hitNormalLocal);
 
 				hit = new GridRaycastHit {
 					distance = t,
-					normal = hitNormalWorld,
 					point = hitPointWorld,
 					voxelIndex = intPointLocal,
-					voxelPosition = VoxelToWorld(intPointLocal),
-					voxelNormal = hitNormalLocal
+					voxelNormal = hitNormalLocal,
+					world = this
 				};
 
 				return true;
@@ -308,7 +306,7 @@ public class GridWorld : MonoBehaviour
 			point = lastPointWorld,
 			distance = maxLength,
 			voxelIndex = intPointLocal,
-			voxelPosition = VoxelToWorld(intPointLocal),
+			world = this
 		};
 
 		return false;
@@ -317,6 +315,11 @@ public class GridWorld : MonoBehaviour
 	public Vector3 VoxelToWorld(Vector3Int voxel)
 	{
 		return transform.TransformPoint(voxel + new Vector3(0.5f, 0.5f, 0.5f));
+	}
+
+	public Vector3 VoxelNormalToWorld(Vector3Int voxelNormal)
+	{
+		return transform.TransformDirection(voxelNormal);
 	}
 
 	public Vector3Int WorldToVoxel(Vector3 point)

@@ -71,8 +71,17 @@ namespace Zifro.Sandbox.UI.WorldEdit
 				return;
 			}
 
-			selectionHighlight.SelectVoxel(hit.voxelIndex, hit.normal);
 			bool modifier = IDESpecialCommands.AnyKey(KeyCode.LeftControl, KeyCode.RightControl);
+
+			if (modifier)
+			{
+				selectionHighlight.SelectVoxel(hit.voxelIndex);
+			}
+			else
+			{
+				selectionHighlight.SelectVoxel(hit.voxelIndex, hit.voxelNormal);
+			}
+
 			bool lmb = Input.GetMouseButtonDown(0);
 			bool rmb = Input.GetMouseButtonDown(1);
 
