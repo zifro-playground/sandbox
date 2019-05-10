@@ -40,6 +40,18 @@ namespace Zifro.Sandbox.UI
 			SelectTool(_tools.First());
 		}
 
+		void Update()
+		{
+			foreach (WorldEditTool tool in _tools)
+			{
+				if (!tool.isSelected && Input.GetKeyDown(tool.hotKey))
+				{
+					SelectTool(tool);
+					break;
+				}
+			}
+		}
+
 		public void SelectTool(WorldEditTool selectThis)
 		{
 			if (currentTool == selectThis)
@@ -94,6 +106,8 @@ namespace Zifro.Sandbox.UI
 			{
 				tool.button.interactable = false;
 			}
+
+			enabled = false;
 		}
 
 		void IPMCompilerStopped.OnPMCompilerStopped(StopStatus status)
@@ -102,6 +116,8 @@ namespace Zifro.Sandbox.UI
 			{
 				tool.button.interactable = true;
 			}
+
+			enabled = true;
 		}
 	}
 }

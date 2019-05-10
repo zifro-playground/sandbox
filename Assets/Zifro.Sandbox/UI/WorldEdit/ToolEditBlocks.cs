@@ -71,6 +71,10 @@ namespace Zifro.Sandbox.UI.WorldEdit
 			}
 
 			selectionHighlight.SelectVoxel(hit.voxelIndex, hit.normal);
+			if (Input.GetMouseButtonDown(0))
+			{
+
+			}
 		}
 	}
 }
