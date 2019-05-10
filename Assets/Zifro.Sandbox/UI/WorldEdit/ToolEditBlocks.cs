@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
+using Zifro.Sandbox.Entities;
 
 namespace Zifro.Sandbox.UI.WorldEdit
 {
@@ -8,10 +9,10 @@ namespace Zifro.Sandbox.UI.WorldEdit
 		IToolScreenExit
 	{
 		public GridWorld gridWorld;
-		public GameObject selectionHighlight;
+		public GridWorldSelector selectionHighlight;
 		public float maxRaycastDistance = 50;
 
-		public bool pointerOver;
+		bool pointerOver;
 
 		[SerializeField, HideInInspector]
 		new Camera camera;
@@ -20,7 +21,8 @@ namespace Zifro.Sandbox.UI.WorldEdit
 		{
 			camera = Camera.main;
 			Debug.Assert(camera, "Main camera not found.", this);
-			Debug.Assert(gridWorld, "GridWorld not assigned.", this);
+			Debug.Assert(gridWorld, $"{nameof(gridWorld)} not assigned.", this);
+			Debug.Assert(selectionHighlight, $"{nameof(selectionHighlight)} not assigned.", this);
 		}
 
 		void Start()
@@ -36,7 +38,7 @@ namespace Zifro.Sandbox.UI.WorldEdit
 		void IToolScreenExit.OnScreenExit(PointerEventData eventData)
 		{
 			pointerOver = false;
-			selectionHighlight.SetActive(false);
+			selectionHighlight.DeselectAll();
 		}
 
 		public override void OnToolSelected()
@@ -47,7 +49,7 @@ namespace Zifro.Sandbox.UI.WorldEdit
 		public override void OnToolDeselected()
 		{
 			enabled = false;
-			selectionHighlight.SetActive(false);
+			selectionHighlight.DeselectAll();
 		}
 
 		void Update()
@@ -62,19 +64,13 @@ namespace Zifro.Sandbox.UI.WorldEdit
 			Vector3 forward = camera.transform.forward;
 			Debug.DrawRay(from, forward * maxRaycastDistance, Color.red);
 
-			if (gridWorld.TryRaycastBlocks(from, forward, maxRaycastDistance, out RaycastHit hit))
+			if (!gridWorld.TryRaycastBlocks(from, forward, maxRaycastDistance, out GridRaycastHit hit))
 			{
-				selectionHighlight.SetActive(true);
-				selectionHighlight.transform.position = new Vector3(
-					Mathf.Floor(hit.point.x) + 0.5f,
-					Mathf.Floor(hit.point.y) + 0.5f,
-					Mathf.Floor(hit.point.z) + 0.5f
-				);
+				selectionHighlight.DeselectAll();
+				return;
 			}
-			else
-			{
-				selectionHighlight.SetActive(false);
-			}
+
+			selectionHighlight.SelectVoxel(hit.voxelIndex, hit.normal);
 		}
 	}
 }

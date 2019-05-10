@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zifro.Sandbox.Entities;
 
 public class GridWorldTester : MonoBehaviour
 {
@@ -19,7 +20,7 @@ public class GridWorldTester : MonoBehaviour
 		float distance = self.localScale.magnitude;
 
 		if (world.TryRaycastBlocks(position, direction, distance,
-			out RaycastHit hit))
+			out GridRaycastHit hit))
 		{
 			Gizmos.color = Color.red;
 			Gizmos.DrawLine(position, hit.point);

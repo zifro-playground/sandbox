@@ -28021,6 +28021,7 @@ GameObject:
   - component: {fileID: 1238513552}
   - component: {fileID: 1238513551}
   - component: {fileID: 1238513550}
+  - component: {fileID: 1238513553}
   m_Layer: 0
   m_Name: Tool edit selection
   m_TagString: Untagged
@@ -28036,7 +28037,7 @@ MeshRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1238513549}
   m_Enabled: 1
-  m_CastShadows: 1
+  m_CastShadows: 0
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
   m_MotionVectors: 1
@@ -28081,12 +28082,26 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1238513549}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.5, y: 1.5, z: 1.5}
+  m_LocalPosition: {x: -0.5, y: 1.5, z: 2.5}
   m_LocalScale: {x: 1.1, y: 1.1, z: 1.1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1238513553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1238513549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8563b7dc427a4e14f8b02852de0da886, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gridWorld: {fileID: 1633521000}
+  outerPadding: {x: 0.1, y: 0.1, z: 0.1}
 --- !u!1 &1249592418
 GameObject:
   m_ObjectHideFlags: 0
@@ -46657,7 +46672,7 @@ PrefabInstance:
     - target: {fileID: 6102112733852642830, guid: b77233bbb51d7484a8f476519563daaa,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.00015258789
+      value: 0.000091552734
       objectReference: {fileID: 0}
     - target: {fileID: 6102129150955245454, guid: b77233bbb51d7484a8f476519563daaa,
         type: 3}
@@ -46753,7 +46768,7 @@ PrefabInstance:
         type: 3}
       propertyPath: selectionHighlight
       value: 
-      objectReference: {fileID: 1238513549}
+      objectReference: {fileID: 1238513553}
     - target: {fileID: 4180957728632133571, guid: b77233bbb51d7484a8f476519563daaa,
         type: 3}
       propertyPath: gridWorld

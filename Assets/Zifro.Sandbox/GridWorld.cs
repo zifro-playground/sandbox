@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using Zifro.Sandbox;
+using Zifro.Sandbox.Entities;
 
 public class GridWorld : MonoBehaviour
 {
@@ -128,7 +129,7 @@ public class GridWorld : MonoBehaviour
 	}
 
 	[Pure]
-	public bool TryRaycastBlocks(Vector3 pointWorld, Vector3 directionWorld, float maxLength, out RaycastHit hit)
+	public bool TryRaycastBlocks(Vector3 pointWorld, Vector3 directionWorld, float maxLength, out GridRaycastHit hit)
 	{
 		Vector3 pointLocal = transform.InverseTransformPoint(pointWorld);
 		Vector3 directionLocal = transform.InverseTransformDirection(directionWorld);
@@ -137,7 +138,7 @@ public class GridWorld : MonoBehaviour
 	}
 
 	[Pure]
-	private bool TryRaycastBlocksLocal(Vector3 pointLocal, Vector3 directionLocal, float maxLength, out RaycastHit hit)
+	private bool TryRaycastBlocksLocal(Vector3 pointLocal, Vector3 directionLocal, float maxLength, out GridRaycastHit hit)
 	{
 		Debug.Assert(!directionLocal.Equals(Vector3.zero), "Cannot raycast along zero vector.");
 
@@ -204,10 +205,12 @@ public class GridWorld : MonoBehaviour
 				);
 				Vector3 hitNormalWorld = transform.TransformDirection(hitNormalLocal);
 
-				hit = new RaycastHit {
+				hit = new GridRaycastHit {
 					distance = t,
 					normal = hitNormalWorld,
-					point = hitPointWorld
+					point = hitPointWorld,
+					voxelIndex = intPointLocal,
+					voxelPosition = VoxelToWorld(intPointLocal)
 				};
 
 				return true;
@@ -254,11 +257,29 @@ public class GridWorld : MonoBehaviour
 		Vector3 lastPointLocal = pointLocal + t * directionLocal;
 		Vector3 lastPointWorld = transform.TransformPoint(lastPointLocal);
 
-		hit = new RaycastHit {
+		hit = new GridRaycastHit {
 			point = lastPointWorld,
-			normal = Vector3.zero
+			normal = Vector3.zero,
+			distance = maxLength,
+			voxelIndex = intPointLocal,
+			voxelPosition = VoxelToWorld(intPointLocal)
 		};
 
 		return false;
+	}
+
+	public Vector3 VoxelToWorld(Vector3Int voxel)
+	{
+		return transform.TransformPoint(voxel + new Vector3(0.5f, 0.5f, 0.5f));
+	}
+
+	public Vector3Int WorldToVoxel(Vector3 point)
+	{
+		Vector3 localPoint = transform.InverseTransformPoint(point);
+		return new Vector3Int(
+			Mathf.RoundToInt(localPoint.x),
+			Mathf.RoundToInt(localPoint.y),
+			Mathf.RoundToInt(localPoint.z)
+		);
 	}
 }

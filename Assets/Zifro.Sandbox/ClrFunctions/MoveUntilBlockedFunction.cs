@@ -48,7 +48,7 @@ namespace Zifro.Sandbox.ClrFunctions
 			Vector3 point = player.fractionPosition;
 			Vector3 vector = player.GetDirectionFraction(direction, scale);
 
-			bool isBlocked = world.TryRaycastBlocks(point, vector, scale * FractionVector3.SCALE_INVERSE + threshold, out RaycastHit hit);
+			bool isBlocked = world.TryRaycastBlocks(point, vector, scale * FractionVector3.SCALE_INVERSE + threshold, out GridRaycastHit hit);
 
 			if (isBlocked)
 			{
