@@ -26,9 +26,18 @@ namespace Zifro.Sandbox.ClrFunctions
 			const float threshold = 0.5f;
 			const float scaledThreshold = FractionVector3.SCALE * threshold;
 
-			if (arguments.Length <= 0 || !arguments[0].TryConvert(out float scale))
+			float scale;
+			switch (arguments.Length > 0 ? arguments[0] : null)
 			{
+			case IScriptDouble d:
+				scale = (float)d.Value;
+				break;
+			case IScriptInteger i:
+				scale = i.Value;
+				break;
+			default:
 				scale = 1;
+				break;
 			}
 
 			if (scale.Equals(0f))

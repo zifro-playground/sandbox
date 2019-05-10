@@ -36,11 +36,11 @@
   },
   "lock": {
     "se.zifro.mellis": {
-      "hash": "70fbac48112243a3ac2066ba0a3b9cfd0076a711",
+      "hash": "e0e56d26d37dfeaed440f6369402a421a49c26a6",
       "revision": "upm"
     },
     "se.zifro.ui": {
-      "hash": "c521d4a7f4232d8dc4afce20e72281c0db99e8d6",
+      "hash": "24e5a7cbc100dce7481041bb370582f6562c1158",
       "revision": "upm"
     }
   }

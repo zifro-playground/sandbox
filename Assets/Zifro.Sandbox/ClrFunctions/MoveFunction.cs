@@ -20,13 +20,17 @@ namespace Zifro.Sandbox.ClrFunctions
 
 		public override IScriptType Invoke(params IScriptType[] arguments)
 		{
-			if (arguments.Length > 0 && arguments[0].TryConvert(out float scale))
+			switch (arguments.Length > 0 ? arguments[0] : null)
 			{
-				player.Walk(direction, scale);
-			}
-			else
-			{
+			case IScriptDouble d:
+				player.Walk(direction, (float)d.Value);
+				break;
+			case IScriptInteger i:
+				player.Walk(direction, i.Value);
+				break;
+			default:
 				player.Walk(direction);
+				break;
 			}
 
 			return null;

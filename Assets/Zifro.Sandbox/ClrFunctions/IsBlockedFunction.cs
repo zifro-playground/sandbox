@@ -23,9 +23,18 @@ namespace Zifro.Sandbox.ClrFunctions
 
 		public override IScriptType Invoke(params IScriptType[] arguments)
 		{
-			if (arguments.Length <= 0 || !arguments[0].TryConvert(out float scale))
+			float scale;
+			switch (arguments.Length > 0 ? arguments[0] : null)
 			{
+			case IScriptDouble d:
+				scale = (float)d.Value;
+				break;
+			case IScriptInteger i:
+				scale = i.Value;
+				break;
+			default:
 				scale = 1;
+				break;
 			}
 
 			Vector3 point = player.fractionPosition;
