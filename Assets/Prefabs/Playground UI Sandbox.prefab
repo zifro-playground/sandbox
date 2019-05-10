@@ -305,10 +305,9 @@ MonoBehaviour:
   hotKey: 119
   isSelected: 0
   button: {fileID: 0}
-  gridWorld: {fileID: 0}
+  world: {fileID: 0}
+  gameCamera: {fileID: 0}
   selectionHighlight: {fileID: 0}
-  maxRaycastDistance: 50
-  camera: {fileID: 0}
 --- !u!114 &9123273036013041710
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -573,9 +572,22 @@ MonoBehaviour:
   hotKey: 113
   isSelected: 0
   button: {fileID: 0}
+  world: {fileID: 0}
+  gameCamera: {fileID: 0}
+  gameCameraArm: {fileID: 0}
   minZoomIn: 1
   maxZoomOut: 15
-  gameCamera: {fileID: 0}
+  tiltMin: 0
+  tiltMax: 90
+  tiltRound: 1
+  tiltSpeed: -2
+  rotationMin: -90
+  rotationMax: 0
+  rotationRound: 1
+  rotationSpeed: 3
+  dragZoomFactor: -0.1
+  rotation: 0
+  tilt: 0
 --- !u!114 &561506317804879692
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -668,6 +680,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   variableWindow: {fileID: 6208188843704186654}
+  gridWorld: {fileID: 0}
   _tools: []
 --- !u!1001 &7390923362690012943
 PrefabInstance:

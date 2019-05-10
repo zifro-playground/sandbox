@@ -13,8 +13,11 @@ public class GridWorld : MonoBehaviour
 
 	GameObject[,,] grid;
 
+	public Plane groundPlane;
+
 	void Awake()
 	{
+		groundPlane = new Plane(transform.up, transform.position);
 		RegenerateGrid();
 	}
 

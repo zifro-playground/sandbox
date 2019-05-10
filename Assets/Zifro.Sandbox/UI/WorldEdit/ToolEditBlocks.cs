@@ -9,20 +9,14 @@ namespace Zifro.Sandbox.UI.WorldEdit
 		IToolScreenEnter,
 		IToolScreenExit
 	{
-		public GridWorld gridWorld;
 		public GridWorldSelector selectionHighlight;
-		public float maxRaycastDistance = 50;
 
 		bool pointerOver;
 
-		[SerializeField, HideInInspector]
-		new Camera camera;
-
 		void Awake()
 		{
-			camera = Camera.main;
-			Debug.Assert(camera, "Main camera not found.", this);
-			Debug.Assert(gridWorld, $"{nameof(gridWorld)} not assigned.", this);
+			gameCamera = Camera.main;
+			Debug.Assert(gameCamera, "Main camera not found.", this);
 			Debug.Assert(selectionHighlight, $"{nameof(selectionHighlight)} not assigned.", this);
 		}
 
@@ -60,12 +54,12 @@ namespace Zifro.Sandbox.UI.WorldEdit
 				return;
 			}
 
-			Vector3 from = camera.ScreenToWorldPoint(Input.mousePosition);
+			Vector3 from = gameCamera.ScreenToWorldPoint(Input.mousePosition);
 
-			Vector3 forward = camera.transform.forward;
-			Debug.DrawRay(from, forward * maxRaycastDistance, Color.red);
+			Vector3 forward = gameCamera.transform.forward;
+			Debug.DrawRay(from, forward * gameCamera.farClipPlane, Color.red);
 
-			if (!gridWorld.TryRaycastBlocks(from, forward, maxRaycastDistance, out GridRaycastHit hit))
+			if (!world.TryRaycastBlocks(from, forward, gameCamera.farClipPlane, out GridRaycastHit hit))
 			{
 				selectionHighlight.DeselectAll();
 				return;
@@ -90,11 +84,11 @@ namespace Zifro.Sandbox.UI.WorldEdit
 
 			if (addButton)
 			{
-				gridWorld.SetBlock(hit.voxelIndex + hit.voxelNormal);
+				world.SetBlock(hit.voxelIndex + hit.voxelNormal);
 			}
 			else if (removeButton)
 			{
-				gridWorld.RemoveBlock(hit.voxelIndex);
+				world.RemoveBlock(hit.voxelIndex);
 			}
 		}
 	}

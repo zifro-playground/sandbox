@@ -13,6 +13,7 @@ namespace Zifro.Sandbox.UI
 		IPMCompilerStopped
 	{
 		public VariableWindow variableWindow;
+		public GridWorld gridWorld;
 
 		[SerializeField, HideInInspector]
 		WorldEditTool[] _tools;
@@ -26,14 +27,24 @@ namespace Zifro.Sandbox.UI
 
 			Debug.Assert(_tools.Length > 0, "No tools found.", this);
 			Debug.Assert(variableWindow, "Variable window not defined.", this);
+
+			Debug.Assert(gridWorld, $"{nameof(gridWorld)} not assigned.", this);
 		}
 
 		void OnEnable()
 		{
+			Debug.Assert(Camera.main, "Missing main camera!.", this);
+
 			foreach (WorldEditTool tool in _tools)
 			{
+				// Initialize tool
 				tool.button = tool.GetComponent<Button>();
 				Debug.Assert(tool.button, $"Did not find button for tool {tool.GetType().Name} in \"{tool.name}\"", tool);
+
+				tool.world = gridWorld;
+				tool.gameCamera = Camera.main;
+
+				// Register events
 				tool.button.onClick.AddListener(() => SelectTool(tool));
 			}
 

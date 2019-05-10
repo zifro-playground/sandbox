@@ -13,6 +13,12 @@ namespace Zifro.Sandbox.UI.WorldEdit
 		[HideInInspector]
 		public Button button;
 
+		[HideInInspector]
+		public GridWorld world;
+
+		[HideInInspector]
+		public Camera gameCamera;
+
 		public abstract void OnToolSelected();
 		public abstract void OnToolDeselected();
 	}
