@@ -1,7 +1,7 @@
 
 # Third party notices
 
-The ZIFRO Playground uses open source libraries that without
+The Zifro Sandbox uses open source libraries that without
 would not make this product possible. Much love.
 
 Below follow licenses from included libraries
