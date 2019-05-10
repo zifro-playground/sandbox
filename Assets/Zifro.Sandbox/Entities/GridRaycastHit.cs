@@ -10,6 +10,7 @@ namespace Zifro.Sandbox.Entities
 		public Vector3 normal;
 		public Vector3 voxelPosition;
 		public Vector3Int voxelIndex;
+		public Vector3Int voxelNormal;
 		public float distance;
 
 		public override bool Equals(object obj)

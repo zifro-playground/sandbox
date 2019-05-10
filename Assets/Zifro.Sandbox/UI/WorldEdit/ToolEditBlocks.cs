@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using PM;
+using UnityEngine;
 using UnityEngine.EventSystems;
 using Zifro.Sandbox.Entities;
 
@@ -71,9 +72,20 @@ namespace Zifro.Sandbox.UI.WorldEdit
 			}
 
 			selectionHighlight.SelectVoxel(hit.voxelIndex, hit.normal);
-			if (Input.GetMouseButtonDown(0))
-			{
+			bool modifier = IDESpecialCommands.AnyKey(KeyCode.LeftControl, KeyCode.RightControl);
+			bool lmb = Input.GetMouseButtonDown(0);
+			bool rmb = Input.GetMouseButtonDown(1);
 
+			bool addButton = lmb && !modifier;
+			bool removeButton = rmb || (lmb && modifier);
+
+			if (addButton)
+			{
+				gridWorld.SetBlock(hit.voxelIndex + hit.voxelNormal);
+			}
+			else if (removeButton)
+			{
+				gridWorld.RemoveBlock(hit.voxelIndex);
 			}
 		}
 	}

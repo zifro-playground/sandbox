@@ -11,7 +11,7 @@ public class GridWorld : MonoBehaviour
 	[TextArea]
 	public string[] initializationLayers;
 
-	bool[,,] grid;
+	GameObject[,,] grid;
 
 	void Awake()
 	{
@@ -52,7 +52,7 @@ public class GridWorld : MonoBehaviour
 		int width = splitByLine.Max(o => o.Length);
 		int length = splitByLine.Max(o => o.Max(n => n.Length));
 
-		grid = new bool[width, height, length];
+		grid = new GameObject[width, height + 5, length];
 		Transform parent = transform;
 
 		for (int y = 0; y < splitByLine.Length; y++)
@@ -68,14 +68,56 @@ public class GridWorld : MonoBehaviour
 						continue;
 					}
 
-					grid[x, y, z] = true;
-					Instantiate(blockPrefab,
+					grid[x, y, z] = Instantiate(blockPrefab,
 						parent.TransformPoint(x + 0.5f, y + 0.5f, z + 0.5f),
 						Quaternion.identity,
 						parent);
 				}
 			}
 		}
+	}
+
+	public bool SetBlock(Vector3Int voxel)
+	{
+		if (voxel.x < 0 || voxel.x >= grid.GetLength(0) ||
+		    voxel.y < 0 || voxel.y >= grid.GetLength(1) ||
+		    voxel.z < 0 || voxel.z >= grid.GetLength(2))
+		{
+			return false;
+		}
+
+		if (grid[voxel.x, voxel.y, voxel.z])
+		{
+			return false;
+		}
+
+		Transform parent = transform;
+		grid[voxel.x, voxel.y, voxel.z] = Instantiate(blockPrefab,
+			parent.TransformPoint(voxel.x + 0.5f, voxel.y + 0.5f, voxel.z + 0.5f),
+			Quaternion.identity,
+			parent);
+
+		return true;
+	}
+
+	public bool RemoveBlock(Vector3Int voxel)
+	{
+		if (voxel.x < 0 || voxel.x >= grid.GetLength(0) ||
+		    voxel.y < 0 || voxel.y >= grid.GetLength(1) ||
+		    voxel.z < 0 || voxel.z >= grid.GetLength(2))
+		{
+			return false;
+		}
+
+		if (!grid[voxel.x, voxel.y, voxel.z])
+		{
+			return false;
+		}
+		
+		Destroy(grid[voxel.x, voxel.y, voxel.z]);
+		grid[voxel.x, voxel.y, voxel.z] = null;
+
+		return true;
 	}
 
 	[Pure]
@@ -138,7 +180,11 @@ public class GridWorld : MonoBehaviour
 	}
 
 	[Pure]
-	private bool TryRaycastBlocksLocal(Vector3 pointLocal, Vector3 directionLocal, float maxLength, out GridRaycastHit hit)
+	private bool TryRaycastBlocksLocal(
+		Vector3 pointLocal,
+		Vector3 directionLocal,
+		float maxLength,
+		out GridRaycastHit hit)
 	{
 		Debug.Assert(!directionLocal.Equals(Vector3.zero), "Cannot raycast along zero vector.");
 
@@ -198,7 +244,7 @@ public class GridWorld : MonoBehaviour
 				Vector3 hitPointLocal = pointLocal + t * directionLocal;
 				Vector3 hitPointWorld = transform.TransformPoint(hitPointLocal);
 
-				var hitNormalLocal = new Vector3(
+				var hitNormalLocal = new Vector3Int(
 					steppedIndex == 0 ? -step.x : 0,
 					steppedIndex == 1 ? -step.y : 0,
 					steppedIndex == 2 ? -step.z : 0
@@ -210,7 +256,8 @@ public class GridWorld : MonoBehaviour
 					normal = hitNormalWorld,
 					point = hitPointWorld,
 					voxelIndex = intPointLocal,
-					voxelPosition = VoxelToWorld(intPointLocal)
+					voxelPosition = VoxelToWorld(intPointLocal),
+					voxelNormal = hitNormalLocal
 				};
 
 				return true;
@@ -259,10 +306,9 @@ public class GridWorld : MonoBehaviour
 
 		hit = new GridRaycastHit {
 			point = lastPointWorld,
-			normal = Vector3.zero,
 			distance = maxLength,
 			voxelIndex = intPointLocal,
-			voxelPosition = VoxelToWorld(intPointLocal)
+			voxelPosition = VoxelToWorld(intPointLocal),
 		};
 
 		return false;
