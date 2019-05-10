@@ -45,7 +45,7 @@ namespace Zifro.Sandbox.ClrFunctions
 			}
 
 			Vector3 vector = player.GetDirectionFraction(direction, scale);
-			bool isBlocked = world.TryRaycastBlocks(point, vector, scale, out RaycastHit _);
+			bool isBlocked = world.TryRaycastBlocks(point, vector, scale, out GridRaycastHit _);
 
 			return Processor.Factory.Create(isBlocked);
 		}

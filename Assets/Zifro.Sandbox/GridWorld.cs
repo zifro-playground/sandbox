@@ -2,6 +2,7 @@
 using System.Linq;
 using UnityEngine;
 using Zifro.Sandbox;
+using Zifro.Sandbox.Entities;
 
 public class GridWorld : MonoBehaviour
 {
@@ -10,10 +11,13 @@ public class GridWorld : MonoBehaviour
 	[TextArea]
 	public string[] initializationLayers;
 
-	bool[,,] grid;
+	GameObject[,,] grid;
+
+	public Plane groundPlane;
 
 	void Awake()
 	{
+		groundPlane = new Plane(transform.up, transform.position);
 		RegenerateGrid();
 	}
 
@@ -51,7 +55,7 @@ public class GridWorld : MonoBehaviour
 		int width = splitByLine.Max(o => o.Length);
 		int length = splitByLine.Max(o => o.Max(n => n.Length));
 
-		grid = new bool[width, height, length];
+		grid = new GameObject[width, height + 5, length];
 		Transform parent = transform;
 
 		for (int y = 0; y < splitByLine.Length; y++)
@@ -67,14 +71,56 @@ public class GridWorld : MonoBehaviour
 						continue;
 					}
 
-					grid[x, y, z] = true;
-					Instantiate(blockPrefab,
+					grid[x, y, z] = Instantiate(blockPrefab,
 						parent.TransformPoint(x + 0.5f, y + 0.5f, z + 0.5f),
 						Quaternion.identity,
 						parent);
 				}
 			}
 		}
+	}
+
+	public bool SetBlock(Vector3Int voxel)
+	{
+		if (voxel.x < 0 || voxel.x >= grid.GetLength(0) ||
+		    voxel.y < 0 || voxel.y >= grid.GetLength(1) ||
+		    voxel.z < 0 || voxel.z >= grid.GetLength(2))
+		{
+			return false;
+		}
+
+		if (grid[voxel.x, voxel.y, voxel.z])
+		{
+			return false;
+		}
+
+		Transform parent = transform;
+		grid[voxel.x, voxel.y, voxel.z] = Instantiate(blockPrefab,
+			parent.TransformPoint(voxel.x + 0.5f, voxel.y + 0.5f, voxel.z + 0.5f),
+			Quaternion.identity,
+			parent);
+
+		return true;
+	}
+
+	public bool RemoveBlock(Vector3Int voxel)
+	{
+		if (voxel.x < 0 || voxel.x >= grid.GetLength(0) ||
+		    voxel.y < 0 || voxel.y >= grid.GetLength(1) ||
+		    voxel.z < 0 || voxel.z >= grid.GetLength(2))
+		{
+			return false;
+		}
+
+		if (!grid[voxel.x, voxel.y, voxel.z])
+		{
+			return false;
+		}
+
+		Destroy(grid[voxel.x, voxel.y, voxel.z]);
+		grid[voxel.x, voxel.y, voxel.z] = null;
+
+		return true;
 	}
 
 	[Pure]
@@ -128,7 +174,7 @@ public class GridWorld : MonoBehaviour
 	}
 
 	[Pure]
-	public bool TryRaycastBlocks(Vector3 pointWorld, Vector3 directionWorld, float maxLength, out RaycastHit hit)
+	public bool TryRaycastBlocks(Vector3 pointWorld, Vector3 directionWorld, float maxLength, out GridRaycastHit hit)
 	{
 		Vector3 pointLocal = transform.InverseTransformPoint(pointWorld);
 		Vector3 directionLocal = transform.InverseTransformDirection(directionWorld);
@@ -137,7 +183,11 @@ public class GridWorld : MonoBehaviour
 	}
 
 	[Pure]
-	private bool TryRaycastBlocksLocal(Vector3 pointLocal, Vector3 directionLocal, float maxLength, out RaycastHit hit)
+	private bool TryRaycastBlocksLocal(
+		Vector3 pointLocal,
+		Vector3 directionLocal,
+		float maxLength,
+		out GridRaycastHit hit)
 	{
 		Debug.Assert(!directionLocal.Equals(Vector3.zero), "Cannot raycast along zero vector.");
 
@@ -197,17 +247,18 @@ public class GridWorld : MonoBehaviour
 				Vector3 hitPointLocal = pointLocal + t * directionLocal;
 				Vector3 hitPointWorld = transform.TransformPoint(hitPointLocal);
 
-				var hitNormalLocal = new Vector3(
+				var hitNormalLocal = new Vector3Int(
 					steppedIndex == 0 ? -step.x : 0,
 					steppedIndex == 1 ? -step.y : 0,
 					steppedIndex == 2 ? -step.z : 0
 				);
-				Vector3 hitNormalWorld = transform.TransformDirection(hitNormalLocal);
 
-				hit = new RaycastHit {
+				hit = new GridRaycastHit {
 					distance = t,
-					normal = hitNormalWorld,
-					point = hitPointWorld
+					point = hitPointWorld,
+					voxelIndex = intPointLocal,
+					voxelNormal = hitNormalLocal,
+					world = this
 				};
 
 				return true;
@@ -254,11 +305,33 @@ public class GridWorld : MonoBehaviour
 		Vector3 lastPointLocal = pointLocal + t * directionLocal;
 		Vector3 lastPointWorld = transform.TransformPoint(lastPointLocal);
 
-		hit = new RaycastHit {
+		hit = new GridRaycastHit {
 			point = lastPointWorld,
-			normal = Vector3.zero
+			distance = maxLength,
+			voxelIndex = intPointLocal,
+			world = this
 		};
 
 		return false;
+	}
+
+	public Vector3 VoxelToWorld(Vector3Int voxel)
+	{
+		return transform.TransformPoint(voxel + new Vector3(0.5f, 0.5f, 0.5f));
+	}
+
+	public Vector3 VoxelNormalToWorld(Vector3Int voxelNormal)
+	{
+		return transform.TransformDirection(voxelNormal);
+	}
+
+	public Vector3Int WorldToVoxel(Vector3 point)
+	{
+		Vector3 localPoint = transform.InverseTransformPoint(point);
+		return new Vector3Int(
+			Mathf.RoundToInt(localPoint.x),
+			Mathf.RoundToInt(localPoint.y),
+			Mathf.RoundToInt(localPoint.z)
+		);
 	}
 }
