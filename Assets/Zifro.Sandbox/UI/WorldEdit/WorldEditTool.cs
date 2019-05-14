@@ -1,28 +1,27 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Zifro.Sandbox.UI.WorldEdit
 {
 	public abstract class WorldEditTool : MonoBehaviour
 	{
+		public Button button;
 		public KeyCode hotKey;
 
-		[HideInInspector]
+		[NonSerialized]
 		public bool isSelected;
 
-		[HideInInspector]
-		public bool isFocused;
+		[NonSerialized]
+		public bool isMouseOverGame;
 
-		[HideInInspector]
-		public Button button;
-
-		[HideInInspector]
+		[NonSerialized]
 		public GridWorld world;
 
-		[HideInInspector]
+		[NonSerialized]
 		public Camera gameCamera;
 
-		public abstract void OnToolFocusGain();
-		public abstract void OnToolFocusLoss();
+		public abstract void OnToolSelectedChange();
+		public abstract void OnMouseOverChange();
 	}
 }

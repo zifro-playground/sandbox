@@ -4,9 +4,7 @@ using Zifro.Sandbox.Entities;
 
 namespace Zifro.Sandbox.UI.WorldEdit
 {
-	public class ToolCamera : WorldEditTool,
-		IToolScreenEnter,
-		IToolScreenExit
+	public class ToolCamera : WorldEditTool
 	{
 		public Transform gameCameraArm;
 
@@ -34,10 +32,8 @@ namespace Zifro.Sandbox.UI.WorldEdit
 		[SerializeField, HideInInspector]
 		float tilt;
 
-		bool pointerOver;
-
-		bool dragging;
-		bool rotating;
+		bool isDragging;
+		bool isRotating;
 
 		void Awake()
 		{
@@ -64,16 +60,16 @@ namespace Zifro.Sandbox.UI.WorldEdit
 
 		private void Drag()
 		{
-			if (Input.GetMouseButtonDown(0) && !dragging)
+			if (Input.GetMouseButtonDown(0) && !isDragging)
 			{
-				dragging = true;
+				isDragging = true;
 			}
-			else if (dragging)
+			else if (isDragging)
 			{
 				if (!Input.GetMouseButton(0))
 				{
-					dragging = false;
-					enabled = pointerOver && isSelected;
+					isDragging = false;
+					enabled = isMouseOverGame && isSelected;
 				}
 				else
 				{
@@ -89,7 +85,7 @@ namespace Zifro.Sandbox.UI.WorldEdit
 
 		private void Rotate()
 		{
-			if (Input.GetMouseButtonDown(1) && !rotating)
+			if (Input.GetMouseButtonDown(1) && !isRotating)
 			{
 				//Vector3 from = gameCamera.ScreenToWorldPoint(Input.mousePosition);
 				//Vector3 rayDirection = gameCamera.transform.forward;
@@ -119,14 +115,14 @@ namespace Zifro.Sandbox.UI.WorldEdit
 				//	Debug.DrawRay(from, rayDirection * gameCamera.farClipPlane, Color.gray, 1f);
 				//}
 
-				rotating = true;
+				isRotating = true;
 			}
-			else if (rotating)
+			else if (isRotating)
 			{
 				if (!Input.GetMouseButton(1))
 				{
-					rotating = false;
-					enabled = pointerOver && isSelected;
+					isRotating = false;
+					enabled = isMouseOverGame && isSelected;
 				}
 				else
 				{
@@ -145,28 +141,16 @@ namespace Zifro.Sandbox.UI.WorldEdit
 			}
 		}
 
-		public override void OnToolFocusGain()
+		public override void OnToolSelectedChange()
 		{
-			enabled = pointerOver && isSelected;
-			rotating = false;
+			enabled = isMouseOverGame && isSelected;
+			isRotating = false;
+			isDragging = false;
 		}
 
-		public override void OnToolFocusLoss()
+		public override void OnMouseOverChange()
 		{
-			rotating = false;
-			enabled = false;
-		}
-
-		void IToolScreenEnter.OnScreenEnter(PointerEventData eventData)
-		{
-			pointerOver = true;
-			enabled = pointerOver && isSelected;
-		}
-
-		void IToolScreenExit.OnScreenExit(PointerEventData eventData)
-		{
-			pointerOver = false;
-			enabled = (rotating || dragging) && isSelected;
+			enabled = isRotating || isDragging || (isSelected && isMouseOverGame);
 		}
 	}
 }
