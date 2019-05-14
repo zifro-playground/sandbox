@@ -11,6 +11,9 @@ namespace Zifro.Sandbox.UI.WorldEdit
 		public bool isSelected;
 
 		[HideInInspector]
+		public bool isFocused;
+
+		[HideInInspector]
 		public Button button;
 
 		[HideInInspector]
@@ -19,7 +22,7 @@ namespace Zifro.Sandbox.UI.WorldEdit
 		[HideInInspector]
 		public Camera gameCamera;
 
-		public abstract void OnToolSelected();
-		public abstract void OnToolDeselected();
+		public abstract void OnToolFocusGain();
+		public abstract void OnToolFocusLoss();
 	}
 }

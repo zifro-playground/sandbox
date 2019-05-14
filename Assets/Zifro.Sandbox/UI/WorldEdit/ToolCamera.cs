@@ -145,13 +145,13 @@ namespace Zifro.Sandbox.UI.WorldEdit
 			}
 		}
 
-		public override void OnToolSelected()
+		public override void OnToolFocusGain()
 		{
 			enabled = pointerOver && isSelected;
 			rotating = false;
 		}
 
-		public override void OnToolDeselected()
+		public override void OnToolFocusLoss()
 		{
 			rotating = false;
 			enabled = false;

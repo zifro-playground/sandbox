@@ -36,12 +36,12 @@ namespace Zifro.Sandbox.UI.WorldEdit
 			selectionHighlight.DeselectAll();
 		}
 
-		public override void OnToolSelected()
+		public override void OnToolFocusGain()
 		{
 			enabled = true;
 		}
 
-		public override void OnToolDeselected()
+		public override void OnToolFocusLoss()
 		{
 			enabled = false;
 			selectionHighlight.DeselectAll();
