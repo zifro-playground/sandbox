@@ -251,7 +251,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   addButton: {fileID: 46822153482488134}
   current: {fileID: 8309733137056776152}
-  currentAgent: {fileID: 0}
   menuItems:
   - {fileID: 1278406581351198608}
   - {fileID: 8309733137056776152}
@@ -911,7 +910,7 @@ MonoBehaviour:
   button: {fileID: 5174979797929245090}
   modelPrefab: {fileID: 6052344563927694002, guid: 2ffcbd014743dcd49b3fc28adfd7143f,
     type: 3}
-  agentPrefab: {fileID: 6052344563927694002, guid: 2ffcbd014743dcd49b3fc28adfd7143f,
+  agentPrefab: {fileID: 4820206552985816530, guid: 261fb565b8ba8cb44877db69685c0320,
     type: 3}
 --- !u!1 &3528641243632474931
 GameObject:
