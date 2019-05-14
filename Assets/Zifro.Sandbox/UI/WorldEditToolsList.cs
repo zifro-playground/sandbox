@@ -14,9 +14,6 @@ namespace Zifro.Sandbox.UI
 		IPMCompilerStarted,
 		IPMCompilerStopped
 	{
-		public VariableWindow variableWindow;
-		public GridWorld gridWorld;
-
 		public WorldEditTool currentTool;
 		public List<WorldEditTool> tools;
 
@@ -25,10 +22,8 @@ namespace Zifro.Sandbox.UI
 		void Awake()
 		{
 			Debug.Assert(tools.Count > 0, $"No tools found in {name}.", this);
-			Debug.Assert(variableWindow, $"{nameof(variableWindow)} not defined in {name}.", this);
 			Debug.Assert(gameWindowTrigger, $"{nameof(gameWindowTrigger)} not defined in {name}.", this);
 
-			Debug.Assert(gridWorld, $"{nameof(gridWorld)} not assigned in {name}.", this);
 		}
 
 		void OnValidate()
@@ -58,14 +53,15 @@ namespace Zifro.Sandbox.UI
 
 		void OnEnable()
 		{
-			Debug.Assert(Camera.main, "Missing main camera!.", this);
+			Debug.Assert(Camera.main, $"Missing main camera in {name}.", this);
+			Debug.Assert(GridWorld.main, $"Missing main grid world in {name}.", this);
 
 			foreach (WorldEditTool tool in tools)
 			{
 				// Initialize tool
 				Debug.Assert(tool.button, $"Button for tool {tool.GetType().Name} is not assigned in \"{tool.name}\"", tool);
 
-				tool.world = gridWorld;
+				tool.world = GridWorld.main;
 				tool.gameCamera = Camera.main;
 
 				// Register events
@@ -126,8 +122,6 @@ namespace Zifro.Sandbox.UI
 			currentTool.button.interactable = false;
 			currentTool.isSelected = true;
 			currentTool.OnToolSelectedChange();
-
-			variableWindow.gameObject.SetActive(false);
 		}
 
 		public void DeselectTool()
@@ -141,7 +135,18 @@ namespace Zifro.Sandbox.UI
 			currentTool.isSelected = false;
 			currentTool.OnToolSelectedChange();
 			currentTool = null;
-			variableWindow.gameObject.SetActive(true);
+		}
+
+		public void DeselectToolWithoutUIUpdate()
+		{
+			if (!currentTool)
+			{
+				return;
+			}
+
+			currentTool.isSelected = false;
+			currentTool.OnToolSelectedChange();
+			currentTool = null;
 		}
 
 		void SetItemsMouseOver(bool state)

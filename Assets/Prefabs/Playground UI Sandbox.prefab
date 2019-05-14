@@ -908,6 +908,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 5174979797929245090}
+  modelPrefab: {fileID: 6052344563927694002, guid: 2ffcbd014743dcd49b3fc28adfd7143f,
+    type: 3}
 --- !u!1 &3528641243632474931
 GameObject:
   m_ObjectHideFlags: 0
@@ -1382,6 +1384,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 1235261081797390415}
+  modelPrefab: {fileID: 0}
 --- !u!1 &5321639395231001168
 GameObject:
   m_ObjectHideFlags: 0
@@ -1801,6 +1804,7 @@ GameObject:
   - component: {fileID: 728342131357770086}
   - component: {fileID: 7613528633841466232}
   - component: {fileID: 5726919733019159624}
+  - component: {fileID: 5790410627742408748}
   m_Layer: 5
   m_Name: Drag n drop agent
   m_TagString: Untagged
@@ -1924,6 +1928,22 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &5790410627742408748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7928427280685215184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b88d29c52ca954b4e83054f428116643, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  toolsList: {fileID: 6690884213575528903}
+  menuList: {fileID: 2126700038583778481}
+  cancelInput: Cancel
+  dragMaterial: {fileID: 2100000, guid: 54553bc4516d6054b976a2a7f2eea705, type: 2}
 --- !u!1 &8190392033418401195
 GameObject:
   m_ObjectHideFlags: 0
@@ -2166,8 +2186,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccad7bcc42105554b89713684aa4b1ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  variableWindow: {fileID: 6208188843704186654}
-  gridWorld: {fileID: 0}
   currentTool: {fileID: 4640131675437474282}
   tools:
   - {fileID: 4640131675437474282}
@@ -2360,12 +2378,12 @@ PrefabInstance:
     - target: {fileID: 3620265195153936397, guid: cc7b7620a9eb4554db6d52b6ab529edf,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -50
+      value: -51.5
       objectReference: {fileID: 0}
     - target: {fileID: 3620265195153936397, guid: cc7b7620a9eb4554db6d52b6ab529edf,
         type: 3}
       propertyPath: m_SizeDelta.y
-      value: -100
+      value: -97
       objectReference: {fileID: 0}
     - target: {fileID: 3620185055989577381, guid: cc7b7620a9eb4554db6d52b6ab529edf,
         type: 3}
@@ -2617,6 +2635,11 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3620163739241815947, guid: cc7b7620a9eb4554db6d52b6ab529edf,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: -10
+      objectReference: {fileID: 0}
     - target: {fileID: 3620554911193258113, guid: cc7b7620a9eb4554db6d52b6ab529edf,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -2682,10 +2705,15 @@ PrefabInstance:
       propertyPath: m_Size
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 3510265383107400861, guid: cc7b7620a9eb4554db6d52b6ab529edf,
+    - target: {fileID: 3510550057321861061, guid: cc7b7620a9eb4554db6d52b6ab529edf,
         type: 3}
       propertyPath: m_Value
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3510265383107400861, guid: cc7b7620a9eb4554db6d52b6ab529edf,
+        type: 3}
+      propertyPath: m_Value
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3510265383107400861, guid: cc7b7620a9eb4554db6d52b6ab529edf,
         type: 3}
@@ -2694,18 +2722,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cc7b7620a9eb4554db6d52b6ab529edf, type: 3}
---- !u!114 &6208188843704186654 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3510062777978970129, guid: cc7b7620a9eb4554db6d52b6ab529edf,
-    type: 3}
-  m_PrefabInstance: {fileID: 7390923362690012943}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0e4a0cb4da2124f469c76dc98d269caa, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &6319720160536313000 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3541515558717631399, guid: cc7b7620a9eb4554db6d52b6ab529edf,
