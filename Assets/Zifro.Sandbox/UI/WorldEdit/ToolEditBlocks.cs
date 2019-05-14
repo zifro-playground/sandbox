@@ -9,7 +9,7 @@ namespace Zifro.Sandbox.UI.WorldEdit
 		IToolScreenEnter,
 		IToolScreenExit
 	{
-		public GridWorldSelector selectionHighlight;
+		public GridWorldHighlight selectionHighlight;
 
 		bool pointerOver;
 

@@ -2,7 +2,7 @@
 
 namespace Zifro.Sandbox
 {
-	public class GridWorldSelector : MonoBehaviour
+	public class GridWorldHighlight : MonoBehaviour
 	{
 		public GridWorld gridWorld;
 		public Vector3 outerPadding = new Vector3(0.1f, 0.1f, 0.1f);
