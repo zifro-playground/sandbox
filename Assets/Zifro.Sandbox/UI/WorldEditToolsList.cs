@@ -26,8 +26,14 @@ namespace Zifro.Sandbox.UI
 
 		}
 
+#if UNITY_EDITOR
 		void OnValidate()
 		{
+			if (UnityEditor.EditorApplication.isPlaying)
+			{
+				return;
+			}
+
 			if (currentTool && !tools.Contains(currentTool))
 			{
 				tools.Add(currentTool);
@@ -50,7 +56,7 @@ namespace Zifro.Sandbox.UI
 				tool.button.interactable = tool != currentTool;
 			}
 		}
-
+#endif
 		void OnEnable()
 		{
 			Debug.Assert(Camera.main, $"Missing main camera in {name}.", this);

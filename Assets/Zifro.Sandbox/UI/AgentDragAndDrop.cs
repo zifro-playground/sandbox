@@ -5,7 +5,7 @@ using Zifro.Sandbox.UI.WorldEdit;
 
 namespace Zifro.Sandbox.UI
 {
-	public class AgentDragAndDrop : MonoBehaviour,
+	public class AgentDragAndDrop : WorldEditTool,
 		IBeginDragHandler,
 		IDragHandler,
 		IEndDragHandler
@@ -18,16 +18,6 @@ namespace Zifro.Sandbox.UI
 		bool isDragging;
 		WorldEditTool lastTool;
 		GameObject preview;
-		Camera gameCamera;
-		GridWorld gridWorld;
-
-		void OnEnable()
-		{
-			gameCamera = Camera.main;
-			Debug.Assert(gameCamera, $"Main camera not found in {name}.", this);
-			gridWorld = GridWorld.main;
-			Debug.Assert(gridWorld, $"Main grid world not found in {name}.", this);
-		}
 
 		void Awake()
 		{
@@ -51,10 +41,10 @@ namespace Zifro.Sandbox.UI
 
 			Vector3 point = gameCamera.ScreenToWorldPoint(Input.mousePosition);
 
-			if (gridWorld.TryRaycastBlocks(point, gameCamera.transform.forward, gameCamera.farClipPlane,
+			if (world.TryRaycastBlocks(point, gameCamera.transform.forward, gameCamera.farClipPlane,
 				out GridRaycastHit hit))
 			{
-				preview.transform.position = gridWorld.VoxelToWorld(hit.voxelIndex + hit.voxelNormal) - new Vector3(0, 0.5f, 0);
+				preview.transform.position = world.VoxelToWorld(hit.voxelIndex + hit.voxelNormal) - new Vector3(0, 0.5f, 0);
 				preview.gameObject.SetActive(true);
 			}
 			else
@@ -136,6 +126,14 @@ namespace Zifro.Sandbox.UI
 				Destroy(preview);
 				preview = null;
 			}
+		}
+
+		public override void OnToolSelectedChange()
+		{
+		}
+
+		public override void OnMouseOverChange()
+		{
 		}
 	}
 }

@@ -20640,9 +20640,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0.5125
-    y: 0.11367941
-    width: 0.46875006
-    height: 0.6753254
+    y: 0.10948824
+    width: 0.46875
+    height: 0.68265176
   near clip plane: 0.3
   far clip plane: 10
   field of view: 60
@@ -21436,9 +21436,9 @@ Camera:
   m_NormalizedViewPortRect:
     serializedVersion: 2
     x: 0.5125
-    y: 0.11367941
-    width: 0.46875006
-    height: 0.6753254
+    y: 0.10948824
+    width: 0.46875
+    height: 0.68265176
   near clip plane: 0.3
   far clip plane: 100
   field of view: 60
@@ -47037,7 +47037,7 @@ PrefabInstance:
     - target: {fileID: 6101447437921290372, guid: b77233bbb51d7484a8f476519563daaa,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.00018310547
+      value: 0.00018310547
       objectReference: {fileID: 0}
     - target: {fileID: 6101447437921290372, guid: b77233bbb51d7484a8f476519563daaa,
         type: 3}
@@ -47223,6 +47223,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMin.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6207968437939045266, guid: b77233bbb51d7484a8f476519563daaa,
+        type: 3}
+      propertyPath: m_Value
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6207700877170677962, guid: b77233bbb51d7484a8f476519563daaa,
+        type: 3}
+      propertyPath: m_Value
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1204339369561094003, guid: b77233bbb51d7484a8f476519563daaa,
         type: 3}
