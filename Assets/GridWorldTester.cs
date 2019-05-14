@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zifro.Sandbox;
 using Zifro.Sandbox.Entities;
 
 public class GridWorldTester : MonoBehaviour

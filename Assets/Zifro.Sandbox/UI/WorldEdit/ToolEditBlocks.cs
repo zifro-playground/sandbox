@@ -5,13 +5,9 @@ using Zifro.Sandbox.Entities;
 
 namespace Zifro.Sandbox.UI.WorldEdit
 {
-	public class ToolEditBlocks : WorldEditTool,
-		IToolScreenEnter,
-		IToolScreenExit
+	public class ToolEditBlocks : WorldEditTool
 	{
 		public GridWorldHighlight selectionHighlight;
-
-		bool pointerOver;
 
 		void Awake()
 		{
@@ -25,35 +21,22 @@ namespace Zifro.Sandbox.UI.WorldEdit
 			enabled = false;
 		}
 
-		void IToolScreenEnter.OnScreenEnter(PointerEventData eventData)
+		public override void OnToolSelectedChange(WorldEditTool lastTool)
 		{
-			pointerOver = true;
+			enabled = isSelected;
+			if (!isSelected)
+			{
+				selectionHighlight.DeselectAll();
+			}
 		}
 
-		void IToolScreenExit.OnScreenExit(PointerEventData eventData)
+		public override void OnMouseOverChange()
 		{
-			pointerOver = false;
-			selectionHighlight.DeselectAll();
-		}
-
-		public override void OnToolSelected()
-		{
-			enabled = true;
-		}
-
-		public override void OnToolDeselected()
-		{
-			enabled = false;
-			selectionHighlight.DeselectAll();
+			enabled = isSelected && isMouseOverGame;
 		}
 
 		void Update()
 		{
-			if (!pointerOver)
-			{
-				return;
-			}
-
 			Vector3 from = gameCamera.ScreenToWorldPoint(Input.mousePosition);
 
 			Vector3 forward = gameCamera.transform.forward;
