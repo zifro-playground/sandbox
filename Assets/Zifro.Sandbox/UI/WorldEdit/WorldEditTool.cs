@@ -21,7 +21,7 @@ namespace Zifro.Sandbox.UI.WorldEdit
 		[NonSerialized]
 		public Camera gameCamera;
 
-		public abstract void OnToolSelectedChange();
+		public abstract void OnToolSelectedChange(WorldEditTool lastTool);
 		public abstract void OnMouseOverChange();
 	}
 }

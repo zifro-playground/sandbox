@@ -21,7 +21,7 @@ namespace Zifro.Sandbox.UI.WorldEdit
 			enabled = false;
 		}
 
-		public override void OnToolSelectedChange()
+		public override void OnToolSelectedChange(WorldEditTool lastTool)
 		{
 			enabled = isSelected;
 			if (!isSelected)

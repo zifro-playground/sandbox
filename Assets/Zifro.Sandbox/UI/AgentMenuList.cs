@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -8,8 +9,9 @@ namespace Zifro.Sandbox.UI
 	public class AgentMenuList : MonoBehaviour
 	{
 		public Button addButton;
-		public AgentMenuItem current;
-		public List<AgentMenuItem> menuItems;
+		public MenuItem current;
+		public AgentMenuItem currentAgent => current as AgentMenuItem;
+		public List<MenuItem> menuItems;
 
 		void OnValidate()
 		{
@@ -20,7 +22,14 @@ namespace Zifro.Sandbox.UI
 
 			for (int i = menuItems.Count - 1; i >= 0; i--)
 			{
-				AgentMenuItem menuItem = menuItems[i];
+				if (!menuItems[i])
+				{
+					Debug.LogAssertion($"Menu item at index {i} was null. Removing it from list.");
+					menuItems.RemoveAt(i);
+					continue;
+				}
+
+				MenuItem menuItem = menuItems[i];
 				if (!menuItem.button)
 				{
 					menuItem.button = menuItem.GetComponent<Button>();
@@ -44,13 +53,13 @@ namespace Zifro.Sandbox.UI
 		void OnEnable()
 		{
 			addButton.onClick.AddListener(AddAgent);
-			foreach (AgentMenuItem item in menuItems)
+			foreach (MenuItem item in menuItems)
 			{
-				item.button.onClick.AddListener(() => SelectAgent(item));
+				item.button.onClick.AddListener(() => SelectMenuItem(item));
 			}
 		}
 
-		public void SelectAgent(AgentMenuItem agent)
+		public void SelectMenuItem(MenuItem agent)
 		{
 			Debug.Assert(agent, "Agent cannot be null.");
 			if (current == agent)

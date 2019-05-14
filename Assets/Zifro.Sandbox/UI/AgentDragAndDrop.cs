@@ -12,12 +12,21 @@ namespace Zifro.Sandbox.UI
 	{
 		public WorldEditToolsList toolsList;
 		public AgentMenuList menuList;
+		public string placeInput = "Fire1";
 		public string cancelInput = "Cancel";
 		public Material dragMaterial;
 
-		bool isDragging;
+		PlacementMode placeState = PlacementMode.None;
 		WorldEditTool lastTool;
 		GameObject preview;
+		GameObject agentPrefab;
+
+		enum PlacementMode
+		{
+			None,
+			DragAndDrop,
+			ClickAndPlace
+		}
 
 		void Awake()
 		{
@@ -27,7 +36,7 @@ namespace Zifro.Sandbox.UI
 
 		void Update()
 		{
-			if (!isDragging)
+			if (placeState == PlacementMode.None || !isMouseOverGame)
 			{
 				return;
 			}
@@ -44,8 +53,15 @@ namespace Zifro.Sandbox.UI
 			if (world.TryRaycastBlocks(point, gameCamera.transform.forward, gameCamera.farClipPlane,
 				out GridRaycastHit hit))
 			{
-				preview.transform.position = world.VoxelToWorld(hit.voxelIndex + hit.voxelNormal) - new Vector3(0, 0.5f, 0);
+				preview.transform.position =
+					world.VoxelToWorld(hit.voxelIndex + hit.voxelNormal) - new Vector3(0, 0.5f, 0);
 				preview.gameObject.SetActive(true);
+
+				if (placeState == PlacementMode.ClickAndPlace && Input.GetButtonDown(placeInput))
+				{
+					EndPlacement();
+					DragEndOrCancel();
+				}
 			}
 			else
 			{
@@ -64,14 +80,13 @@ namespace Zifro.Sandbox.UI
 
 		void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
 		{
-			if (!menuList.current || !menuList.current.modelPrefab)
+			if (placeState != PlacementMode.None || !menuList.currentAgent || !menuList.currentAgent.modelPrefab)
 			{
 				// Stop drag events
 				eventData.pointerDrag = null;
 				return;
 			}
 
-			isDragging = true;
 			lastTool = toolsList.currentTool;
 
 			if (lastTool)
@@ -79,7 +94,87 @@ namespace Zifro.Sandbox.UI
 				toolsList.DeselectToolWithoutUIUpdate();
 			}
 
-			preview = Instantiate(menuList.current.modelPrefab);
+			placeState = PlacementMode.DragAndDrop;
+			StartPlacement();
+		}
+
+		void IDragHandler.OnDrag(PointerEventData eventData)
+		{
+			if (placeState != PlacementMode.DragAndDrop)
+			{
+				// Stop drag events
+				eventData.pointerDrag = null;
+			}
+		}
+
+		void IEndDragHandler.OnEndDrag(PointerEventData eventData)
+		{
+			if (placeState != PlacementMode.DragAndDrop)
+			{
+				return;
+			}
+
+			// Release the item, successful end drag
+
+			Vector3 point = gameCamera.ScreenToWorldPoint(Input.mousePosition);
+
+			if (world.TryRaycastBlocks(point, gameCamera.transform.forward, gameCamera.farClipPlane,
+				out GridRaycastHit hit))
+			{
+				preview.transform.position = world.VoxelToWorld(hit.voxelIndex + hit.voxelNormal) - new Vector3(0, 0.5f, 0);
+				preview.gameObject.SetActive(true);
+
+				EndPlacement();
+			}
+
+			DragEndOrCancel();
+		}
+
+		public override void OnToolSelectedChange(WorldEditTool last)
+		{
+			if (isSelected)
+			{
+				placeState = PlacementMode.ClickAndPlace;
+				StartPlacement();
+				lastTool = last;
+			}
+			else
+			{
+				DragEndOrCancel();
+			}
+		}
+
+		public override void OnMouseOverChange()
+		{
+		}
+
+		void DragEndOrCancel()
+		{
+			if (lastTool)
+			{
+				// Switch to last used tool
+				toolsList.SelectTool(lastTool);
+				lastTool = null;
+			}
+			else if (placeState == PlacementMode.ClickAndPlace)
+			{
+				// Deselect self
+				toolsList.DeselectTool();
+			}
+
+			placeState = PlacementMode.None;
+
+			if (preview)
+			{
+				Destroy(preview);
+				preview = null;
+			}
+		}
+
+		void StartPlacement()
+		{
+			preview = Instantiate(menuList.currentAgent.modelPrefab);
+			agentPrefab = menuList.currentAgent.agentPrefab;
 
 			if (dragMaterial)
 			{
@@ -90,50 +185,9 @@ namespace Zifro.Sandbox.UI
 			}
 		}
 
-		void IDragHandler.OnDrag(PointerEventData eventData)
+		void EndPlacement()
 		{
-			if (!isDragging)
-			{
-				// Stop drag events
-				eventData.pointerDrag = null;
-			}
-		}
-
-		void IEndDragHandler.OnEndDrag(PointerEventData eventData)
-		{
-			if (!isDragging)
-			{
-				return;
-			}
-
-			DragEndOrCancel();
-
-			// Release the item, successful end drag
-
-		}
-
-		void DragEndOrCancel()
-		{
-			isDragging = false;
-
-			if (lastTool)
-			{
-				toolsList.SelectTool(lastTool);
-			}
-
-			if (preview)
-			{
-				Destroy(preview);
-				preview = null;
-			}
-		}
-
-		public override void OnToolSelectedChange()
-		{
-		}
-
-		public override void OnMouseOverChange()
-		{
+			Instantiate(agentPrefab, preview.transform.position, preview.transform.rotation);
 		}
 	}
 }

@@ -251,8 +251,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   addButton: {fileID: 46822153482488134}
   current: {fileID: 8309733137056776152}
+  currentAgent: {fileID: 0}
   menuItems:
-  - {fileID: 2259942781412198756}
+  - {fileID: 1278406581351198608}
   - {fileID: 8309733137056776152}
 --- !u!1 &747574921827868899
 GameObject:
@@ -630,7 +631,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
+  m_RaycastTarget: 0
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
@@ -909,6 +910,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 5174979797929245090}
   modelPrefab: {fileID: 6052344563927694002, guid: 2ffcbd014743dcd49b3fc28adfd7143f,
+    type: 3}
+  agentPrefab: {fileID: 6052344563927694002, guid: 2ffcbd014743dcd49b3fc28adfd7143f,
     type: 3}
 --- !u!1 &3528641243632474931
 GameObject:
@@ -1261,7 +1264,7 @@ GameObject:
   - component: {fileID: 6116697433167027431}
   - component: {fileID: 3943537967841873776}
   - component: {fileID: 1235261081797390415}
-  - component: {fileID: 2259942781412198756}
+  - component: {fileID: 1278406581351198608}
   m_Layer: 5
   m_Name: 'Static: Camera'
   m_TagString: Untagged
@@ -1371,7 +1374,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
---- !u!114 &2259942781412198756
+--- !u!114 &1278406581351198608
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1380,11 +1383,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 5284598382220758844}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aad5205745532f844a4a163b6fe8b524, type: 3}
+  m_Script: {fileID: 11500000, guid: b6187a2da3af4ce19df0f52a194ace99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 1235261081797390415}
-  modelPrefab: {fileID: 0}
 --- !u!1 &5321639395231001168
 GameObject:
   m_ObjectHideFlags: 0
@@ -1931,6 +1933,7 @@ MonoBehaviour:
   hotKey: 0
   toolsList: {fileID: 6690884213575528903}
   menuList: {fileID: 2126700038583778481}
+  placeInput: Fire1
   cancelInput: Cancel
   dragMaterial: {fileID: 2100000, guid: 54553bc4516d6054b976a2a7f2eea705, type: 2}
 --- !u!1 &8190392033418401195

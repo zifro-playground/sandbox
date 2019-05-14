@@ -141,7 +141,7 @@ namespace Zifro.Sandbox.UI.WorldEdit
 			}
 		}
 
-		public override void OnToolSelectedChange()
+		public override void OnToolSelectedChange(WorldEditTool lastTool)
 		{
 			enabled = isMouseOverGame && isSelected;
 			isRotating = false;

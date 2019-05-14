@@ -121,13 +121,14 @@ namespace Zifro.Sandbox.UI
 
 				tool.button.interactable = true;
 				tool.isSelected = false;
-				tool.OnToolSelectedChange();
+				tool.OnToolSelectedChange(null);
 			}
 
+			var lastTool = currentTool;
 			currentTool = selectThis;
 			currentTool.button.interactable = false;
 			currentTool.isSelected = true;
-			currentTool.OnToolSelectedChange();
+			currentTool.OnToolSelectedChange(lastTool);
 		}
 
 		public void DeselectTool()
@@ -139,7 +140,7 @@ namespace Zifro.Sandbox.UI
 
 			currentTool.button.interactable = true;
 			currentTool.isSelected = false;
-			currentTool.OnToolSelectedChange();
+			currentTool.OnToolSelectedChange(null);
 			currentTool = null;
 		}
 
@@ -151,7 +152,7 @@ namespace Zifro.Sandbox.UI
 			}
 
 			currentTool.isSelected = false;
-			currentTool.OnToolSelectedChange();
+			currentTool.OnToolSelectedChange(null);
 			currentTool = null;
 		}
 

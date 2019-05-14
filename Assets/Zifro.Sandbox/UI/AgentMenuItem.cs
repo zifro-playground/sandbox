@@ -1,17 +1,18 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
 
 namespace Zifro.Sandbox.UI
 {
-	public class AgentMenuItem : MonoBehaviour
-	{
-		public Button button;
-		public GameObject modelPrefab;
 
-		void Awake()
+	public class AgentMenuItem : MenuItem
+	{
+		public GameObject modelPrefab;
+		public GameObject agentPrefab;
+
+		new void Awake()
 		{
-			Debug.Assert(button, $"{nameof(button)} is not assigned for {name}.", this);
+			base.Awake();
 			Debug.Assert(modelPrefab, $"{nameof(modelPrefab)} is not assigned for {name}.", this);
+			Debug.Assert(agentPrefab, $"{nameof(agentPrefab)} is not assigned for {name}.", this);
 		}
 	}
 }
