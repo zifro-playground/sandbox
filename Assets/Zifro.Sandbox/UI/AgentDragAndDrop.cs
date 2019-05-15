@@ -53,8 +53,7 @@ namespace Zifro.Sandbox.UI
 			if (world.TryRaycastBlocks(point, gameCamera.transform.forward, gameCamera.farClipPlane,
 				out GridRaycastHit hit))
 			{
-				preview.transform.position =
-					world.VoxelToWorld(hit.voxelIndex + hit.voxelNormal) - new Vector3(0, 0.5f, 0);
+				preview.transform.position = world.VoxelToWorld(hit.voxelIndex + hit.voxelNormal);
 				preview.gameObject.SetActive(true);
 
 				if (placeState == PlacementMode.ClickAndPlace && Input.GetButtonDown(placeInput))
