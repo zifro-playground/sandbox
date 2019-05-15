@@ -15,9 +15,7 @@ namespace Zifro.Sandbox.UI
 
 		void Start()
 		{
-			Debug.Assert(AgentBank.main, $"Missing main agents bank in {name}.", this);
-			agent = AgentBank.main.GetAgent(this);
-			Debug.Assert(agent != null, $"Unable to get agent in {name}.", this);
+			Debug.Assert(agent != null, $"{nameof(agent)} is not assigned for {name} (Should have been assigned by {nameof(AgentMenuList)}.{nameof(AgentMenuList.SelectMenuItem)}).", this);
 			Debug.Assert(label, $"{nameof(label)} is not assigned for {name}.", this);
 
 			name = $"Agent '{agent?.name ?? "#unnamed"}'";
@@ -30,6 +28,9 @@ namespace Zifro.Sandbox.UI
 			{
 				ev.OnPMAgentSelected(agent);
 			}
+
+			PMWrapper.mainCode = agent.code;
+			PMWrapper.preCode = $"# Kod för \"{agent.name}\"";
 		}
 
 		public void OnMenuItemDeselected()
@@ -38,6 +39,8 @@ namespace Zifro.Sandbox.UI
 			{
 				ev.OnPMAgentDeselected(agent);
 			}
+
+			agent.code = PMWrapper.mainCode;
 		}
 	}
 }

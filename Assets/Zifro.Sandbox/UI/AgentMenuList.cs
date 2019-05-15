@@ -89,11 +89,10 @@ namespace Zifro.Sandbox.UI
 			if (current)
 			{
 				current.button.interactable = true;
-			}
-
-			if (current is AgentMenuItem currentAgentMenu)
-			{
-				currentAgentMenu.OnMenuItemDeselected();
+				if (current != item && current is AgentMenuItem currentAgentMenu)
+				{
+					currentAgentMenu.OnMenuItemDeselected();
+				}
 			}
 
 			current = item;
@@ -102,6 +101,10 @@ namespace Zifro.Sandbox.UI
 
 			if (item is AgentMenuItem agentMenuItem)
 			{
+				if (agentMenuItem.agent == null)
+				{
+					agentMenuItem.agent = bank.GetAgent(agentMenuItem);
+				}
 				agentMenuItem.OnMenuItemSelected();
 			}
 		}
