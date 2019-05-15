@@ -97,6 +97,11 @@ namespace Zifro.Sandbox
 
 		public void StartRunning()
 		{
+			foreach (IPMPreCompilerStarted ev in UISingleton.FindInterfaces<IPMPreCompilerStarted>())
+			{
+				ev.OnPMPreCompilerStarted();
+			}
+
 			try
 			{
 				CompilerSettings compilerSettings = GetSettings();
