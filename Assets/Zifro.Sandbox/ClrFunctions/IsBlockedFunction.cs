@@ -8,16 +8,16 @@ namespace Zifro.Sandbox.ClrFunctions
 	public class IsBlockedFunction : ClrFunction
 	{
 		readonly Direction direction;
-		readonly PlayerController player;
+		readonly AgentInstance instance;
 		readonly GridWorld world;
 
-		public IsBlockedFunction(string name, Direction direction) : base(name)
+		public IsBlockedFunction(string name, AgentInstance instance, Direction direction) : base(name)
 		{
 			this.direction = direction;
-			player = Object.FindObjectOfType<PlayerController>();
+			this.instance = instance;
 			world = Object.FindObjectOfType<GridWorld>();
 			
-			Debug.Assert(player, "Unable to find " + nameof(PlayerController));
+			Debug.Assert(instance, "Unable to find " + nameof(AgentInstance));
 			Debug.Assert(world, "Unable to find " + nameof(GridWorld));
 		}
 
@@ -37,14 +37,14 @@ namespace Zifro.Sandbox.ClrFunctions
 				break;
 			}
 
-			Vector3 point = player.fractionPosition;
+			Vector3 point = instance.fractionPosition;
 
 			if (scale.Equals(0f))
 			{
 				return Processor.Factory.Create(world.IsPointInBlock(point));
 			}
 
-			Vector3 vector = player.GetDirectionFraction(direction, scale);
+			Vector3 vector = instance.GetDirectionFraction(direction, scale);
 			bool isBlocked = world.TryRaycastBlocks(point, vector, scale, out GridRaycastHit _);
 
 			return Processor.Factory.Create(isBlocked);

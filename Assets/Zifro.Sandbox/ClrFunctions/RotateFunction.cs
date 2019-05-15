@@ -8,14 +8,14 @@ namespace Zifro.Sandbox.ClrFunctions
 	public class RotateFunction : ClrFunction
 	{
 		readonly Rotation rotation;
-		readonly PlayerController player;
+		readonly AgentInstance instance;
 
-		public RotateFunction(string name, Rotation rotation) : base(name)
+		public RotateFunction(string name, AgentInstance instance, Rotation rotation) : base(name)
 		{
 			this.rotation = rotation;
-			player = Object.FindObjectOfType<PlayerController>();
+			this.instance = instance;
 
-			Debug.Assert(player, "Unable to find " + nameof(PlayerController));
+			Debug.Assert(instance, "Unable to find " + nameof(AgentInstance));
 		}
 
 		public override IScriptType Invoke(params IScriptType[] arguments)
@@ -23,13 +23,13 @@ namespace Zifro.Sandbox.ClrFunctions
 			switch (arguments.Length > 0 ? arguments[0] : null)
 			{
 			case IScriptDouble d:
-				player.Rotate(rotation, (float)d.Value);
+				instance.Rotate(rotation, (float)d.Value);
 				break;
 			case IScriptInteger i:
-				player.Rotate(rotation, i.Value);
+				instance.Rotate(rotation, i.Value);
 				break;
 			default:
-				player.Rotate(rotation);
+				instance.Rotate(rotation);
 				break;
 			}
 

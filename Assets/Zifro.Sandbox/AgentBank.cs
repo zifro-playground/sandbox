@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
+using Mellis.Core.Interfaces;
 using UnityEngine;
+using Zifro.Sandbox.ClrFunctions;
 using Zifro.Sandbox.Entities;
 using Zifro.Sandbox.UI;
 
@@ -49,6 +52,47 @@ namespace Zifro.Sandbox
 		public Agent GetAgent(AgentMenuItem menuItem)
 		{
 			return agents.FirstOrDefault(o => o.menuItem == menuItem);
+		}
+
+		[Pure]
+		public static IEmbeddedType[] GetAgentFunctions(AgentInstance instance)
+		{
+			return new IEmbeddedType[] {
+				new IsBlockedFunction("blockerad_framåt", instance, Direction.Forward),
+				new IsBlockedFunction("blockerad_bakåt", instance, Direction.Backward),
+				new IsBlockedFunction("blockerad_höger", instance, Direction.Right),
+				new IsBlockedFunction("blockerad_vänster", instance, Direction.Left),
+				new IsBlockedFunction("blockerad_upp", instance, Direction.Up),
+				new IsBlockedFunction("blockerad_ner", instance, Direction.Down),
+
+				new GetKeyDownFunction("knapp_höger", KeyCode.RightArrow),
+				new GetKeyDownFunction("knapp_vänster", KeyCode.LeftArrow),
+				new GetKeyDownFunction("knapp_upp", KeyCode.UpArrow),
+				new GetKeyDownFunction("knapp_ner", KeyCode.DownArrow),
+				new GetKeyDownFunction("knapp_mellanslag", KeyCode.Space),
+
+				new RotateFunction("sväng_höger", instance, Rotation.Right),
+				new RotateFunction("sväng_vänster", instance, Rotation.Left),
+
+				new MoveFunction("gå_framåt", instance, Direction.Forward),
+				new MoveFunction("gå_bakåt", instance, Direction.Backward),
+				new MoveFunction("gå_höger", instance, Direction.Right),
+				new MoveFunction("gå_vänster", instance, Direction.Left),
+				new MoveFunction("gå_upp", instance, Direction.Up),
+				new MoveFunction("gå_ner", instance, Direction.Down),
+
+				new MoveUntilBlockedFunction("gå_framåt_blockerad", instance, Direction.Forward),
+				new MoveUntilBlockedFunction("gå_bakåt_blockerad", instance, Direction.Backward),
+				new MoveUntilBlockedFunction("gå_höger_blockerad", instance, Direction.Right),
+				new MoveUntilBlockedFunction("gå_vänster_blockerad", instance, Direction.Left),
+				new MoveUntilBlockedFunction("gå_upp_blockerad", instance, Direction.Up),
+				new MoveUntilBlockedFunction("gå_ner_blockerad", instance, Direction.Down)
+
+				//new MoveFunction("gå_norr", instance, Direction.North),
+				//new MoveFunction("gå_väst", instance, Direction.West),
+				//new MoveFunction("gå_syd", instance, Direction.South),
+				//new MoveFunction("gå_öst", instance, Direction.East)
+			};
 		}
 	}
 }

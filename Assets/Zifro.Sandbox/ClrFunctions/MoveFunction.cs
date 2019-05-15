@@ -8,14 +8,14 @@ namespace Zifro.Sandbox.ClrFunctions
 	public class MoveFunction : ClrFunction
 	{
 		readonly Direction direction;
-		readonly PlayerController player;
+		readonly AgentInstance instance;
 
-		public MoveFunction(string name, Direction direction) : base(name)
+		public MoveFunction(string name, AgentInstance instance, Direction direction) : base(name)
 		{
 			this.direction = direction;
-			player = Object.FindObjectOfType<PlayerController>();
+			this.instance = instance;
 
-			Debug.Assert(player, "Unable to find " + nameof(PlayerController));
+			Debug.Assert(instance, "Unable to find " + nameof(AgentInstance));
 		}
 
 		public override IScriptType Invoke(params IScriptType[] arguments)
@@ -23,13 +23,13 @@ namespace Zifro.Sandbox.ClrFunctions
 			switch (arguments.Length > 0 ? arguments[0] : null)
 			{
 			case IScriptDouble d:
-				player.Walk(direction, (float)d.Value);
+				instance.Walk(direction, (float)d.Value);
 				break;
 			case IScriptInteger i:
-				player.Walk(direction, i.Value);
+				instance.Walk(direction, i.Value);
 				break;
 			default:
-				player.Walk(direction);
+				instance.Walk(direction);
 				break;
 			}
 
