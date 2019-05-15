@@ -1,14 +1,15 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Zifro.Sandbox.Entities;
 
 namespace Zifro.Sandbox.UI
 {
-
 	public class AgentMenuItem : MenuItem
 	{
 		public GameObject modelPrefab;
 		public GameObject agentPrefab;
-		public Agent agent;
+
+		Agent agent;
 
 		new void Awake()
 		{
@@ -19,6 +20,8 @@ namespace Zifro.Sandbox.UI
 			Debug.Assert(AgentBank.main, $"Missing main agents bank in {name}.", this);
 			agent = AgentBank.main.GetAgent(this);
 			Debug.Assert(agent != null, $"Unable to get agent in {name}.", this);
+
+			name = $"Agent '{agent?.name ?? "#unnamed"}'";
 		}
 	}
 }
