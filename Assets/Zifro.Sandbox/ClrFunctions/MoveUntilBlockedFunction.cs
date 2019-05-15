@@ -8,16 +8,16 @@ namespace Zifro.Sandbox.ClrFunctions
 	public class MoveUntilBlockedFunction : ClrFunction
 	{
 		readonly Direction direction;
-		readonly PlayerController player;
+		readonly AgentInstance instance;
 		readonly GridWorld world;
 
-		public MoveUntilBlockedFunction(string name, Direction direction) : base(name)
+		public MoveUntilBlockedFunction(string name, AgentInstance instance, Direction direction) : base(name)
 		{
 			this.direction = direction;
-			player = Object.FindObjectOfType<PlayerController>();
+			this.instance = instance;
 			world = Object.FindObjectOfType<GridWorld>();
 
-			Debug.Assert(player, "Unable to find " + nameof(PlayerController));
+			Debug.Assert(instance, "Unable to find " + nameof(AgentInstance));
 			Debug.Assert(world, "Unable to find " + nameof(GridWorld));
 		}
 
@@ -45,8 +45,8 @@ namespace Zifro.Sandbox.ClrFunctions
 				return null;
 			}
 
-			Vector3 point = player.fractionPosition;
-			Vector3 vector = player.GetDirectionFraction(direction, scale);
+			Vector3 point = instance.fractionPosition;
+			Vector3 vector = instance.GetDirectionFraction(direction, scale);
 
 			bool isBlocked = world.TryRaycastBlocks(point, vector, scale * FractionVector3.SCALE_INVERSE + threshold, out GridRaycastHit hit);
 
@@ -55,12 +55,12 @@ namespace Zifro.Sandbox.ClrFunctions
 				float scaledDistance = hit.distance * FractionVector3.SCALE;
 				if (scaledDistance > scaledThreshold)
 				{
-					player.Walk(direction, scaledDistance - scaledThreshold);
+					instance.Walk(direction, scaledDistance - scaledThreshold);
 				}
 			}
 			else
 			{
-				player.Walk(direction, scale);
+				instance.Walk(direction, scale);
 			}
 
 			return null;

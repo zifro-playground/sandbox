@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Zifro.Sandbox.UI
 {
-	public class AgentMenuList : MonoBehaviour
+	public class AgentMenuList : MonoBehaviour, IPMPreCompilerStarted
 	{
 		public Button addButton;
 		public MenuItem current;
@@ -80,6 +80,14 @@ namespace Zifro.Sandbox.UI
 		public void AddAgent()
 		{
 			print("I should add a new one yes.");
+		}
+
+		void IPMPreCompilerStarted.OnPMPreCompilerStarted()
+		{
+			if (currentAgent)
+			{
+				currentAgent.agent.code = PMWrapper.mainCode;
+			}
 		}
 	}
 }

@@ -9,40 +9,6 @@ namespace Zifro.Sandbox
 		void Awake()
 		{
 			PMWrapper.SetCompilerFunctions(
-				new IsBlockedFunction("blockerad_framåt", Direction.Forward),
-				new IsBlockedFunction("blockerad_bakåt", Direction.Backward),
-				new IsBlockedFunction("blockerad_höger", Direction.Right),
-				new IsBlockedFunction("blockerad_vänster", Direction.Left),
-				new IsBlockedFunction("blockerad_upp", Direction.Up),
-				new IsBlockedFunction("blockerad_ner", Direction.Down),
-
-				new GetKeyDownFunction("knapp_höger", KeyCode.RightArrow),
-				new GetKeyDownFunction("knapp_vänster", KeyCode.LeftArrow),
-				new GetKeyDownFunction("knapp_upp", KeyCode.UpArrow),
-				new GetKeyDownFunction("knapp_ner", KeyCode.DownArrow),
-				new GetKeyDownFunction("knapp_mellanslag", KeyCode.Space),
-
-				new RotateFunction("sväng_höger", Rotation.Right),
-				new RotateFunction("sväng_vänster", Rotation.Left),
-
-				new MoveFunction("gå_framåt", Direction.Forward),
-				new MoveFunction("gå_bakåt", Direction.Backward),
-				new MoveFunction("gå_höger", Direction.Right),
-				new MoveFunction("gå_vänster", Direction.Left),
-				new MoveFunction("gå_upp", Direction.Up),
-				new MoveFunction("gå_ner", Direction.Down),
-
-				new MoveUntilBlockedFunction("gå_framåt_blockerad", Direction.Forward),
-				new MoveUntilBlockedFunction("gå_bakåt_blockerad", Direction.Backward),
-				new MoveUntilBlockedFunction("gå_höger_blockerad", Direction.Right),
-				new MoveUntilBlockedFunction("gå_vänster_blockerad", Direction.Left),
-				new MoveUntilBlockedFunction("gå_upp_blockerad", Direction.Up),
-				new MoveUntilBlockedFunction("gå_ner_blockerad", Direction.Down)
-
-				//new MoveFunction("gå_norr", Direction.North),
-				//new MoveFunction("gå_väst", Direction.West),
-				//new MoveFunction("gå_syd", Direction.South),
-				//new MoveFunction("gå_öst", Direction.East)
 			);
 
 			PMWrapper.AutoSetSmartButtons();

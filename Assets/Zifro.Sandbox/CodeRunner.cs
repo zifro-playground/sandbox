@@ -14,7 +14,7 @@ namespace Zifro.Sandbox
 {
 	public class CodeRunner : MonoBehaviour
 	{
-		static readonly IReadOnlyCollection<IEmbeddedType> BUILTIN_FUNCTIONS = new IClrFunction[] {
+		static readonly IEmbeddedType[] BUILTIN_FUNCTIONS = {
 			new AbsoluteValue(),
 			new ConvertToBinary(),
 			new ConvertToHexadecimal(),
@@ -26,77 +26,121 @@ namespace Zifro.Sandbox
 			new GetTime()
 		};
 
-		IProcessor processor;
-		int lastLineNumber;
+		readonly List<IProcessor> processors = new List<IProcessor>();
 
-		public bool isRunning => processor?.State == ProcessState.Running ||
-		                         processor?.State == ProcessState.Yielded;
+		public bool isRunning => processors.Any(p => p.State == ProcessState.Running ||
+		                                             p.State == ProcessState.Yielded);
 
 		public bool isPaused { get; private set; }
 
-		public int currentLineNumber => processor?.CurrentSource.IsFromClr == false
-			? lastLineNumber = processor.CurrentSource.FromRow
-			: lastLineNumber;
-
 		public VariableWindow variableWindow;
 
-		void Start()
+		AgentBank bank;
+
+		void Awake()
 		{
 			Debug.Assert(variableWindow, "Variable window undefined.");
 		}
 
+		void OnEnable()
+		{
+			bank = AgentBank.main;
+			Debug.Assert(bank, $"Unable to find main agent bank in '{name}'.");
+		}
+
+		void Start()
+		{
+			enabled = false;
+		}
+
 		void FixedUpdate()
 		{
-			if (processor == null||
-			    processor.State == ProcessState.Ended ||
-			    processor.State == ProcessState.Error)
+			int ended = 0;
+			for (int i = processors.Count - 1; i >= 0; i--)
+			{
+				IProcessor processor = processors[i];
+				switch (processor.State)
+				{
+				case ProcessState.Ended:
+				case ProcessState.Error:
+					processors.RemoveAt(i);
+					ended++;
+					break;
+
+				case ProcessState.Yielded:
+					continue;
+				}
+
+				try
+				{
+					WalkStatus result = processor.Walk();
+
+					if (result == WalkStatus.Ended)
+					{
+						processors.RemoveAt(i);
+						ended++;
+					}
+					//else
+					//{
+					//	IDELineMarker.SetWalkerPosition(currentLineNumber);
+					//}
+				}
+				catch (Exception e)
+				{
+					Debug.LogException(e);
+					int lineNumber = processor.CurrentSource.FromRow;
+					InternalStopRunning(StopStatus.RuntimeError);
+					PMWrapper.RaiseError(lineNumber, e.Message);
+				}
+
+				//variableWindow.UpdateList(processors);
+			}
+
+			if (processors.Count == 0)
 			{
 				enabled = false;
-				return;
+				Debug.Log("COMPILER: ALL PROCESSES ENDED");
 			}
-
-			if (processor.State == ProcessState.Yielded)
+			else if (ended > 0)
 			{
-				return;
+				Debug.Log($"COMPILER: {ended} {(ended == 1 ? "PROCESS" : "PROCESSES")} ENDED, {processors.Count} STILL RUNNING");
 			}
-
-			try
-			{
-				WalkStatus result = processor.Walk();
-
-				if (result == WalkStatus.Ended)
-				{
-					enabled = false;
-				}
-				else
-				{
-					IDELineMarker.SetWalkerPosition(currentLineNumber);
-				}
-			}
-			catch (Exception e)
-			{
-				Debug.LogException(e);
-				int lineNumber = currentLineNumber;
-				InternalStopRunning(StopStatus.RuntimeError);
-				PMWrapper.RaiseError(lineNumber, e.Message);
-			}
-
-			variableWindow.UpdateList(processor);
 		}
 
 		public void StartRunning()
 		{
+			foreach (IPMPreCompilerStarted ev in UISingleton.FindInterfaces<IPMPreCompilerStarted>())
+			{
+				ev.OnPMPreCompilerStarted();
+			}
+
 			try
 			{
-				processor = new PyCompiler {
-					Settings = GetSettings()
-				}.Compile(PMWrapper.fullCode);
+				CompilerSettings compilerSettings = GetSettings();
+				processors.Clear();
 
-				processor.AddBuiltin(
-					BUILTIN_FUNCTIONS.Concat(UISingleton.instance.walker.addedFunctions).ToArray()
-				);
+				foreach (Agent agent in bank.agents)
+				{
+					var compiler = new PyCompiler {
+						Settings = compilerSettings
+					};
+					compiler.Compile(agent.code);
 
-				IDELineMarker.SetWalkerPosition(currentLineNumber);
+					foreach (AgentInstance agentInstance in agent.instances)
+					{
+						IProcessor processor = compiler.Compile(string.Empty);
+						processor.AddBuiltin(
+							BUILTIN_FUNCTIONS
+						);
+						processor.AddBuiltin(
+							AgentBank.GetAgentFunctions(agentInstance)
+						);
+
+						processors.Add(processor);
+					}
+				}
+
+				//IDELineMarker.SetWalkerPosition(currentLineNumber);
 			}
 			catch (SyntaxException e)
 			{
@@ -107,7 +151,7 @@ namespace Zifro.Sandbox
 			catch (Exception e)
 			{
 				Debug.LogException(e);
-				PMWrapper.RaiseError(currentLineNumber, e.Message);
+				PMWrapper.RaiseError(0, e.Message);
 				return;
 			}
 
@@ -115,7 +159,7 @@ namespace Zifro.Sandbox
 			isPaused = false;
 
 			// Call event
-			Debug.Log("COMPILER: STARTED");
+			Debug.Log($"COMPILER: STARTED {processors.Count} PROCESSORS");
 			foreach (IPMCompilerStarted ev in UISingleton.FindInterfaces<IPMCompilerStarted>())
 			{
 				ev.OnPMCompilerStarted();
@@ -142,7 +186,7 @@ namespace Zifro.Sandbox
 
 		public void ResumeRunning()
 		{
-			if (processor == null || !isPaused)
+			if (processors == null || !isPaused)
 			{
 				return;
 			}
@@ -160,7 +204,7 @@ namespace Zifro.Sandbox
 
 		public void StopRunning(StopStatus stopStatus = StopStatus.CodeForced)
 		{
-			if (processor == null)
+			if (processors == null)
 			{
 				return;
 			}
@@ -171,7 +215,7 @@ namespace Zifro.Sandbox
 		private void InternalStopRunning(StopStatus stopStatus)
 		{
 			enabled = false;
-			processor = null;
+			processors.Clear();
 			isPaused = false;
 
 			// Call event

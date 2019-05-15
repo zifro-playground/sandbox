@@ -19,7 +19,7 @@ namespace Zifro.Sandbox.UI
 		PlacementMode placeState = PlacementMode.None;
 		WorldEditTool lastTool;
 		GameObject preview;
-		GameObject agentPrefab;
+		Agent draggedAgent;
 
 		enum PlacementMode
 		{
@@ -53,8 +53,7 @@ namespace Zifro.Sandbox.UI
 			if (world.TryRaycastBlocks(point, gameCamera.transform.forward, gameCamera.farClipPlane,
 				out GridRaycastHit hit))
 			{
-				preview.transform.position =
-					world.VoxelToWorld(hit.voxelIndex + hit.voxelNormal) - new Vector3(0, 0.5f, 0);
+				preview.transform.position = world.VoxelToWorld(hit.voxelIndex + hit.voxelNormal);
 				preview.gameObject.SetActive(true);
 
 				if (placeState == PlacementMode.ClickAndPlace && Input.GetButtonDown(placeInput))
@@ -80,7 +79,7 @@ namespace Zifro.Sandbox.UI
 
 		void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
 		{
-			if (placeState != PlacementMode.None || !menuList.currentAgent || !menuList.currentAgent.modelPrefab)
+			if (placeState != PlacementMode.None || !menuList.currentAgent)
 			{
 				// Stop drag events
 				eventData.pointerDrag = null;
@@ -121,8 +120,7 @@ namespace Zifro.Sandbox.UI
 			if (world.TryRaycastBlocks(point, gameCamera.transform.forward, gameCamera.farClipPlane,
 				out GridRaycastHit hit))
 			{
-				preview.transform.position = world.VoxelToWorld(hit.voxelIndex + hit.voxelNormal) - new Vector3(0, 0.5f, 0);
-				preview.gameObject.SetActive(true);
+				preview.transform.position = world.VoxelToWorld(hit.voxelIndex + hit.voxelNormal);
 
 				EndPlacement();
 			}
@@ -173,8 +171,8 @@ namespace Zifro.Sandbox.UI
 
 		void StartPlacement()
 		{
-			preview = Instantiate(menuList.currentAgent.modelPrefab);
-			agentPrefab = menuList.currentAgent.agentPrefab;
+			draggedAgent = menuList.currentAgent.agent;
+			preview = Instantiate(draggedAgent.modelPrefab);
 
 			if (dragMaterial)
 			{
@@ -187,7 +185,14 @@ namespace Zifro.Sandbox.UI
 
 		void EndPlacement()
 		{
-			Instantiate(agentPrefab, preview.transform.position, preview.transform.rotation);
+			Vector3 position = preview.transform.position;
+			GameObject clone = Instantiate(draggedAgent.agentPrefab, position, preview.transform.rotation, AgentBank.main.transform);
+
+			AgentInstance agentInstance = clone.GetComponent<AgentInstance>();
+			agentInstance.fractionPosition = (FractionVector3)position;
+
+			draggedAgent.instances.Add(agentInstance);
+			draggedAgent = null;
 		}
 	}
 }
