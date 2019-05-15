@@ -8,9 +8,7 @@ namespace Zifro.Sandbox
 	{
 		void Awake()
 		{
-			PMWrapper.SetCompilerFunctions(
-			);
-
+			PMWrapper.codeRowsLimit = 1000;
 			PMWrapper.AutoSetSmartButtons();
 
 			Time.fixedDeltaTime = 1f / FractionVector3.SCALE;
