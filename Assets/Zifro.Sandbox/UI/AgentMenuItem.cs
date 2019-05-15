@@ -1,4 +1,5 @@
 ﻿using System;
+using PM;
 using UnityEngine;
 using UnityEngine.UI;
 using Zifro.Sandbox.Entities;
@@ -21,6 +22,22 @@ namespace Zifro.Sandbox.UI
 
 			name = $"Agent '{agent?.name ?? "#unnamed"}'";
 			label.text = agent.name;
+		}
+
+		public void OnMenuItemSelected()
+		{
+			foreach (IPMAgentSelected ev in UISingleton.FindInterfaces<IPMAgentSelected>())
+			{
+				ev.OnPMAgentSelected(agent);
+			}
+		}
+
+		public void OnMenuItemDeselected()
+		{
+			foreach (IPMAgentDeselected ev in UISingleton.FindInterfaces<IPMAgentDeselected>())
+			{
+				ev.OnPMAgentDeselected(agent);
+			}
 		}
 	}
 }

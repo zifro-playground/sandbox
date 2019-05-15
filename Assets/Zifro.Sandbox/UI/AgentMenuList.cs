@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using PM;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -16,6 +17,7 @@ namespace Zifro.Sandbox.UI
 		public List<MenuItem> menuItems;
 
 		public AgentMenuItem currentAgent => current as AgentMenuItem;
+		AgentBank bank;
 
 		void OnValidate()
 		{
@@ -57,6 +59,8 @@ namespace Zifro.Sandbox.UI
 
 		void OnEnable()
 		{
+			bank = AgentBank.main;
+
 			addButton.onClick.AddListener(AddAgent);
 			foreach (MenuItem item in menuItems)
 			{
@@ -64,10 +68,20 @@ namespace Zifro.Sandbox.UI
 			}
 		}
 
+		void Start()
+		{
+			SelectMenuItemInternal(current, true);
+		}
+
 		public void SelectMenuItem(MenuItem agent)
 		{
-			Debug.Assert(agent, "Agent cannot be null.");
-			if (current == agent)
+			SelectMenuItemInternal(agent, false);
+		}
+
+		void SelectMenuItemInternal(MenuItem item, bool force)
+		{
+			Debug.Assert(item, "Agent cannot be null.");
+			if (current == item && !force)
 			{
 				return;
 			}
@@ -77,9 +91,19 @@ namespace Zifro.Sandbox.UI
 				current.button.interactable = true;
 			}
 
-			current = agent;
-			print($"selected a new agent yao, now {agent.name} is my favorite");
-			agent.button.interactable = false;
+			if (current is AgentMenuItem currentAgentMenu)
+			{
+				currentAgentMenu.OnMenuItemDeselected();
+			}
+
+			current = item;
+			print($"selected a new agent yao, now {item.name} is my favorite");
+			item.button.interactable = false;
+
+			if (item is AgentMenuItem agentMenuItem)
+			{
+				agentMenuItem.OnMenuItemSelected();
+			}
 		}
 
 		public void AddAgent()
@@ -95,8 +119,8 @@ namespace Zifro.Sandbox.UI
 				menuItem = item,
 			};
 
-			AgentBank.main.SetAgentDefaults(agent);
-			AgentBank.main.agents.Add(agent);
+			bank.SetAgentDefaults(agent);
+			bank.agents.Add(agent);
 
 			SelectMenuItem(item);
 		}
