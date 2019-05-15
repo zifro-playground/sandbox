@@ -14,7 +14,7 @@ namespace Zifro.Sandbox
 
 		void OnEnable()
 		{
-			Debug.Assert(!main, $"There are multiple agent bank instances. '{main.name}' and '{name}'.", this);
+			Debug.Assert(!main, $"There are multiple agent bank instances. '{(main ? main.name : string.Empty)}' and '{name}'.", this);
 			main = this;
 		}
 
@@ -32,7 +32,10 @@ namespace Zifro.Sandbox
 				}
 
 				Debug.Assert(!string.IsNullOrWhiteSpace(agent.name), $"Agent at index {i} is missing name.", this);
-				Debug.Assert(agent.menuItem, $"Agent {agent.name} at index {i} is missing menu link.", this);
+
+				Debug.Assert(agent.menuItem, $"{nameof(agent.menuItem)} is not assigned for agent '{agent.name}' (at index {i}).", this);
+				Debug.Assert(agent.modelPrefab, $"{nameof(agent.modelPrefab)} is not assigned for agent '{agent.name}' (at index {i}).", this);
+				Debug.Assert(agent.agentPrefab, $"{nameof(agent.agentPrefab)} is not assigned for agent '{agent.name}' (at index {i}).", this);
 
 				agent.name = agent.name.Trim();
 

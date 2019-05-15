@@ -13,8 +13,12 @@ namespace Zifro.Sandbox.Entities
 		[TextArea]
 		public string code;
 
-		public List<AgentInstance> instances;
-
+		[Space]
+		public GameObject modelPrefab;
+		public GameObject agentPrefab;
 		public AgentMenuItem menuItem;
+
+		[Header("Instance tracking")]
+		public List<AgentInstance> instances;
 	}
 }

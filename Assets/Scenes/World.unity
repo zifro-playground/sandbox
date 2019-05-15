@@ -45559,9 +45559,13 @@ MonoBehaviour:
   agents:
   - name: Player
     code: 
+    modelPrefab: {fileID: 6052344563927694002, guid: 2ffcbd014743dcd49b3fc28adfd7143f,
+      type: 3}
+    agentPrefab: {fileID: 4820206552985816530, guid: 261fb565b8ba8cb44877db69685c0320,
+      type: 3}
+    menuItem: {fileID: 1801192336}
     instances:
     - {fileID: 1394046351}
-    menuItem: {fileID: 1801192336}
 --- !u!4 &2068841064
 Transform:
   m_ObjectHideFlags: 0

@@ -2557,12 +2557,17 @@ PrefabInstance:
     - target: {fileID: 3620163739241815947, guid: cc7b7620a9eb4554db6d52b6ab529edf,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -0.00012207031
       objectReference: {fileID: 0}
     - target: {fileID: 3620163739241815947, guid: cc7b7620a9eb4554db6d52b6ab529edf,
         type: 3}
       propertyPath: m_SizeDelta.x
       value: -10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3620163739241815947, guid: cc7b7620a9eb4554db6d52b6ab529edf,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3620554911193258113, guid: cc7b7620a9eb4554db6d52b6ab529edf,
         type: 3}
@@ -2614,6 +2619,11 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3620150838245025527, guid: cc7b7620a9eb4554db6d52b6ab529edf,
+        type: 3}
+      propertyPath: m_AnchorMin.x
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3620661053590812553, guid: cc7b7620a9eb4554db6d52b6ab529edf,
         type: 3}
       propertyPath: m_AnchorMax.x
@@ -2624,10 +2634,15 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3620661053590812553, guid: cc7b7620a9eb4554db6d52b6ab529edf,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3510550057321861061, guid: cc7b7620a9eb4554db6d52b6ab529edf,
         type: 3}
       propertyPath: m_Size
-      value: 1
+      value: 0.5693133
       objectReference: {fileID: 0}
     - target: {fileID: 3510550057321861061, guid: cc7b7620a9eb4554db6d52b6ab529edf,
         type: 3}
@@ -2642,15 +2657,9 @@ PrefabInstance:
     - target: {fileID: 3510265383107400861, guid: cc7b7620a9eb4554db6d52b6ab529edf,
         type: 3}
       propertyPath: m_Size
-      value: 1
+      value: 0.00000018780048
       objectReference: {fileID: 0}
-    - target: {fileID: 3511004981433711857, guid: cc7b7620a9eb4554db6d52b6ab529edf,
-        type: 3}
-      propertyPath: walker
-      value: 
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 3510015529999401407, guid: cc7b7620a9eb4554db6d52b6ab529edf, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cc7b7620a9eb4554db6d52b6ab529edf, type: 3}
 --- !u!224 &6101998968251242174 stripped
 RectTransform:

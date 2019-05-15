@@ -20,7 +20,7 @@ namespace Zifro.Sandbox
 
 		void OnEnable()
 		{
-			Debug.Assert(!main, $"There are multiple grid world instances. '{main.name}' and '{name}'.", this);
+			Debug.Assert(!main, $"There are multiple grid world instances. '{(main ? main.name : string.Empty)}' and '{name}'.", this);
 			main = this;
 		}
 

@@ -19,7 +19,7 @@ namespace Zifro.Sandbox.UI
 		PlacementMode placeState = PlacementMode.None;
 		WorldEditTool lastTool;
 		GameObject preview;
-		GameObject agentPrefab;
+		Agent draggedAgent;
 
 		enum PlacementMode
 		{
@@ -80,7 +80,7 @@ namespace Zifro.Sandbox.UI
 
 		void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
 		{
-			if (placeState != PlacementMode.None || !menuList.currentAgent || !menuList.currentAgent.modelPrefab)
+			if (placeState != PlacementMode.None || !menuList.currentAgent)
 			{
 				// Stop drag events
 				eventData.pointerDrag = null;
@@ -173,8 +173,8 @@ namespace Zifro.Sandbox.UI
 
 		void StartPlacement()
 		{
-			preview = Instantiate(menuList.currentAgent.modelPrefab);
-			agentPrefab = menuList.currentAgent.agentPrefab;
+			draggedAgent = menuList.currentAgent.agent;
+			preview = Instantiate(draggedAgent.modelPrefab);
 
 			if (dragMaterial)
 			{
@@ -187,7 +187,14 @@ namespace Zifro.Sandbox.UI
 
 		void EndPlacement()
 		{
-			Instantiate(agentPrefab, preview.transform.position, preview.transform.rotation);
+			Vector3 position = preview.transform.position;
+			GameObject clone = Instantiate(draggedAgent.agentPrefab, position, preview.transform.rotation, AgentBank.main.transform);
+
+			AgentInstance agentInstance = clone.GetComponent<AgentInstance>();
+			agentInstance.fractionPosition = (FractionVector3)position;
+
+			draggedAgent.instances.Add(agentInstance);
+			draggedAgent = null;
 		}
 	}
 }
