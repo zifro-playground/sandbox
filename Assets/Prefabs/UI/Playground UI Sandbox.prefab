@@ -250,6 +250,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   addButton: {fileID: 46822153482488134}
+  buttonPrefab: {fileID: 25651126892714128, guid: 63a7931e45fb62243a218bac2eec1a9b,
+    type: 3}
   current: {fileID: 8309733137056776152}
   menuItems:
   - {fileID: 1278406581351198608}

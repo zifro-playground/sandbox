@@ -9,10 +9,8 @@ namespace Zifro.Sandbox.UI
 		[NonSerialized]
 		public Agent agent;
 
-		new void Awake()
+		void Start()
 		{
-			base.Awake();
-
 			Debug.Assert(AgentBank.main, $"Missing main agents bank in {name}.", this);
 			agent = AgentBank.main.GetAgent(this);
 			Debug.Assert(agent != null, $"Unable to get agent in {name}.", this);

@@ -3,15 +3,19 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
+using Zifro.Sandbox.Entities;
 
 namespace Zifro.Sandbox.UI
 {
 	public class AgentMenuList : MonoBehaviour, IPMPreCompilerStarted
 	{
 		public Button addButton;
+		public GameObject buttonPrefab;
+		[Space]
 		public MenuItem current;
-		public AgentMenuItem currentAgent => current as AgentMenuItem;
 		public List<MenuItem> menuItems;
+
+		public AgentMenuItem currentAgent => current as AgentMenuItem;
 
 		void OnValidate()
 		{
@@ -48,6 +52,7 @@ namespace Zifro.Sandbox.UI
 		void Awake()
 		{
 			Debug.Assert(addButton, $"{nameof(addButton)} is not assigned for {name}.", this);
+			Debug.Assert(buttonPrefab, $"{nameof(buttonPrefab)} is not assigned for {name}.", this);
 		}
 
 		void OnEnable()
@@ -80,6 +85,20 @@ namespace Zifro.Sandbox.UI
 		public void AddAgent()
 		{
 			print("I should add a new one yes.");
+			GameObject clone = Instantiate(buttonPrefab, transform);
+
+			AgentMenuItem item = clone.GetComponent<AgentMenuItem>();
+			item.button.onClick.AddListener(() => SelectMenuItem(item));
+			menuItems.Add(item);
+
+			var agent = new Agent {
+				menuItem = item,
+			};
+
+			AgentBank.main.SetAgentDefaults(agent);
+			AgentBank.main.agents.Add(agent);
+
+			SelectMenuItem(item);
 		}
 
 		void IPMPreCompilerStarted.OnPMPreCompilerStarted()

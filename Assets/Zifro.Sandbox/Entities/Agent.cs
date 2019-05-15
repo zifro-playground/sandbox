@@ -14,8 +14,8 @@ namespace Zifro.Sandbox.Entities
 		public string code;
 
 		[Space]
-		public GameObject modelPrefab;
 		public GameObject agentPrefab;
+		public GameObject modelPrefab;
 		public AgentMenuItem menuItem;
 
 		[Header("Instance tracking")]
