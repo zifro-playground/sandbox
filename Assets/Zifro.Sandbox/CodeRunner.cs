@@ -40,7 +40,7 @@ namespace Zifro.Sandbox
 
 		public VariableWindow variableWindow;
 
-		void Start()
+		void Awake()
 		{
 			Debug.Assert(variableWindow, "Variable window undefined.");
 		}

@@ -12,10 +12,14 @@ namespace Zifro.Sandbox
 
 		public List<Agent> agents;
 
+		void OnEnable()
+		{
+			Debug.Assert(!main, $"There are multiple agent bank instances. '{main.name}' and '{name}'.", this);
+			main = this;
+		}
+
 		void Awake()
 		{
-			main = this;
-
 			for (int i = agents.Count - 1; i >= 0; i--)
 			{
 				Agent agent = agents[i];
