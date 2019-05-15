@@ -3,14 +3,18 @@ using System.Collections.Generic;
 using PM;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Zifro.Sandbox.Entities;
+using Zifro.Sandbox.Utility;
 
 namespace Zifro.Sandbox.UI
 {
 	public class AgentMenuList : MonoBehaviour, IPMPreCompilerStarted
 	{
 		public Button addButton;
+		public InputField addInputField;
+		public GameObject addInputPanel;
 		public GameObject buttonPrefab;
 		[Space]
 		public MenuItem current;
@@ -53,7 +57,9 @@ namespace Zifro.Sandbox.UI
 
 		void Awake()
 		{
+			Debug.Assert(addInputPanel, $"{nameof(addInputPanel)} is not assigned for {name}.", this);
 			Debug.Assert(addButton, $"{nameof(addButton)} is not assigned for {name}.", this);
+			Debug.Assert(addInputField, $"{nameof(addInputField)} is not assigned for {name}.", this);
 			Debug.Assert(buttonPrefab, $"{nameof(buttonPrefab)} is not assigned for {name}.", this);
 		}
 
@@ -61,7 +67,9 @@ namespace Zifro.Sandbox.UI
 		{
 			bank = AgentBank.main;
 
-			addButton.onClick.AddListener(AddAgent);
+			addButton.onClick.AddListener(AddAgentViaUI);
+			addInputField.AddTrigger(EventTriggerType.Submit, delegate { AddAgentViaUI(); });
+
 			foreach (MenuItem item in menuItems)
 			{
 				item.button.onClick.AddListener(() => SelectMenuItem(item));
@@ -108,7 +116,14 @@ namespace Zifro.Sandbox.UI
 			}
 		}
 
-		public void AddAgent()
+		void AddAgentViaUI()
+		{
+			addInputPanel.SetActive(false);
+			AddAgent(addInputField.text);
+			addInputField.text = string.Empty;
+		}
+
+		public void AddAgent(string agentName)
 		{
 			GameObject clone = Instantiate(buttonPrefab, transform);
 
@@ -118,6 +133,7 @@ namespace Zifro.Sandbox.UI
 
 			var agent = new Agent {
 				menuItem = item,
+				name = agentName
 			};
 
 			bank.SetAgentDefaults(agent);
