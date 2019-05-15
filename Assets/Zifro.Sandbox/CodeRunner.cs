@@ -48,14 +48,14 @@ namespace Zifro.Sandbox
 			Debug.Assert(bank, $"Unable to find main agent bank in '{name}'.");
 		}
 
+		void Start()
+		{
+			enabled = false;
+		}
+
 		void FixedUpdate()
 		{
-			if (processors.Count == 0)
-			{
-				enabled = false;
-				return;
-			}
-
+			int ended = 0;
 			for (int i = processors.Count - 1; i >= 0; i--)
 			{
 				IProcessor processor = processors[i];
@@ -64,6 +64,7 @@ namespace Zifro.Sandbox
 				case ProcessState.Ended:
 				case ProcessState.Error:
 					processors.RemoveAt(i);
+					ended++;
 					break;
 
 				case ProcessState.Yielded:
@@ -77,6 +78,7 @@ namespace Zifro.Sandbox
 					if (result == WalkStatus.Ended)
 					{
 						processors.RemoveAt(i);
+						ended++;
 					}
 					//else
 					//{
@@ -92,6 +94,16 @@ namespace Zifro.Sandbox
 				}
 
 				//variableWindow.UpdateList(processors);
+			}
+
+			if (processors.Count == 0)
+			{
+				enabled = false;
+				Debug.Log("COMPILER: ALL PROCESSES ENDED");
+			}
+			else if (ended > 0)
+			{
+				Debug.Log($"COMPILER: {ended} {(ended == 1 ? "PROCESS" : "PROCESSES")} ENDED, {processors.Count} STILL RUNNING");
 			}
 		}
 

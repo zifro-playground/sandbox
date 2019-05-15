@@ -6,11 +6,14 @@ hopp = 5
 
 # Variabler
 nedåtHastighet = 0
+kör = True
 
 # Main loop
-while True:
+while kör:
 	if not blockerad_ner():
 		nedåtHastighet = nedåtHastighet + gravitation
+		if nedåtHastighet > 10:
+			kör = False
 	elif knapp_mellanslag():
 		nedåtHastighet = -hopp
 		
