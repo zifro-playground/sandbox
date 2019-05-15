@@ -96,7 +96,6 @@ namespace Zifro.Sandbox.UI
 			}
 
 			current = item;
-			print($"selected a new agent yao, now {item.name} is my favorite");
 			item.button.interactable = false;
 
 			if (item is AgentMenuItem agentMenuItem)
@@ -111,7 +110,6 @@ namespace Zifro.Sandbox.UI
 
 		public void AddAgent()
 		{
-			print("I should add a new one yes.");
 			GameObject clone = Instantiate(buttonPrefab, transform);
 
 			AgentMenuItem item = clone.GetComponent<AgentMenuItem>();
