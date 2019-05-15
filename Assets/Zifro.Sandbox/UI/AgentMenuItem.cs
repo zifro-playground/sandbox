@@ -6,6 +6,7 @@ namespace Zifro.Sandbox.UI
 {
 	public class AgentMenuItem : MenuItem
 	{
+		[NonSerialized]
 		public Agent agent;
 
 		new void Awake()
