@@ -212,7 +212,8 @@ namespace Zifro.Sandbox.UI
 		void EndPlacement()
 		{
 			Vector3 position = preview.transform.position;
-			GameObject clone = Instantiate(draggedAgent.agentPrefab, position, preview.transform.rotation, AgentBank.main.transform);
+			GameObject clone = Instantiate(AgentBank.main.agentPrefab, position, preview.transform.rotation, AgentBank.main.transform);
+			Instantiate(draggedAgent.modelPrefab, clone.transform.position, clone.transform.rotation, clone.transform);
 
 			AgentInstance agentInstance = clone.GetComponent<AgentInstance>();
 			agentInstance.fractionPosition = (FractionVector3)position;

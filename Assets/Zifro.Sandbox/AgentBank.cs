@@ -3,6 +3,7 @@ using System.Diagnostics.Contracts;
 using System.Linq;
 using Mellis.Core.Interfaces;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Zifro.Sandbox.ClrFunctions;
 using Zifro.Sandbox.Entities;
 using Zifro.Sandbox.UI;
@@ -13,8 +14,9 @@ namespace Zifro.Sandbox
 	{
 		public static AgentBank main;
 
+		public GameObject agentPrefab;
+
 		public string defaultAgentName = "Unnamed";
-		public GameObject defaultAgentPrefab;
 		public GameObject defaultModelPrefab;
 
 		public List<Agent> agents;
@@ -29,7 +31,7 @@ namespace Zifro.Sandbox
 		void Awake()
 		{
 			Debug.Assert(defaultModelPrefab, $"{nameof(defaultModelPrefab)} not defined in {name}.", this);
-			Debug.Assert(defaultAgentPrefab, $"{nameof(defaultAgentPrefab)} not defined in {name}.", this);
+			Debug.Assert(agentPrefab, $"{nameof(agentPrefab)} not defined in {name}.", this);
 
 			for (int i = agents.Count - 1; i >= 0; i--)
 			{
@@ -55,11 +57,6 @@ namespace Zifro.Sandbox
 
 		public void SetAgentDefaults(Agent agent)
 		{
-			if (!agent.agentPrefab)
-			{
-				agent.agentPrefab = defaultAgentPrefab;
-			}
-
 			if (!agent.modelPrefab)
 			{
 				agent.modelPrefab = defaultModelPrefab;

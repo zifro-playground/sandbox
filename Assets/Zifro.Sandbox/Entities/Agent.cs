@@ -14,7 +14,6 @@ namespace Zifro.Sandbox.Entities
 		public string code;
 
 		[Space]
-		public GameObject agentPrefab;
 		public GameObject modelPrefab;
 		public AgentMenuItem menuItem;
 

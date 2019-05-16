@@ -879,6 +879,75 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 44676218}
   m_Mesh: {fileID: 10210, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1001 &51127988
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1394046352}
+    m_Modifications:
+    - target: {fileID: 6052344563927694002, guid: 2ffcbd014743dcd49b3fc28adfd7143f,
+        type: 3}
+      propertyPath: m_Name
+      value: Player model
+      objectReference: {fileID: 0}
+    - target: {fileID: 6052344563927694013, guid: 2ffcbd014743dcd49b3fc28adfd7143f,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6052344563927694013, guid: 2ffcbd014743dcd49b3fc28adfd7143f,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6052344563927694013, guid: 2ffcbd014743dcd49b3fc28adfd7143f,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6052344563927694013, guid: 2ffcbd014743dcd49b3fc28adfd7143f,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6052344563927694013, guid: 2ffcbd014743dcd49b3fc28adfd7143f,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6052344563927694013, guid: 2ffcbd014743dcd49b3fc28adfd7143f,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6052344563927694013, guid: 2ffcbd014743dcd49b3fc28adfd7143f,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6052344563927694013, guid: 2ffcbd014743dcd49b3fc28adfd7143f,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6052344563927694013, guid: 2ffcbd014743dcd49b3fc28adfd7143f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6052344563927694013, guid: 2ffcbd014743dcd49b3fc28adfd7143f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6052344563927694013, guid: 2ffcbd014743dcd49b3fc28adfd7143f,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 2ffcbd014743dcd49b3fc28adfd7143f, type: 3}
 --- !u!1 &59089220
 GameObject:
   m_ObjectHideFlags: 0
@@ -20627,9 +20696,9 @@ Camera:
   m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.5092693
+    x: 0.5123992
     y: 0.03333354
-    width: 0.34759837
+    width: 0.46496928
     height: 0.81577754
   near clip plane: 0.3
   far clip plane: 10
@@ -21423,9 +21492,9 @@ Camera:
   m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.5092693
+    x: 0.5123992
     y: 0.03333354
-    width: 0.34759837
+    width: 0.46496928
     height: 0.81577754
   near clip plane: 0.3
   far clip plane: 100
@@ -45521,16 +45590,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 80975b1087b452b459cf23b227123be9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultAgentName: Unnamed
-  defaultAgentPrefab: {fileID: 4820206552985816530, guid: 261fb565b8ba8cb44877db69685c0320,
+  agentPrefab: {fileID: 4820206552985816530, guid: 261fb565b8ba8cb44877db69685c0320,
     type: 3}
+  defaultAgentName: Unnamed
   defaultModelPrefab: {fileID: 6052344563927694002, guid: 2ffcbd014743dcd49b3fc28adfd7143f,
     type: 3}
   agents:
   - name: Player
     code: 
-    agentPrefab: {fileID: 4820206552985816530, guid: 261fb565b8ba8cb44877db69685c0320,
-      type: 3}
     modelPrefab: {fileID: 6052344563927694002, guid: 2ffcbd014743dcd49b3fc28adfd7143f,
       type: 3}
     menuItem: {fileID: 1224470812}
