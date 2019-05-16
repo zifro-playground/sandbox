@@ -20627,9 +20627,9 @@ Camera:
   m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.5111003
-    y: 0.03333354
-    width: 0.41626012
+    x: 0.51101357
+    y: 0.033333536
+    width: 0.4130081
     height: 0.81577754
   near clip plane: 0.3
   far clip plane: 10
@@ -21423,9 +21423,9 @@ Camera:
   m_FocalLength: 50
   m_NormalizedViewPortRect:
     serializedVersion: 2
-    x: 0.5111003
-    y: 0.03333354
-    width: 0.41626012
+    x: 0.51101357
+    y: 0.033333536
+    width: 0.4130081
     height: 0.81577754
   near clip plane: 0.3
   far clip plane: 100
@@ -46863,11 +46863,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 5864007068834957127, guid: b77233bbb51d7484a8f476519563daaa,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6319720160536313000, guid: b77233bbb51d7484a8f476519563daaa,
         type: 3}
       propertyPath: m_Name
@@ -47056,7 +47051,7 @@ PrefabInstance:
     - target: {fileID: 6101447437921290372, guid: b77233bbb51d7484a8f476519563daaa,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0
+      value: -0.000061035156
       objectReference: {fileID: 0}
     - target: {fileID: 8011825419182698758, guid: b77233bbb51d7484a8f476519563daaa,
         type: 3}
@@ -47272,6 +47267,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMin.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6207700877170677962, guid: b77233bbb51d7484a8f476519563daaa,
+        type: 3}
+      propertyPath: m_Value
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b77233bbb51d7484a8f476519563daaa, type: 3}
