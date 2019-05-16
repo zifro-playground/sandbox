@@ -19,6 +19,9 @@ namespace Zifro.Sandbox.UI
 
 		public EventTrigger gameWindowTrigger;
 
+		[NonSerialized]
+		public bool isSelecting;
+
 		void Awake()
 		{
 			Debug.Assert(tools.Count > 0, $"No tools found in {name}.", this);
@@ -111,6 +114,8 @@ namespace Zifro.Sandbox.UI
 				return;
 			}
 
+			isSelecting = true;
+
 			foreach (WorldEditTool tool in tools)
 			{
 				if (tool == selectThis)
@@ -133,6 +138,8 @@ namespace Zifro.Sandbox.UI
 			currentTool.button.interactable = false;
 			currentTool.isSelected = true;
 			currentTool.OnToolSelectedChange(lastTool);
+
+			isSelecting = false;
 		}
 
 		public void DeselectTool()

@@ -148,18 +148,21 @@ namespace Zifro.Sandbox.UI
 
 		void DragEndOrCancel()
 		{
-			if (lastTool)
+			if (!toolsList.isSelecting)
 			{
-				// Switch to last used tool
-				toolsList.SelectTool(lastTool);
-				lastTool = null;
-			}
-			else if (placeState == PlacementMode.ClickAndPlace)
-			{
-				// Deselect self
-				toolsList.DeselectTool();
+				if (lastTool)
+				{
+					// Switch to last used tool
+					toolsList.SelectTool(lastTool);
+				}
+				else if (placeState == PlacementMode.ClickAndPlace)
+				{
+					// Deselect self
+					toolsList.DeselectTool();
+				}
 			}
 
+			lastTool = null;
 			placeState = PlacementMode.None;
 
 			if (preview)

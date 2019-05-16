@@ -103,7 +103,7 @@ namespace Zifro.Sandbox.UI
 			if (current)
 			{
 				current.button.interactable = true;
-				if (current != item && current is AgentMenuItem currentAgentMenu)
+				if (!force && current is AgentMenuItem currentAgentMenu)
 				{
 					currentAgentMenu.OnMenuItemDeselected();
 				}
@@ -120,9 +120,9 @@ namespace Zifro.Sandbox.UI
 					agentMenuItem.agent = bank.GetAgent(agentMenuItem);
 				}
 
-				agentMenuItem.OnMenuItemSelected();
 				dragAndDropLabel.text = agentMenuItem.agent.name;
 				dragAndDropTool.SetActive(true);
+				agentMenuItem.OnMenuItemSelected();
 			}
 			else
 			{
