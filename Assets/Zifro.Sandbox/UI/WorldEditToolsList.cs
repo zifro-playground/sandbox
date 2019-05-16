@@ -133,6 +133,7 @@ namespace Zifro.Sandbox.UI
 				tool.OnToolSelectedChange(null);
 			}
 
+			EventSystem.current.SetSelectedGameObject(null);
 			WorldEditTool lastTool = currentTool;
 			currentTool = selectThis;
 			currentTool.button.interactable = false;
