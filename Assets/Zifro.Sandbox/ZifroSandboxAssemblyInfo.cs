@@ -1,9 +1,9 @@
 using System.Reflection;
 using PM;
 
-[assembly: AssemblyVersion("0.5.2")]
-[assembly: AssemblyFileVersion("0.5.2")]
-[assembly: AssemblyInformationalVersion("0.5.2")]
+[assembly: AssemblyVersion("0.5.3")]
+[assembly: AssemblyFileVersion("0.5.3")]
+[assembly: AssemblyInformationalVersion("0.5.3")]
 
 namespace Zifro.Sandbox
 {
