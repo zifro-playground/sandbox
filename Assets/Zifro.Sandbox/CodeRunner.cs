@@ -28,8 +28,7 @@ namespace Zifro.Sandbox
 
 		readonly List<IProcessor> processors = new List<IProcessor>();
 
-		public bool isRunning => processors.Any(p => p.State == ProcessState.Running ||
-		                                             p.State == ProcessState.Yielded);
+		public bool isRunning { get; private set; }
 
 		public bool isPaused { get; private set; }
 
@@ -157,6 +156,7 @@ namespace Zifro.Sandbox
 
 			enabled = true;
 			isPaused = false;
+			isRunning = true;
 
 			// Call event
 			Debug.Log($"COMPILER: STARTED {processors.Count} PROCESSORS");
@@ -204,7 +204,7 @@ namespace Zifro.Sandbox
 
 		public void StopRunning(StopStatus stopStatus = StopStatus.CodeForced)
 		{
-			if (processors == null)
+			if (!isRunning)
 			{
 				return;
 			}
@@ -212,11 +212,12 @@ namespace Zifro.Sandbox
 			InternalStopRunning(stopStatus);
 		}
 
-		private void InternalStopRunning(StopStatus stopStatus)
+		void InternalStopRunning(StopStatus stopStatus)
 		{
 			enabled = false;
 			processors.Clear();
 			isPaused = false;
+			isRunning = false;
 
 			// Call event
 			Debug.Log("COMPILER: STOPPED");
