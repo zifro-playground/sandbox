@@ -83,12 +83,16 @@ namespace Zifro.Sandbox.UI
 
 		void Update()
 		{
-			foreach (WorldEditTool tool in tools)
+			GameObject currentSelectedGameObject = EventSystem.current.currentSelectedGameObject;
+			if (!currentSelectedGameObject || !currentSelectedGameObject.activeInHierarchy)
 			{
-				if (!tool.isSelected && Input.GetKeyDown(tool.hotKey))
+				foreach (WorldEditTool tool in tools)
 				{
-					SelectTool(tool);
-					break;
+					if (!tool.isSelected && Input.GetKeyDown(tool.hotKey))
+					{
+						SelectTool(tool);
+						break;
+					}
 				}
 			}
 		}
@@ -124,7 +128,7 @@ namespace Zifro.Sandbox.UI
 				tool.OnToolSelectedChange(null);
 			}
 
-			var lastTool = currentTool;
+			WorldEditTool lastTool = currentTool;
 			currentTool = selectThis;
 			currentTool.button.interactable = false;
 			currentTool.isSelected = true;
@@ -180,7 +184,10 @@ namespace Zifro.Sandbox.UI
 		{
 			foreach (WorldEditTool tool in tools)
 			{
-				tool.button.interactable = true;
+				if (currentTool != tool)
+				{
+					tool.button.interactable = true;
+				}
 			}
 
 			enabled = true;
