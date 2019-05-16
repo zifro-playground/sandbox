@@ -19,6 +19,9 @@ namespace Zifro.Sandbox.UI
 
 		public EventTrigger gameWindowTrigger;
 
+		[NonSerialized]
+		public bool isSelecting;
+
 		void Awake()
 		{
 			Debug.Assert(tools.Count > 0, $"No tools found in {name}.", this);
@@ -83,12 +86,16 @@ namespace Zifro.Sandbox.UI
 
 		void Update()
 		{
-			foreach (WorldEditTool tool in tools)
+			GameObject currentSelectedGameObject = EventSystem.current.currentSelectedGameObject;
+			if (!currentSelectedGameObject || !currentSelectedGameObject.activeInHierarchy)
 			{
-				if (!tool.isSelected && Input.GetKeyDown(tool.hotKey))
+				foreach (WorldEditTool tool in tools)
 				{
-					SelectTool(tool);
-					break;
+					if (!tool.isSelected && Input.GetKeyDown(tool.hotKey))
+					{
+						SelectTool(tool);
+						break;
+					}
 				}
 			}
 		}
@@ -107,6 +114,8 @@ namespace Zifro.Sandbox.UI
 				return;
 			}
 
+			isSelecting = true;
+
 			foreach (WorldEditTool tool in tools)
 			{
 				if (tool == selectThis)
@@ -124,11 +133,14 @@ namespace Zifro.Sandbox.UI
 				tool.OnToolSelectedChange(null);
 			}
 
-			var lastTool = currentTool;
+			EventSystem.current.SetSelectedGameObject(null);
+			WorldEditTool lastTool = currentTool;
 			currentTool = selectThis;
 			currentTool.button.interactable = false;
 			currentTool.isSelected = true;
 			currentTool.OnToolSelectedChange(lastTool);
+
+			isSelecting = false;
 		}
 
 		public void DeselectTool()
@@ -180,7 +192,10 @@ namespace Zifro.Sandbox.UI
 		{
 			foreach (WorldEditTool tool in tools)
 			{
-				tool.button.interactable = true;
+				if (currentTool != tool)
+				{
+					tool.button.interactable = true;
+				}
 			}
 
 			enabled = true;

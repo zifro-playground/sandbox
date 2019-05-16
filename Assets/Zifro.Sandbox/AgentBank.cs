@@ -13,16 +13,24 @@ namespace Zifro.Sandbox
 	{
 		public static AgentBank main;
 
+		public string defaultAgentName = "Unnamed";
+		public GameObject defaultAgentPrefab;
+		public GameObject defaultModelPrefab;
+
 		public List<Agent> agents;
 
 		void OnEnable()
 		{
-			Debug.Assert(!main, $"There are multiple agent bank instances. '{(main ? main.name : string.Empty)}' and '{name}'.", this);
+			Debug.Assert(!main,
+				$"There are multiple agent bank instances. '{(main ? main.name : string.Empty)}' and '{name}'.", this);
 			main = this;
 		}
 
 		void Awake()
 		{
+			Debug.Assert(defaultModelPrefab, $"{nameof(defaultModelPrefab)} not defined in {name}.", this);
+			Debug.Assert(defaultAgentPrefab, $"{nameof(defaultAgentPrefab)} not defined in {name}.", this);
+
 			for (int i = agents.Count - 1; i >= 0; i--)
 			{
 				Agent agent = agents[i];
@@ -34,24 +42,40 @@ namespace Zifro.Sandbox
 					continue;
 				}
 
-				Debug.Assert(!string.IsNullOrWhiteSpace(agent.name), $"Agent at index {i} is missing name.", this);
-
-				Debug.Assert(agent.menuItem, $"{nameof(agent.menuItem)} is not assigned for agent '{agent.name}' (at index {i}).", this);
-				Debug.Assert(agent.modelPrefab, $"{nameof(agent.modelPrefab)} is not assigned for agent '{agent.name}' (at index {i}).", this);
-				Debug.Assert(agent.agentPrefab, $"{nameof(agent.agentPrefab)} is not assigned for agent '{agent.name}' (at index {i}).", this);
-
-				agent.name = agent.name.Trim();
-
-				if (agent.instances == null)
-				{
-					agent.instances = new List<AgentInstance>();
-				}
+				Debug.Assert(agent.menuItem,
+					$"{nameof(agent.menuItem)} is not assigned for agent '{agent.name}' (at index {i}).", this);
+				SetAgentDefaults(agent);
 			}
 		}
 
 		public Agent GetAgent(AgentMenuItem menuItem)
 		{
 			return agents.FirstOrDefault(o => o.menuItem == menuItem);
+		}
+
+		public void SetAgentDefaults(Agent agent)
+		{
+			if (!agent.agentPrefab)
+			{
+				agent.agentPrefab = defaultAgentPrefab;
+			}
+
+			if (!agent.modelPrefab)
+			{
+				agent.modelPrefab = defaultModelPrefab;
+			}
+
+			if (string.IsNullOrWhiteSpace(agent.name))
+			{
+				agent.name = defaultAgentName;
+			}
+
+			agent.name = agent.name.Trim();
+
+			if (agent.instances == null)
+			{
+				agent.instances = new List<AgentInstance>();
+			}
 		}
 
 		[Pure]
