@@ -16,6 +16,7 @@ namespace Zifro.Sandbox.UI
 		public InputField addInputField;
 		public GameObject addInputPanel;
 		public GameObject buttonPrefab;
+		public ScrollRect scrollRect;
 		[Space]
 		public MenuItem current;
 		public List<MenuItem> menuItems;
@@ -61,6 +62,7 @@ namespace Zifro.Sandbox.UI
 			Debug.Assert(addButton, $"{nameof(addButton)} is not assigned for {name}.", this);
 			Debug.Assert(addInputField, $"{nameof(addInputField)} is not assigned for {name}.", this);
 			Debug.Assert(buttonPrefab, $"{nameof(buttonPrefab)} is not assigned for {name}.", this);
+			Debug.Assert(scrollRect, $"{nameof(scrollRect)} is not assigned for {name}.", this);
 		}
 
 		void OnEnable()
@@ -121,6 +123,7 @@ namespace Zifro.Sandbox.UI
 			addInputPanel.SetActive(false);
 			AddAgent(addInputField.text);
 			addInputField.text = string.Empty;
+			scrollRect.verticalNormalizedPosition = 0;
 		}
 
 		public void AddAgent(string agentName)
