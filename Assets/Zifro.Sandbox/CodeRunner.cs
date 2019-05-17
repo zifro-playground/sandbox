@@ -125,8 +125,16 @@ namespace Zifro.Sandbox
 					};
 					compiler.Compile(agent.code);
 
-					foreach (AgentInstance agentInstance in agent.instances)
+					for (int i = agent.instances.Count - 1; i >= 0; i--)
 					{
+						AgentInstance agentInstance = agent.instances[i];
+						if (!agentInstance)
+						{
+							agent.instances.RemoveAt(i);
+							Debug.LogWarning($"Agent instance at index {i} for agent {agent.name} was null. Removing it.", this);
+							continue;
+						}
+
 						IProcessor processor = compiler.Compile(string.Empty);
 						processor.AddBuiltin(
 							BUILTIN_FUNCTIONS
