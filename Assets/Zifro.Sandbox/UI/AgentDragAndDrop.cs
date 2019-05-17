@@ -20,7 +20,7 @@ namespace Zifro.Sandbox.UI
 
 		PlacementMode placeState = PlacementMode.None;
 		WorldEditTool lastTool;
-		GameObject preview;
+		GameObject draggedGhost;
 		Agent draggedAgent;
 		bool isActivatingClickAndDragThisFrame;
 
@@ -56,8 +56,8 @@ namespace Zifro.Sandbox.UI
 			if (world.TryRaycastBlocks(point, gameCamera.transform.forward, gameCamera.farClipPlane,
 				out GridRaycastHit hit))
 			{
-				preview.transform.position = world.VoxelToWorld(hit.voxelIndex + hit.voxelNormal);
-				preview.gameObject.SetActive(true);
+				draggedGhost.transform.position = world.VoxelToWorld(hit.voxelIndex + hit.voxelNormal);
+				draggedGhost.gameObject.SetActive(true);
 
 				if (placeState == PlacementMode.ClickAndPlace && Input.GetButtonDown(placeInput))
 				{
@@ -67,16 +67,16 @@ namespace Zifro.Sandbox.UI
 			}
 			else
 			{
-				preview.gameObject.SetActive(false);
+				draggedGhost.gameObject.SetActive(false);
 			}
 		}
 
 		void OnDisable()
 		{
-			if (preview)
+			if (draggedGhost)
 			{
-				Destroy(preview);
-				preview = null;
+				Destroy(draggedGhost);
+				draggedGhost = null;
 			}
 		}
 
@@ -123,7 +123,7 @@ namespace Zifro.Sandbox.UI
 			if (world.TryRaycastBlocks(point, gameCamera.transform.forward, gameCamera.farClipPlane,
 				out GridRaycastHit hit))
 			{
-				preview.transform.position = world.VoxelToWorld(hit.voxelIndex + hit.voxelNormal);
+				draggedGhost.transform.position = world.VoxelToWorld(hit.voxelIndex + hit.voxelNormal);
 
 				EndPlacement();
 			}
@@ -188,21 +188,21 @@ namespace Zifro.Sandbox.UI
 			lastTool = null;
 			placeState = PlacementMode.None;
 
-			if (preview)
+			if (draggedGhost)
 			{
-				Destroy(preview);
-				preview = null;
+				Destroy(draggedGhost);
+				draggedGhost = null;
 			}
 		}
 
 		void StartPlacement()
 		{
 			draggedAgent = menuList.currentAgent.agent;
-			preview = Instantiate(draggedAgent.modelPrefab);
+			draggedGhost = Instantiate(draggedAgent.modelPrefab);
 
 			if (dragMaterial)
 			{
-				foreach (Renderer child in preview.GetComponentsInChildren<Renderer>())
+				foreach (Renderer child in draggedGhost.GetComponentsInChildren<Renderer>())
 				{
 					child.sharedMaterial = dragMaterial;
 				}
@@ -211,8 +211,8 @@ namespace Zifro.Sandbox.UI
 
 		void EndPlacement()
 		{
-			Vector3 position = preview.transform.position;
-			GameObject clone = Instantiate(AgentBank.main.agentPrefab, position, preview.transform.rotation, AgentBank.main.transform);
+			Vector3 position = draggedGhost.transform.position;
+			GameObject clone = Instantiate(AgentBank.main.agentPrefab, position, draggedGhost.transform.rotation, AgentBank.main.transform);
 			Instantiate(draggedAgent.modelPrefab, clone.transform.position, clone.transform.rotation, clone.transform);
 
 			AgentInstance agentInstance = clone.GetComponent<AgentInstance>();

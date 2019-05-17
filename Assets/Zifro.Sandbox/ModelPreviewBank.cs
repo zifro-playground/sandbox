@@ -77,7 +77,7 @@ namespace Zifro.Sandbox
 
 			// Setup preview
 			ModelPreview preview = previewClone.GetComponent<ModelPreview>();
-			preview.modelInstance = modelClone;
+			preview.previewInstance = modelClone;
 			preview.modelPrefab = modelPrefab;
 			previews.Add(preview);
 

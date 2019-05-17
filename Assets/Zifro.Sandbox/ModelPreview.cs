@@ -13,7 +13,7 @@ namespace Zifro.Sandbox
 		[Space]
 		public bool applyPreviewLayerOnModel = true;
 		public GameObject modelPrefab;
-		public GameObject modelInstance;
+		public GameObject previewInstance;
 		public Camera renderCamera;
 
 		[SerializeField]
@@ -22,7 +22,7 @@ namespace Zifro.Sandbox
 		void Start()
 		{
 			Debug.Assert(modelPrefab, $"{nameof(modelPrefab)} not defined in {name}.", this);
-			Debug.Assert(modelInstance, $"{nameof(modelInstance)} not defined in {name}.", this);
+			Debug.Assert(previewInstance, $"{nameof(previewInstance)} not defined in {name}.", this);
 			Debug.Assert(renderCamera, $"{nameof(renderCamera)} not defined in {name}.", this);
 
 			// Apply layer
