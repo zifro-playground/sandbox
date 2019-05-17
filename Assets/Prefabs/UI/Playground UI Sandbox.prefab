@@ -321,8 +321,7 @@ MonoBehaviour:
   buttonPrefab: {fileID: 25651126892714128, guid: 63a7931e45fb62243a218bac2eec1a9b,
     type: 3}
   scrollRect: {fileID: 8667482580407353531}
-  dragAndDropTool: {fileID: 7928427280685215184}
-  dragAndDropLabel: {fileID: 4118478482845507940}
+  dragAndDropTool: {fileID: 5790410627742408748}
   current: {fileID: 8525346478063944614}
   menuItems:
   - {fileID: 5901993939483075139}
@@ -2095,10 +2094,11 @@ MonoBehaviour:
   button: {fileID: 7613528633841466232}
   hotKey: 0
   toolsList: {fileID: 6690884213575528903}
-  menuList: {fileID: 2126700038583778481}
   placeInput: Fire1
   cancelInput: Cancel
   dragMaterial: {fileID: 2100000, guid: 54553bc4516d6054b976a2a7f2eea705, type: 2}
+  agentLabel: {fileID: 4118478482845507940}
+  agentPreviewImage: {fileID: 4544930579278353825}
 --- !u!1 &8190392033418401195
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 using Zifro.Sandbox.Entities;
 using Zifro.Sandbox.UI.WorldEdit;
 
@@ -13,10 +14,11 @@ namespace Zifro.Sandbox.UI
 		IPointerClickHandler
 	{
 		public WorldEditToolsList toolsList;
-		public AgentMenuList menuList;
 		public string placeInput = "Fire1";
 		public string cancelInput = "Cancel";
 		public Material dragMaterial;
+		public Text agentLabel;
+		public RawImage agentPreviewImage;
 
 		PlacementMode placeState = PlacementMode.None;
 		WorldEditTool lastTool;
@@ -31,10 +33,16 @@ namespace Zifro.Sandbox.UI
 			ClickAndPlace
 		}
 
-		void Awake()
+		void Start()
 		{
 			Debug.Assert(toolsList, $"{nameof(toolsList)} not defined in {name}.", this);
-			Debug.Assert(menuList, $"{nameof(menuList)} not defined in {name}.", this);
+			Debug.Assert(agentLabel, $"{nameof(agentLabel)} not defined in {name}.", this);
+			Debug.Assert(agentPreviewImage, $"{nameof(agentPreviewImage)} not defined in {name}.", this);
+
+			if (draggedAgent == null)
+			{
+				HideTool();
+			}
 		}
 
 		void Update()
@@ -80,9 +88,77 @@ namespace Zifro.Sandbox.UI
 			}
 		}
 
+		void DragEndOrCancel()
+		{
+			if (!toolsList.isSelecting)
+			{
+				if (lastTool)
+				{
+					// Switch to last used tool
+					toolsList.SelectTool(lastTool);
+				}
+				else if (placeState == PlacementMode.ClickAndPlace)
+				{
+					// Deselect self
+					toolsList.DeselectTool();
+				}
+			}
+
+			lastTool = null;
+			placeState = PlacementMode.None;
+
+			if (draggedGhost)
+			{
+				Destroy(draggedGhost);
+				draggedGhost = null;
+			}
+		}
+
+		void StartPlacement()
+		{
+			draggedGhost = Instantiate(draggedAgent.modelPrefab);
+
+			if (dragMaterial)
+			{
+				foreach (Renderer child in draggedGhost.GetComponentsInChildren<Renderer>())
+				{
+					child.sharedMaterial = dragMaterial;
+				}
+			}
+		}
+
+		void EndPlacement()
+		{
+			Vector3 position = draggedGhost.transform.position;
+			GameObject clone = Instantiate(AgentBank.main.agentPrefab, position, draggedGhost.transform.rotation, AgentBank.main.transform);
+			Instantiate(draggedAgent.modelPrefab, clone.transform.position, clone.transform.rotation, clone.transform);
+
+			AgentInstance agentInstance = clone.GetComponent<AgentInstance>();
+			agentInstance.fractionPosition = (FractionVector3)position;
+
+			draggedAgent.instances.Add(agentInstance);
+		}
+
+		public void ShowTool(Agent agent)
+		{
+			Debug.Assert(ModelPreviewBank.main, "No main model preview bank registered.", this);
+
+			draggedAgent = agent;
+			agentLabel.text = agent.name;
+			gameObject.SetActive(true);
+			agentPreviewImage.texture = ModelPreviewBank.main.GetOrCreateTexture(agent.modelPrefab);
+		}
+
+		public void HideTool()
+		{
+			DragEndOrCancel();
+			draggedAgent = null;
+			gameObject.SetActive(false);
+		}
+
 		void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
 		{
-			if (placeState != PlacementMode.None || !menuList.currentAgent)
+			if (placeState != PlacementMode.None || draggedAgent == null)
 			{
 				// Stop drag events
 				eventData.pointerDrag = null;
@@ -167,59 +243,6 @@ namespace Zifro.Sandbox.UI
 
 		public override void OnMouseOverChange()
 		{
-		}
-
-		void DragEndOrCancel()
-		{
-			if (!toolsList.isSelecting)
-			{
-				if (lastTool)
-				{
-					// Switch to last used tool
-					toolsList.SelectTool(lastTool);
-				}
-				else if (placeState == PlacementMode.ClickAndPlace)
-				{
-					// Deselect self
-					toolsList.DeselectTool();
-				}
-			}
-
-			lastTool = null;
-			placeState = PlacementMode.None;
-
-			if (draggedGhost)
-			{
-				Destroy(draggedGhost);
-				draggedGhost = null;
-			}
-		}
-
-		void StartPlacement()
-		{
-			draggedAgent = menuList.currentAgent.agent;
-			draggedGhost = Instantiate(draggedAgent.modelPrefab);
-
-			if (dragMaterial)
-			{
-				foreach (Renderer child in draggedGhost.GetComponentsInChildren<Renderer>())
-				{
-					child.sharedMaterial = dragMaterial;
-				}
-			}
-		}
-
-		void EndPlacement()
-		{
-			Vector3 position = draggedGhost.transform.position;
-			GameObject clone = Instantiate(AgentBank.main.agentPrefab, position, draggedGhost.transform.rotation, AgentBank.main.transform);
-			Instantiate(draggedAgent.modelPrefab, clone.transform.position, clone.transform.rotation, clone.transform);
-
-			AgentInstance agentInstance = clone.GetComponent<AgentInstance>();
-			agentInstance.fractionPosition = (FractionVector3)position;
-
-			draggedAgent.instances.Add(agentInstance);
-			draggedAgent = null;
 		}
 	}
 }

@@ -17,8 +17,7 @@ namespace Zifro.Sandbox.UI
 		public GameObject addInputPanel;
 		public GameObject buttonPrefab;
 		public ScrollRect scrollRect;
-		public GameObject dragAndDropTool;
-		public Text dragAndDropLabel;
+		public AgentDragAndDrop dragAndDropTool;
 		[Space]
 		public MenuItem current;
 		public List<MenuItem> menuItems = new List<MenuItem>();
@@ -66,7 +65,6 @@ namespace Zifro.Sandbox.UI
 			Debug.Assert(buttonPrefab, $"{nameof(buttonPrefab)} is not assigned for {name}.", this);
 			Debug.Assert(scrollRect, $"{nameof(scrollRect)} is not assigned for {name}.", this);
 			Debug.Assert(dragAndDropTool, $"{nameof(dragAndDropTool)} is not assigned for {name}.", this);
-			Debug.Assert(dragAndDropLabel, $"{nameof(dragAndDropLabel)} is not assigned for {name}.", this);
 		}
 
 		void OnEnable()
@@ -119,15 +117,15 @@ namespace Zifro.Sandbox.UI
 				{
 					agentMenuItem.agent = bank.GetAgent(agentMenuItem);
 				}
+				
+				dragAndDropTool.ShowTool(agentMenuItem.agent);
 
-				dragAndDropLabel.text = agentMenuItem.agent.name;
-				dragAndDropTool.SetActive(true);
 				agentMenuItem.OnMenuItemSelected();
 			}
 			else
 			{
 				// Is game settings
-				dragAndDropTool.SetActive(false);
+				dragAndDropTool.HideTool();
 			}
 		}
 
