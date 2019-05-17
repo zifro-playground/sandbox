@@ -5,6 +5,7 @@ using Zifro.Sandbox.Entities;
 
 namespace Zifro.Sandbox
 {
+	[ExecuteInEditMode]
 	public class ModelPreview : MonoBehaviour
 	{
 		public RenderTexture texture;
@@ -21,6 +22,12 @@ namespace Zifro.Sandbox
 
 		void Start()
 		{
+#if UNITY_EDITOR
+			if (!UnityEditor.EditorApplication.isPlaying)
+			{
+				return;
+			}
+#endif
 			Debug.Assert(modelPrefab, $"{nameof(modelPrefab)} not defined in {name}.", this);
 			Debug.Assert(previewInstance, $"{nameof(previewInstance)} not defined in {name}.", this);
 			Debug.Assert(renderCamera, $"{nameof(renderCamera)} not defined in {name}.", this);
@@ -55,6 +62,20 @@ namespace Zifro.Sandbox
 			if (renderCamera)
 			{
 				renderCamera.enabled = continuousRendering;
+
+			}
+		}
+
+		void Update()
+		{
+			if (UnityEditor.EditorApplication.isPlaying)
+			{
+				return;
+			}
+
+			if (texture && renderCamera)
+			{
+				RenderOntoTexture();
 			}
 		}
 

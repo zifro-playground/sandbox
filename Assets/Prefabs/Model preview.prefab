@@ -46,7 +46,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   texture: {fileID: 0}
   regenerateSettings: {fileID: 11400000, guid: 94117df83e695084eb690d9d62ebe216, type: 2}
-  model: {fileID: 0}
+  applyPreviewLayerOnModel: 1
+  modelPrefab: {fileID: 0}
+  previewInstance: {fileID: 0}
   renderCamera: {fileID: 6318920011533131133}
   continuousRendering: 0
 --- !u!1 &6318920011533131135

@@ -87,6 +87,8 @@ namespace Zifro.Sandbox
 		[Pure]
 		public Texture GetTexture(GameObject model)
 		{
+			Debug.Assert(model, "Model cannot be null.", this);
+
 			ModelPreview modelPreview = previews.FirstOrDefault(o => o.modelPrefab == model);
 
 			if (!modelPreview)
@@ -104,6 +106,8 @@ namespace Zifro.Sandbox
 
 		public Texture GetOrCreateTexture(GameObject model)
 		{
+			Debug.Assert(model, "Model cannot be null.", this);
+
 			ModelPreview modelPreview = previews.FirstOrDefault(o => o.modelPrefab == model);
 
 			if (!modelPreview)
@@ -122,11 +126,15 @@ namespace Zifro.Sandbox
 		[Pure]
 		public ModelPreview GetPreview(GameObject model)
 		{
+			Debug.Assert(model, "Model cannot be null.", this);
+
 			return previews.FirstOrDefault(o => o.modelPrefab == model);
 		}
 
 		public ModelPreview GetOrCreatePreview(GameObject model)
 		{
+			Debug.Assert(model, "Model cannot be null.", this);
+
 			ModelPreview preview = previews.FirstOrDefault(o => o.modelPrefab == model);
 
 			if (!preview)

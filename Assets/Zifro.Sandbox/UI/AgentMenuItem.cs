@@ -12,11 +12,13 @@ namespace Zifro.Sandbox.UI
 		public Agent agent;
 
 		public Text label;
+		public RawImage preview;
 
 		void Start()
 		{
 			Debug.Assert(agent != null, $"{nameof(agent)} is not assigned for {name} (Should have been assigned by {nameof(AgentMenuList)}.{nameof(AgentMenuList.SelectMenuItem)}).", this);
 			Debug.Assert(label, $"{nameof(label)} is not assigned for {name}.", this);
+			Debug.Assert(preview, $"{nameof(preview)} is not assigned for {name}.", this);
 
 			name = $"Agent '{agent?.name ?? "#unnamed"}'";
 			label.text = agent.name;
@@ -31,6 +33,8 @@ namespace Zifro.Sandbox.UI
 
 			PMWrapper.mainCode = agent.code;
 			PMWrapper.preCode = $"# Kod för \"{agent.name}\"";
+
+			preview.texture = ModelPreviewBank.main.GetOrCreateTexture(agent.modelPrefab);
 		}
 
 		public void OnMenuItemDeselected()
