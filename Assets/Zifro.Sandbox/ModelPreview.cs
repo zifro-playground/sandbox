@@ -11,6 +11,7 @@ namespace Zifro.Sandbox
 		public ModelTextureRegenerateSettings regenerateSettings;
 
 		[Space]
+		public bool applyPreviewLayerOnModel = true;
 		public GameObject modelPrefab;
 		public GameObject modelInstance;
 		public Camera renderCamera;
@@ -24,10 +25,24 @@ namespace Zifro.Sandbox
 			Debug.Assert(modelInstance, $"{nameof(modelInstance)} not defined in {name}.", this);
 			Debug.Assert(renderCamera, $"{nameof(renderCamera)} not defined in {name}.", this);
 
+			// Apply layer
+			if (applyPreviewLayerOnModel)
+			{
+				LayerMask previewLayer = gameObject.layer;
+				foreach (Transform children in GetComponentsInChildren<Transform>(true))
+				{
+					children.gameObject.layer = previewLayer;
+				}
+			}
+
 			renderCamera.enabled = continuousRendering;
 			if (!texture)
 			{
 				RegenerateTextureFromSettings();
+			}
+			else
+			{
+				RenderOntoTexture();
 			}
 
 			name = $"Model preview '{modelPrefab.name}'";

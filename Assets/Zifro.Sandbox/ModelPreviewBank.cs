@@ -13,7 +13,6 @@ namespace Zifro.Sandbox
 
 		public GameObject modelPreviewPrefab;
 		public float previewSpacing = 3;
-		public bool applyPreviewLayerOnModel = true;
 		public List<GameObject> modelPrefabs = new List<GameObject>();
 		public List<ModelPreview> previews = new List<ModelPreview>();
 
@@ -81,16 +80,6 @@ namespace Zifro.Sandbox
 			preview.modelInstance = modelClone;
 			preview.modelPrefab = modelPrefab;
 			previews.Add(preview);
-
-			// Apply layer
-			if (applyPreviewLayerOnModel)
-			{
-				LayerMask previewLayer = previewClone.layer;
-				foreach (Transform children in previewClone.GetComponentsInChildren<Transform>(true))
-				{
-					children.gameObject.layer = previewLayer;
-				}
-			}
 
 			return preview;
 		}
