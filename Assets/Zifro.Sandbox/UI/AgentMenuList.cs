@@ -21,7 +21,7 @@ namespace Zifro.Sandbox.UI
 		public Text dragAndDropLabel;
 		[Space]
 		public MenuItem current;
-		public List<MenuItem> menuItems;
+		public List<MenuItem> menuItems = new List<MenuItem>();
 
 		public AgentMenuItem currentAgent => current as AgentMenuItem;
 		AgentBank bank;

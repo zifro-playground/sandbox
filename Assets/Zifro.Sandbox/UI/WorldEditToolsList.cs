@@ -15,7 +15,7 @@ namespace Zifro.Sandbox.UI
 		IPMCompilerStopped
 	{
 		public WorldEditTool currentTool;
-		public List<WorldEditTool> tools;
+		public List<WorldEditTool> tools = new List<WorldEditTool>();
 
 		public EventTrigger gameWindowTrigger;
 
