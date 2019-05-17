@@ -89,7 +89,7 @@ namespace Zifro.Sandbox
 					Debug.LogException(e);
 					int lineNumber = processor.CurrentSource.FromRow;
 					InternalStopRunning(StopStatus.RuntimeError);
-					PMWrapper.RaiseError(lineNumber, e.Message);
+					PMWrapper.RaiseError(lineNumber + 1, e.Message);
 				}
 
 				//variableWindow.UpdateList(processors);
@@ -144,7 +144,7 @@ namespace Zifro.Sandbox
 			catch (SyntaxException e)
 			{
 				Debug.LogException(e);
-				PMWrapper.RaiseError(e.SourceReference.FromColumn, e.Message);
+				PMWrapper.RaiseError(e.SourceReference.FromColumn + 1, e.Message);
 				return;
 			}
 			catch (Exception e)
