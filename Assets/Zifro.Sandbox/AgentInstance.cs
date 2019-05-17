@@ -9,7 +9,7 @@ namespace Zifro.Sandbox
 		IPMCompilerStarted,
 		IPMCompilerStopped
 	{
-		const int ROTATION_SCALE = 360 / 60;
+		const int ROTATION_SCALE = 1;
 		public FractionVector3 fractionPosition;
 
 		int fractionRotation;
@@ -46,7 +46,7 @@ namespace Zifro.Sandbox
 			fractionPosition += GetDirectionFraction(direction, scale) * Time.fixedDeltaTime;
 		}
 
-		public void Rotate(Rotation rotation, float scale = 1)
+		public void Rotate(Rotation rotation, float scale = 6)
 		{
 			fractionRotation += GetRotationFraction(rotation, scale);
 			newRotation = Quaternion.Euler(0, fractionRotation * ROTATION_SCALE, 0);
