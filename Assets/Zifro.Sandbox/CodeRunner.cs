@@ -89,7 +89,7 @@ namespace Zifro.Sandbox
 					Debug.LogException(e);
 					int lineNumber = processor.CurrentSource.FromRow;
 					InternalStopRunning(StopStatus.RuntimeError);
-					PMWrapper.RaiseError(lineNumber, e.Message);
+					PMWrapper.RaiseError(lineNumber + 1, e.Message);
 				}
 
 				//variableWindow.UpdateList(processors);
@@ -125,8 +125,16 @@ namespace Zifro.Sandbox
 					};
 					compiler.Compile(agent.code);
 
-					foreach (AgentInstance agentInstance in agent.instances)
+					for (int i = agent.instances.Count - 1; i >= 0; i--)
 					{
+						AgentInstance agentInstance = agent.instances[i];
+						if (!agentInstance)
+						{
+							agent.instances.RemoveAt(i);
+							Debug.LogWarning($"Agent instance at index {i} for agent {agent.name} was null. Removing it.", this);
+							continue;
+						}
+
 						IProcessor processor = compiler.Compile(string.Empty);
 						processor.AddBuiltin(
 							BUILTIN_FUNCTIONS
@@ -144,7 +152,7 @@ namespace Zifro.Sandbox
 			catch (SyntaxException e)
 			{
 				Debug.LogException(e);
-				PMWrapper.RaiseError(e.SourceReference.FromColumn, e.Message);
+				PMWrapper.RaiseError(e.SourceReference.FromColumn + 1, e.Message);
 				return;
 			}
 			catch (Exception e)
