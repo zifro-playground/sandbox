@@ -63,7 +63,19 @@ namespace Zifro.Sandbox.UI
 
 		void AgentMenuOnSelectedItem(MenuItem item)
 		{
-			SelectMenuItemAndSetActiveIfAgentIsSelected(item is AgentMenuItem);
+			if (item is AgentMenuItem agentMenuItem)
+			{
+				SelectMenuItemAndSetActiveIfAgentIsSelected(true);
+
+				foreach (ConfigAgentSettings agentSettings in menuItems.OfType<ConfigAgentSettings>())
+				{
+					agentSettings.OnAgentSelected(agentMenuItem.agent);
+				}
+			}
+			else
+			{
+				SelectMenuItemAndSetActiveIfAgentIsSelected(false);
+			}
 		}
 	}
 }

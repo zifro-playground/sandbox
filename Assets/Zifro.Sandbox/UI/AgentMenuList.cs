@@ -50,8 +50,6 @@ namespace Zifro.Sandbox.UI
 
 		protected override void OnSelectedMenuItem(MenuItem item)
 		{
-			base.OnSelectedMenuItem(item);
-
 			if (item is AgentMenuItem agentMenuItem)
 			{
 				// Is agent
@@ -63,6 +61,8 @@ namespace Zifro.Sandbox.UI
 				// Is game settings
 				dragAndDropTool.HideTool();
 			}
+
+			base.OnSelectedMenuItem(item);
 		}
 		
 		void AddAgentViaUI()
