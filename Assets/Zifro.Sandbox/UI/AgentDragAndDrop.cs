@@ -7,7 +7,7 @@ using Zifro.Sandbox.UI.WorldEdit;
 
 namespace Zifro.Sandbox.UI
 {
-	public class AgentDragAndDrop : WorldEditTool,
+	public sealed class AgentDragAndDrop : WorldEditTool,
 		IBeginDragHandler,
 		IDragHandler,
 		IEndDragHandler,
@@ -33,8 +33,9 @@ namespace Zifro.Sandbox.UI
 			ClickAndPlace
 		}
 
-		void Start()
+		new void Start()
 		{
+			base.Start();
 			Debug.Assert(toolsList, $"{nameof(toolsList)} not defined in {name}.", this);
 			Debug.Assert(agentLabel, $"{nameof(agentLabel)} not defined in {name}.", this);
 			Debug.Assert(agentPreviewImage, $"{nameof(agentPreviewImage)} not defined in {name}.", this);
@@ -95,7 +96,7 @@ namespace Zifro.Sandbox.UI
 				if (lastTool)
 				{
 					// Switch to last used tool
-					toolsList.SelectTool(lastTool);
+					toolsList.SelectItem(lastTool);
 				}
 				else if (placeState == PlacementMode.ClickAndPlace)
 				{
@@ -165,7 +166,7 @@ namespace Zifro.Sandbox.UI
 				return;
 			}
 
-			lastTool = toolsList.currentTool;
+			lastTool = toolsList.currentItem;
 
 			if (lastTool)
 			{
@@ -223,22 +224,25 @@ namespace Zifro.Sandbox.UI
 			isActivatingClickAndDragThisFrame = false;
 		}
 
-		public override void OnToolSelectedChange(WorldEditTool last)
+		public override void OnMenuItemSelected(MenuItem lastItem)
 		{
-			if (isSelected && placeState == PlacementMode.None)
+			if (placeState != PlacementMode.None)
 			{
-				placeState = PlacementMode.ClickAndPlace;
-				StartPlacement();
-				lastTool = last;
-				button.interactable = true;
-				isActivatingClickAndDragThisFrame = true;
-				StartCoroutine(DisableClickAndDragBoolNextFrame());
-				EventSystem.current.SetSelectedGameObject(gameObject);
+				return;
 			}
-			else
-			{
-				DragEndOrCancel();
-			}
+
+			placeState = PlacementMode.ClickAndPlace;
+			StartPlacement();
+			lastTool = lastItem as WorldEditTool;
+			button.interactable = true;
+			isActivatingClickAndDragThisFrame = true;
+			StartCoroutine(DisableClickAndDragBoolNextFrame());
+			EventSystem.current.SetSelectedGameObject(gameObject);
+		}
+
+		public override void OnMenuItemDeselected()
+		{
+			DragEndOrCancel();
 		}
 
 		public override void OnMouseOverChange()

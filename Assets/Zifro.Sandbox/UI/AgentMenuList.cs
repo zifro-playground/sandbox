@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using PM;
 using UnityEngine;
 using UnityEngine.Events;
@@ -10,7 +11,8 @@ using Zifro.Sandbox.Utility;
 
 namespace Zifro.Sandbox.UI
 {
-	public class AgentMenuList : MonoBehaviour, IPMPreCompilerStarted
+	public sealed class AgentMenuList : MenuList<MenuItem>,
+		IPMPreCompilerStarted
 	{
 		public Button addButton;
 		public InputField addInputField;
@@ -18,57 +20,20 @@ namespace Zifro.Sandbox.UI
 		public GameObject buttonPrefab;
 		public ScrollRect scrollRect;
 		public AgentDragAndDrop dragAndDropTool;
-		[Space]
-		public MenuItem current;
-		public List<MenuItem> menuItems = new List<MenuItem>();
 
-		public AgentMenuItem currentAgent => current as AgentMenuItem;
+		public AgentMenuItem currentAgent => currentItem as AgentMenuItem;
 		AgentBank bank;
 
-		void OnValidate()
+		new void Start()
 		{
-			if (current && !menuItems.Contains(current))
-			{
-				menuItems.Add(current);
-			}
-
-			for (int i = menuItems.Count - 1; i >= 0; i--)
-			{
-				if (!menuItems[i])
-				{
-					Debug.LogAssertion($"Menu item at index {i} was null. Removing it from list.");
-					menuItems.RemoveAt(i);
-					continue;
-				}
-
-				MenuItem menuItem = menuItems[i];
-				if (!menuItem.button)
-				{
-					menuItem.button = menuItem.GetComponent<Button>();
-					if (!menuItem.button)
-					{
-						Debug.LogAssertion($"Unable to find button for {menuItem.name}. Removing it from list.");
-						menuItems.RemoveAt(i);
-						continue;
-					}
-				}
-
-				menuItem.button.interactable = menuItem != current;
-			}
-		}
-
-		void Awake()
-		{
+			base.Start();
 			Debug.Assert(addInputPanel, $"{nameof(addInputPanel)} is not assigned for {name}.", this);
 			Debug.Assert(addButton, $"{nameof(addButton)} is not assigned for {name}.", this);
 			Debug.Assert(addInputField, $"{nameof(addInputField)} is not assigned for {name}.", this);
 			Debug.Assert(buttonPrefab, $"{nameof(buttonPrefab)} is not assigned for {name}.", this);
 			Debug.Assert(scrollRect, $"{nameof(scrollRect)} is not assigned for {name}.", this);
 			Debug.Assert(dragAndDropTool, $"{nameof(dragAndDropTool)} is not assigned for {name}.", this);
-		}
 
-		void OnEnable()
-		{
 			bank = AgentBank.main;
 
 			addButton.onClick.AddListener(AddAgentViaUI);
@@ -76,51 +41,24 @@ namespace Zifro.Sandbox.UI
 
 			foreach (MenuItem item in menuItems)
 			{
-				item.button.onClick.AddListener(() => SelectMenuItem(item));
+				item.button.onClick.AddListener(() => SelectItem(item));
 			}
-		}
 
-		void Start()
-		{
-			SelectMenuItemInternal(current, true);
-		}
-
-		public void SelectMenuItem(MenuItem agent)
-		{
-			SelectMenuItemInternal(agent, false);
-		}
-
-		void SelectMenuItemInternal(MenuItem item, bool force)
-		{
-			Debug.Assert(item, "Agent cannot be null.");
-			if (current == item && !force)
+			foreach (AgentMenuItem agentMenuItem in menuItems.OfType<AgentMenuItem>())
 			{
-				return;
+				agentMenuItem.SetTargetAgent(bank.GetAgent(agentMenuItem));
 			}
+		}
 
-			if (current)
-			{
-				current.button.interactable = true;
-				if (!force && current is AgentMenuItem currentAgentMenu)
-				{
-					currentAgentMenu.OnMenuItemDeselected();
-				}
-			}
-
-			current = item;
-			item.button.interactable = false;
+		protected override void OnSelectedMenuItem(MenuItem item)
+		{
+			base.OnSelectedMenuItem(item);
 
 			if (item is AgentMenuItem agentMenuItem)
 			{
 				// Is agent
-				if (agentMenuItem.agent == null)
-				{
-					agentMenuItem.agent = bank.GetAgent(agentMenuItem);
-				}
-				
+				agentMenuItem.SetTargetAgent(bank.GetAgent(agentMenuItem));
 				dragAndDropTool.ShowTool(agentMenuItem.agent);
-
-				agentMenuItem.OnMenuItemSelected();
 			}
 			else
 			{
@@ -128,7 +66,7 @@ namespace Zifro.Sandbox.UI
 				dragAndDropTool.HideTool();
 			}
 		}
-
+		
 		void AddAgentViaUI()
 		{
 			addInputPanel.SetActive(false);
@@ -142,7 +80,7 @@ namespace Zifro.Sandbox.UI
 			GameObject clone = Instantiate(buttonPrefab, transform);
 
 			AgentMenuItem item = clone.GetComponent<AgentMenuItem>();
-			item.button.onClick.AddListener(() => SelectMenuItem(item));
+			item.button.onClick.AddListener(() => SelectItem(item));
 			menuItems.Add(item);
 
 			var agent = new Agent {
@@ -152,8 +90,9 @@ namespace Zifro.Sandbox.UI
 
 			bank.SetAgentDefaults(agent);
 			bank.agents.Add(agent);
+			item.SetTargetAgent(agent);
 
-			SelectMenuItem(item);
+			SelectItem(item);
 		}
 
 		void IPMPreCompilerStarted.OnPMPreCompilerStarted()

@@ -6,7 +6,7 @@ using Zifro.Sandbox.Entities;
 
 namespace Zifro.Sandbox.UI
 {
-	public class AgentMenuItem : MenuItem
+	public sealed class AgentMenuItem : MenuItem
 	{
 		[NonSerialized]
 		public Agent agent;
@@ -14,14 +14,23 @@ namespace Zifro.Sandbox.UI
 		public Text label;
 		public RawImage preview;
 
-		void Start()
+		new void Start()
 		{
-			Debug.Assert(agent != null, $"{nameof(agent)} is not assigned for {name} (Should have been assigned by {nameof(AgentMenuList)}.{nameof(AgentMenuList.SelectMenuItem)}).", this);
+			base.Start();
+			Debug.Assert(agent != null, $"{nameof(agent)} is not assigned for {name} (Should have been assigned with {nameof(SetTargetAgent)}).", this);
 			Debug.Assert(label, $"{nameof(label)} is not assigned for {name}.", this);
 			Debug.Assert(preview, $"{nameof(preview)} is not assigned for {name}.", this);
 		}
 
-		public void OnMenuItemSelected()
+		public void SetTargetAgent(Agent newAgent)
+		{
+			agent = newAgent;
+			name = $"Agent '{agent.name}'";
+			label.text = agent.name;
+			preview.texture = ModelPreviewBank.main.GetOrCreateTexture(agent.modelPrefab);
+		}
+
+		public override void OnMenuItemSelected(MenuItem lastItem)
 		{
 			foreach (IPMAgentSelected ev in UISingleton.FindInterfaces<IPMAgentSelected>())
 			{
@@ -30,13 +39,9 @@ namespace Zifro.Sandbox.UI
 
 			PMWrapper.mainCode = agent.code;
 			PMWrapper.preCode = $"# Kod för \"{agent.name}\"";
-
-			name = $"Agent '{agent?.name ?? "#unnamed"}'";
-			label.text = agent.name;
-			preview.texture = ModelPreviewBank.main.GetOrCreateTexture(agent.modelPrefab);
 		}
 
-		public void OnMenuItemDeselected()
+		public override void OnMenuItemDeselected()
 		{
 			foreach (IPMAgentDeselected ev in UISingleton.FindInterfaces<IPMAgentDeselected>())
 			{

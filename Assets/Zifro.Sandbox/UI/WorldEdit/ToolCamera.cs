@@ -4,7 +4,7 @@ using Zifro.Sandbox.Entities;
 
 namespace Zifro.Sandbox.UI.WorldEdit
 {
-	public class ToolCamera : WorldEditTool
+	public sealed class ToolCamera : WorldEditTool
 	{
 		public Transform gameCameraArm;
 
@@ -140,10 +140,17 @@ namespace Zifro.Sandbox.UI.WorldEdit
 				}
 			}
 		}
-
-		public override void OnToolSelectedChange(WorldEditTool lastTool)
+		
+		public override void OnMenuItemSelected(MenuItem lastItem)
 		{
-			enabled = isMouseOverGame && isSelected;
+			enabled = isMouseOverGame;
+			isRotating = false;
+			isDragging = false;
+		}
+
+		public override void OnMenuItemDeselected()
+		{
+			enabled = false;
 			isRotating = false;
 			isDragging = false;
 		}

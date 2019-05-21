@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Zifro.Sandbox.UI
@@ -7,9 +8,22 @@ namespace Zifro.Sandbox.UI
 	{
 		public Button button;
 
-		protected void Awake()
+		[NonSerialized]
+		public bool isSelected;
+
+		protected void Start()
 		{
 			Debug.Assert(button, $"{nameof(button)} is not assigned for {name}.", this);
+		}
+
+		public virtual void OnMenuItemSelected(MenuItem lastItem)
+		{
+			// Do nothing
+		}
+
+		public virtual void OnMenuItemDeselected()
+		{
+			// Do nothing
 		}
 	}
 }
