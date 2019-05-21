@@ -4326,6 +4326,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   variableWindow: {fileID: 6208188843704186654}
+  configMenuList: {fileID: 6336239679652340609}
 --- !u!114 &2855656735585229978
 MonoBehaviour:
   m_ObjectHideFlags: 0

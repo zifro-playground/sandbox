@@ -46,8 +46,34 @@ namespace Zifro.Sandbox.UI
 			{
 				agentMenuItem.SetTargetAgent(AgentBank.main.GetAgent(agentMenuItem));
 			}
-			
-			
+		}
+
+		void Awake()
+		{
+			AgentBank.main.AgentSelected += OnAgentSelected;
+			AgentBank.main.AgentAllDeselected += OnAgentAllDeselected;
+		}
+
+		void OnAgentAllDeselected(Agent deselectedAgent)
+		{
+			if (!isSelecting)
+			{
+				SelectItem(menuItems.First(o => !(o is AgentMenuItem)));
+			}
+		}
+
+		void OnAgentSelected(Agent selectedAgent)
+		{
+			if (!isSelecting)
+			{
+				SelectItem(menuItems.OfType<AgentMenuItem>().First(o => o.agent == selectedAgent));
+			}
+		}
+
+		void OnDestroy()
+		{
+			AgentBank.main.AgentSelected -= OnAgentSelected;
+			AgentBank.main.AgentAllDeselected -= OnAgentAllDeselected;
 		}
 
 		protected override void OnSelectedMenuItem(MenuItem lastItem, MenuItem item)
@@ -56,7 +82,10 @@ namespace Zifro.Sandbox.UI
 			{
 				// Is agent
 				agentMenuItem.SetTargetAgent(AgentBank.main.GetAgent(agentMenuItem));
-				AgentBank.main.SelectAgent(agentMenuItem.agent);
+				if (AgentBank.main.currentAgent != agentMenuItem.agent)
+				{
+					AgentBank.main.SelectAgent(agentMenuItem.agent);
+				}
 			}
 			else
 			{

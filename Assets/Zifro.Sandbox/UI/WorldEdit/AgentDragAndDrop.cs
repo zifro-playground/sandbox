@@ -64,10 +64,10 @@ namespace Zifro.Sandbox.UI.WorldEdit
 		new void Start()
 		{
 			base.Start();
-			Debug.Assert(toolsList, $"{nameof(toolsList)} not defined in {name}.", this);
-			Debug.Assert(agentLabel, $"{nameof(agentLabel)} not defined in {name}.", this);
-			Debug.Assert(agentPreviewImage, $"{nameof(agentPreviewImage)} not defined in {name}.", this);
-			Debug.Assert(tooltip, $"{nameof(tooltip)} not defined in {name}.", this);
+			Debug.Assert(toolsList, $"{nameof(toolsList)} not defined in '{name}'.", this);
+			Debug.Assert(agentLabel, $"{nameof(agentLabel)} not defined in '{name}'.", this);
+			Debug.Assert(agentPreviewImage, $"{nameof(agentPreviewImage)} not defined in '{name}'.", this);
+			Debug.Assert(tooltip, $"{nameof(tooltip)} not defined in '{name}'.", this);
 
 			UpdateTooltip();
 		}

@@ -28,7 +28,7 @@ namespace Zifro.Sandbox.UI
 			agentMenu.SelectedItem += AgentMenuOnSelectedItem;
 		}
 
-		public void SelectMenuItemAndSetActiveIfAgentIsSelected(bool isCurrentAgent)
+		void SelectMenuItemAndSetActiveIfAgentIsSelected(bool isCurrentAgent)
 		{
 			if (currentItem)
 			{
