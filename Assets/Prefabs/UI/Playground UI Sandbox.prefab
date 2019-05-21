@@ -5662,6 +5662,7 @@ GameObject:
   - component: {fileID: 728342131357770086}
   - component: {fileID: 7613528633841466232}
   - component: {fileID: 5790410627742408748}
+  - component: {fileID: 3401518589182436952}
   m_Layer: 5
   m_Name: Drag n drop agent
   m_TagString: Untagged
@@ -5786,13 +5787,32 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   button: {fileID: 7613528633841466232}
-  hotKey: 0
+  hotKey: 32
   toolsList: {fileID: 6690884213575528903}
   placeInput: Fire1
   cancelInput: Cancel
   dragMaterial: {fileID: 2100000, guid: 54553bc4516d6054b976a2a7f2eea705, type: 2}
   agentLabel: {fileID: 1854311004241778293}
   agentPreviewImage: {fileID: 4544930579278353825}
+  tooltip: {fileID: 3401518589182436952}
+  tooltipTooManyInstancesFormat: "Du kan inte placera fler.\nMaxgr\xE4nsen p\xE5 {0}
+    st instanser \xE4r n\xE5dd."
+  tooltipEnabled: 'Hotkey: Mellanslag'
+--- !u!114 &3401518589182436952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7928427280685215184}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84aa101ce7c3ade44b54ed63b33de33a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  text: 
+  fadeInAfter: 0.5
+  fadeDuration: 0.1
 --- !u!1 &8190392033418401195
 GameObject:
   m_ObjectHideFlags: 0
@@ -7474,18 +7494,6 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 2529030190346346013}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &6251710117962993739 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8492208580013018710, guid: d8ba99cda0449914880e7adf911242f4,
-    type: 3}
-  m_PrefabInstance: {fileID: 2529030190346346013}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2400277088285956844}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4692181810643578595 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7063071313444778238, guid: d8ba99cda0449914880e7adf911242f4,
@@ -7496,6 +7504,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &6251710117962993739 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8492208580013018710, guid: d8ba99cda0449914880e7adf911242f4,
+    type: 3}
+  m_PrefabInstance: {fileID: 2529030190346346013}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2400277088285956844}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 1392445389, guid: f70555f144d8491a825f0804e09c671c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &3460997984992308117

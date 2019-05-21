@@ -1,6 +1,9 @@
 ﻿using System.Collections;
+using System.Globalization;
+using PM;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Zifro.Sandbox.Entities;
 
@@ -18,6 +21,18 @@ namespace Zifro.Sandbox.UI.WorldEdit
 		public Material dragMaterial;
 		public Text agentLabel;
 		public RawImage agentPreviewImage;
+
+		[Header("Tooltip")]
+		[FormerlySerializedAs("disabledTooltip")]
+		public UITooltip tooltip;
+		[Multiline]
+		public string tooltipTooManyInstancesFormat =
+			"Du kan inte placera fler.\n" +
+			"Maxgränsen på {0} st instanser är nådd.";
+
+		[Multiline]
+		public string tooltipEnabled =
+			"Hotkey: Mellanslag";
 
 		PlacementMode placeState = PlacementMode.None;
 		WorldEditTool lastTool;
@@ -52,6 +67,9 @@ namespace Zifro.Sandbox.UI.WorldEdit
 			Debug.Assert(toolsList, $"{nameof(toolsList)} not defined in {name}.", this);
 			Debug.Assert(agentLabel, $"{nameof(agentLabel)} not defined in {name}.", this);
 			Debug.Assert(agentPreviewImage, $"{nameof(agentPreviewImage)} not defined in {name}.", this);
+			Debug.Assert(tooltip, $"{nameof(tooltip)} not defined in {name}.", this);
+
+			UpdateTooltip();
 		}
 
 		void Update()
@@ -121,6 +139,8 @@ namespace Zifro.Sandbox.UI.WorldEdit
 				Destroy(draggedGhost);
 				draggedGhost = null;
 			}
+
+			UpdateTooltip();
 		}
 
 		void StartPlacement()
@@ -139,7 +159,8 @@ namespace Zifro.Sandbox.UI.WorldEdit
 		void EndPlacement()
 		{
 			Vector3 position = draggedGhost.transform.position;
-			GameObject clone = Instantiate(AgentBank.main.agentPrefab, position, draggedGhost.transform.rotation, AgentBank.main.transform);
+			GameObject clone = Instantiate(AgentBank.main.agentPrefab, position, draggedGhost.transform.rotation,
+				AgentBank.main.transform);
 			Instantiate(draggedAgent.modelPrefab, clone.transform.position, clone.transform.rotation, clone.transform);
 
 			AgentInstance agentInstance = clone.GetComponent<AgentInstance>();
@@ -201,7 +222,7 @@ namespace Zifro.Sandbox.UI.WorldEdit
 
 		void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
 		{
-			if (isSelected && 
+			if (isSelected &&
 			    placeState == PlacementMode.ClickAndPlace &&
 			    !isActivatingClickAndDragThisFrame)
 			{
@@ -225,10 +246,11 @@ namespace Zifro.Sandbox.UI.WorldEdit
 			placeState = PlacementMode.ClickAndPlace;
 			StartPlacement();
 			lastTool = lastItem as WorldEditTool;
-			button.interactable = true;
 			isActivatingClickAndDragThisFrame = true;
 			StartCoroutine(DisableClickAndDragBoolNextFrame());
 			EventSystem.current.SetSelectedGameObject(gameObject);
+
+			UpdateTooltip();
 		}
 
 		public override void OnMenuItemDeselected()
@@ -257,6 +279,7 @@ namespace Zifro.Sandbox.UI.WorldEdit
 
 			agentLabel.text = updatedAgent.name;
 			agentPreviewImage.texture = ModelPreviewBank.main.GetOrCreateTexture(updatedAgent.modelPrefab);
+			UpdateTooltip();
 		}
 
 		void OnAgentAllDeselected(Agent deselectedAgent)
@@ -264,6 +287,28 @@ namespace Zifro.Sandbox.UI.WorldEdit
 			DragEndOrCancel();
 			draggedAgent = null;
 			gameObject.SetActive(false);
+		}
+
+		void UpdateTooltip()
+		{
+			if (draggedAgent.maxInstanceCount > 0 &&
+			    draggedAgent.instances.Count >= draggedAgent.maxInstanceCount)
+			{
+				string label = string.Format(
+					CultureInfo.CurrentUICulture,
+					tooltipTooManyInstancesFormat,
+					arg0: draggedAgent.maxInstanceCount);
+
+				tooltip.text = label;
+				tooltip.ApplyTooltipTextChange();
+				button.interactable = false;
+			}
+			else
+			{
+				tooltip.text = tooltipEnabled;
+				tooltip.ApplyTooltipTextChange();
+				button.interactable = true;
+			}
 		}
 	}
 }

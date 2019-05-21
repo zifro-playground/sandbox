@@ -77,6 +77,7 @@ namespace Zifro.Sandbox.UI.Config
 			{
 				agent.maxInstanceCount = -1;
 				UpdateFieldMaxInstanceCountFromAgent();
+				AgentBank.main.UpdateAgent(agent);
 				return;
 			}
 
@@ -95,6 +96,7 @@ namespace Zifro.Sandbox.UI.Config
 			{
 				agent.maxInstanceCount = max;
 				UpdateFieldMaxInstanceCountFromAgent();
+				AgentBank.main.UpdateAgent(agent);
 				return;
 			}
 
@@ -118,6 +120,7 @@ namespace Zifro.Sandbox.UI.Config
 
 			agent.maxInstanceCount = max;
 			UpdateFieldMaxInstanceCountFromAgent();
+			AgentBank.main.UpdateAgent(agent);
 		}
 
 		void OnAgentDeletePressed()
