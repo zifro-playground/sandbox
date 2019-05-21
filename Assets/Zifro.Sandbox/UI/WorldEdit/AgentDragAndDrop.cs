@@ -10,10 +10,7 @@ namespace Zifro.Sandbox.UI.WorldEdit
 		IBeginDragHandler,
 		IDragHandler,
 		IEndDragHandler,
-		IPointerClickHandler,
-		IPMAgentSelected,
-		IPMAgentUpdated,
-		IPMAgentAllDeselected
+		IPointerClickHandler
 	{
 		public WorldEditToolsList toolsList;
 		public string placeInput = "Fire1";
@@ -33,6 +30,20 @@ namespace Zifro.Sandbox.UI.WorldEdit
 			None,
 			DragAndDrop,
 			ClickAndPlace
+		}
+
+		void Awake()
+		{
+			AgentBank.main.AgentSelected += OnAgentSelected;
+			AgentBank.main.AgentUpdated += OnAgentUpdated;
+			AgentBank.main.AgentAllDeselected += OnAgentAllDeselected;
+		}
+
+		void OnDestroy()
+		{
+			AgentBank.main.AgentSelected -= OnAgentSelected;
+			AgentBank.main.AgentUpdated -= OnAgentUpdated;
+			AgentBank.main.AgentAllDeselected -= OnAgentAllDeselected;
 		}
 
 		new void Start()
@@ -229,7 +240,7 @@ namespace Zifro.Sandbox.UI.WorldEdit
 		{
 		}
 
-		void IPMAgentSelected.OnPMAgentSelected(Agent selectedAgent)
+		void OnAgentSelected(Agent selectedAgent)
 		{
 			draggedAgent = selectedAgent;
 			agentLabel.text = selectedAgent.name;
@@ -237,7 +248,7 @@ namespace Zifro.Sandbox.UI.WorldEdit
 			agentPreviewImage.texture = ModelPreviewBank.main.GetOrCreateTexture(selectedAgent.modelPrefab);
 		}
 
-		void IPMAgentUpdated.OnPMAgentUpdated(Agent updatedAgent)
+		void OnAgentUpdated(Agent updatedAgent)
 		{
 			if (updatedAgent != draggedAgent)
 			{
@@ -248,7 +259,7 @@ namespace Zifro.Sandbox.UI.WorldEdit
 			agentPreviewImage.texture = ModelPreviewBank.main.GetOrCreateTexture(updatedAgent.modelPrefab);
 		}
 
-		void IPMAgentAllDeselected.OnPMAgentAllDeselected(Agent deselectedAgent)
+		void OnAgentAllDeselected(Agent deselectedAgent)
 		{
 			DragEndOrCancel();
 			draggedAgent = null;

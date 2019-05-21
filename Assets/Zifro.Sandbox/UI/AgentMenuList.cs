@@ -46,49 +46,22 @@ namespace Zifro.Sandbox.UI
 			{
 				agentMenuItem.SetTargetAgent(AgentBank.main.GetAgent(agentMenuItem));
 			}
-
-			if (!currentAgent)
-			{
-				foreach (IPMAgentAllDeselected ev in UISingleton.FindInterfaces<IPMAgentAllDeselected>())
-				{
-					ev.OnPMAgentAllDeselected(null);
-				}
-			}
+			
+			
 		}
 
 		protected override void OnSelectedMenuItem(MenuItem lastItem, MenuItem item)
 		{
-			if (lastItem != item && lastItem is AgentMenuItem lastAgentMenuItem)
-			{
-				print($"OnPMAgentDeselected({lastAgentMenuItem.agent.name})");
-				foreach (IPMAgentDeselected ev in UISingleton.FindInterfaces<IPMAgentDeselected>())
-				{
-					ev.OnPMAgentDeselected(lastAgentMenuItem.agent);
-				}
-			}
-
 			if (item is AgentMenuItem agentMenuItem)
 			{
 				// Is agent
 				agentMenuItem.SetTargetAgent(AgentBank.main.GetAgent(agentMenuItem));
-
-				print($"OnPMAgentSelected({agentMenuItem.agent.name})");
-				foreach (IPMAgentSelected ev in UISingleton.FindInterfaces<IPMAgentSelected>())
-				{
-					ev.OnPMAgentSelected(agentMenuItem.agent);
-				}
+				AgentBank.main.SelectAgent(agentMenuItem.agent);
 			}
 			else
 			{
 				// Is game settings
-				if (lastItem is AgentMenuItem lastAgentMenuItem2)
-				{
-					print("OnPMAgentAllDeselected");
-					foreach (IPMAgentAllDeselected ev in UISingleton.FindInterfaces<IPMAgentAllDeselected>())
-					{
-						ev.OnPMAgentAllDeselected(lastAgentMenuItem2.agent);
-					}
-				}
+				AgentBank.main.DeselectAgent();
 			}
 
 			base.OnSelectedMenuItem(lastItem, item);
@@ -115,7 +88,7 @@ namespace Zifro.Sandbox.UI
 				name = agentName
 			};
 			AgentBank.main.SetAgentDefaults(agent);
-			AgentBank.main.agents.Add(agent);
+			AgentBank.main.AddAgent(agent);
 			item.SetTargetAgent(agent);
 
 			SelectItem(item);
@@ -165,7 +138,7 @@ namespace Zifro.Sandbox.UI
 			}
 
 			menuItems.Remove(item);
-			AgentBank.main.agents.Remove(item.agent);
+			AgentBank.main.RemoveAgent(item.agent);
 			Destroy(item.gameObject);
 		}
 

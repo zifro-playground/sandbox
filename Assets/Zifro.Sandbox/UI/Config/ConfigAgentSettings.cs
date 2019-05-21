@@ -8,8 +8,7 @@ using Zifro.Sandbox.Entities;
 
 namespace Zifro.Sandbox.UI.Config
 {
-	public sealed class ConfigAgentSettings : ConfigMenuItem,
-		IPMAgentSelected
+	public sealed class ConfigAgentSettings : ConfigMenuItem
 	{
 		public AgentMenuList agentMenu;
 		public Text buttonLabel;
@@ -43,6 +42,16 @@ namespace Zifro.Sandbox.UI.Config
 				.ToList();
 		}
 
+		void Awake()
+		{
+			AgentBank.main.AgentSelected += OnAgentSelected;
+		}
+
+		void OnDestroy()
+		{
+			AgentBank.main.AgentSelected -= OnAgentSelected;
+		}
+
 		void OnEnable()
 		{
 			fieldName.onEndEdit.AddListener(OnAgentNameChanged);
@@ -65,7 +74,7 @@ namespace Zifro.Sandbox.UI.Config
 		{
 			agent.modelPrefab = ModelPreviewBank.main.modelPrefabs[index];
 
-			SendAgentUpdatedMessage();
+			AgentBank.main.UpdateAgent(agent);
 		}
 
 		void OnAgentNameChanged(string newName)
@@ -80,10 +89,10 @@ namespace Zifro.Sandbox.UI.Config
 			fieldName.text = agent.name;
 			UpdateButtonLabelFromAgent(agent);
 
-			SendAgentUpdatedMessage();
+			AgentBank.main.UpdateAgent(agent);
 		}
 
-		void IPMAgentSelected.OnPMAgentSelected(Agent selectedAgent)
+		void OnAgentSelected(Agent selectedAgent)
 		{
 			agent = selectedAgent;
 
@@ -95,14 +104,6 @@ namespace Zifro.Sandbox.UI.Config
 		void UpdateButtonLabelFromAgent(Agent newAgent)
 		{
 			buttonLabel.text = string.Format(buttonTextFormat, newAgent.name);
-		}
-
-		void SendAgentUpdatedMessage()
-		{
-			foreach (IPMAgentUpdated ev in UISingleton.FindInterfaces<IPMAgentUpdated>())
-			{
-				ev.OnPMAgentUpdated(agent);
-			}
 		}
 	}
 }

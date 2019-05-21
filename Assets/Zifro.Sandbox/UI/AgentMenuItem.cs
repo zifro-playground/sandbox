@@ -6,8 +6,7 @@ using Zifro.Sandbox.Entities;
 
 namespace Zifro.Sandbox.UI
 {
-	public sealed class AgentMenuItem : MenuItem,
-		IPMAgentUpdated
+	public sealed class AgentMenuItem : MenuItem
 	{
 		[NonSerialized]
 		public Agent agent;
@@ -21,6 +20,16 @@ namespace Zifro.Sandbox.UI
 			Debug.Assert(agent != null, $"{nameof(agent)} is not assigned for '{name}' (Should have been assigned with {nameof(SetTargetAgent)}).", this);
 			Debug.Assert(label, $"{nameof(label)} is not assigned for '{name}'.", this);
 			Debug.Assert(preview, $"{nameof(preview)} is not assigned for '{name}'.", this);
+		}
+
+		void Awake()
+		{
+			AgentBank.main.AgentUpdated += OnAgentUpdated;
+		}
+
+		void OnDestroy()
+		{
+			AgentBank.main.AgentUpdated -= OnAgentUpdated;
 		}
 
 		public void SetTargetAgent(Agent newAgent)
@@ -42,7 +51,7 @@ namespace Zifro.Sandbox.UI
 			agent.code = PMWrapper.mainCode;
 		}
 
-		void IPMAgentUpdated.OnPMAgentUpdated(Agent updatedAgent)
+		void OnAgentUpdated(Agent updatedAgent)
 		{
 			if (updatedAgent != agent)
 			{
