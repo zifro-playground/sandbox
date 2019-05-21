@@ -2,7 +2,7 @@
 
 namespace Zifro.Sandbox.UI.Config
 {
-	public class ConfigMenuItem : MenuItem
+	public abstract class ConfigMenuItem : MenuItem
 	{
 		public bool isForAgents;
 		public GameObject activeWhenSelected;
