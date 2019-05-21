@@ -4,13 +4,9 @@ using UnityEngine.UI;
 
 namespace Zifro.Sandbox.UI.WorldEdit
 {
-	public abstract class WorldEditTool : MonoBehaviour
+	public abstract class WorldEditTool : MenuItem
 	{
-		public Button button;
 		public KeyCode hotKey;
-
-		[NonSerialized]
-		public bool isSelected;
 
 		[NonSerialized]
 		public bool isMouseOverGame;
@@ -21,7 +17,13 @@ namespace Zifro.Sandbox.UI.WorldEdit
 		[NonSerialized]
 		public Camera gameCamera;
 
-		public abstract void OnToolSelectedChange(WorldEditTool lastTool);
+		protected new void Start()
+		{
+			base.Start();
+			gameCamera = Camera.main;
+			Debug.Assert(gameCamera, "Main camera not found.", this);
+		}
+
 		public abstract void OnMouseOverChange();
 	}
 }

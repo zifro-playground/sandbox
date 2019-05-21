@@ -10,7 +10,7 @@ using Zifro.Sandbox.UI;
 
 namespace Zifro.Sandbox
 {
-	public class AgentBank : MonoBehaviour
+	public sealed class AgentBank : MonoBehaviour
 	{
 		public static AgentBank main;
 
@@ -19,7 +19,54 @@ namespace Zifro.Sandbox
 		public string defaultAgentName = "Unnamed";
 		public GameObject defaultModelPrefab;
 
-		public List<Agent> agents;
+		[SerializeField]
+		int _currentIndex = -1;
+
+		[SerializeField]
+		[FormerlySerializedAs("agents")]
+		List<Agent> _agents = new List<Agent>();
+
+		public Agent currentAgent
+		{
+			get => _currentIndex == -1 ? null : agents[_currentIndex];
+			set => SelectAgent(value);
+		}
+
+		public IReadOnlyList<Agent> agents => _agents;
+
+		public int currentIndex
+		{
+			get => _currentIndex;
+			set => SelectAgent(value);
+		}
+
+		public delegate void AgentAllDeselectedDelegate(Agent deselectedAgent);
+		public delegate void AgentDeselectedDelegate(Agent deselectedAgent);
+		public delegate void AgentSelectedDelegate(Agent selectedAgent);
+		public delegate void AgentUpdatedDelegate(Agent updatedAgent);
+
+		/// <summary>
+		/// Fires when an agent is deselected.
+		/// When switching selected, fires just before the selection event <see cref="E:Zifro.Sandbox.AgentBank.AgentSelected" />.
+		/// </summary>
+		public event AgentDeselectedDelegate AgentDeselected;
+		
+		/// <summary>
+		/// Fires when all agents are deselected in the menu.
+		/// Means that when called, no agent is selected.
+		/// Fires just after the individual deselection event <see cref="AgentDeselected"/>.
+		/// </summary>
+		public event AgentAllDeselectedDelegate AgentAllDeselected;
+		
+		/// <summary>
+		/// Fires when an agent is selected in the menu.
+		/// </summary>
+		public event AgentSelectedDelegate AgentSelected;
+
+		/// <summary>
+		/// Fires when an agent is updated. This can be the name, model, etc.
+		/// </summary>
+		public event AgentUpdatedDelegate AgentUpdated;
 
 		void OnEnable()
 		{
@@ -40,7 +87,7 @@ namespace Zifro.Sandbox
 				if (agent == null)
 				{
 					Debug.LogWarning($"Agent at index {i} was null. Removing.", this);
-					agents.RemoveAt(i);
+					_agents.RemoveAt(i);
 					continue;
 				}
 
@@ -49,6 +96,25 @@ namespace Zifro.Sandbox
 				SetAgentDefaults(agent);
 			}
 		}
+
+		void Start()
+		{
+			if (_currentIndex != -1)
+			{
+				int tmpIndex = _currentIndex;
+				_currentIndex = -1;
+				SelectAgent(tmpIndex);
+			}
+		}
+
+#if UNITY_EDITOR
+
+		void OnValidate()
+		{
+			_currentIndex = Mathf.Clamp(_currentIndex, -1, _agents.Count);
+		}
+
+#endif
 
 		public Agent GetAgent(AgentMenuItem menuItem)
 		{
@@ -73,6 +139,70 @@ namespace Zifro.Sandbox
 			{
 				agent.instances = new List<AgentInstance>();
 			}
+		}
+
+		public void AddAgent(Agent newAgent)
+		{
+			Debug.Assert(!_agents.Contains(newAgent), "The agent is already added!", this);
+			_agents.Add(newAgent);
+		}
+
+		public void RemoveAgent(Agent agent)
+		{
+			Debug.Assert(_agents.Contains(agent), "Agent does not exist in the bank.", this);
+
+			if (currentAgent == agent)
+			{
+				DeselectAgent();
+			}
+
+			_agents.Remove(agent);
+		}
+
+		public void SelectAgent(Agent agent)
+		{
+			Debug.Assert(agent != null, $"Cannot select null agent. Use {nameof(DeselectAgent)} instead.", this);
+			int index = _agents.IndexOf(agent);
+			Debug.Assert(index != -1, $"Agent does not exist in bank. Use {nameof(AddAgent)} first.", this);
+
+			SelectAgent(index);
+		}
+
+		public void SelectAgent(int index)
+		{
+			Debug.Assert(_agents.Count > 0, $"There are no agents to select. Use {nameof(AddAgent)} first.", this);
+			Debug.Assert(index >= 0 && index < _agents.Count, $"Agent selection index is out of range (0 - {_agents.Count-1}), got {index}.", this);
+
+			if (index == _currentIndex)
+			{
+				return;
+			}
+
+			if (_currentIndex != -1)
+			{
+				OnAgentDeselected(currentAgent);
+			}
+
+			_currentIndex = index;
+
+			OnAgentSelected(currentAgent);
+		}
+
+		public void DeselectAgent()
+		{
+			if (_currentIndex == -1)
+			{
+				return;
+			}
+
+			OnAgentDeselected(currentAgent);
+			OnAgentAllDeselected(currentAgent);
+			_currentIndex = -1;
+		}
+
+		public void UpdateAgent(Agent agent)
+		{
+			OnAgentUpdated(agent);
 		}
 
 		[Pure]
@@ -114,6 +244,26 @@ namespace Zifro.Sandbox
 				//new MoveFunction("gå_syd", instance, Direction.South),
 				//new MoveFunction("gå_öst", instance, Direction.East)
 			};
+		}
+
+		void OnAgentDeselected(Agent deselectedAgent)
+		{
+			AgentDeselected?.Invoke(deselectedAgent);
+		}
+
+		void OnAgentAllDeselected(Agent deselectedAgent)
+		{
+			AgentAllDeselected?.Invoke(deselectedAgent);
+		}
+
+		void OnAgentSelected(Agent selectedAgent)
+		{
+			AgentSelected?.Invoke(selectedAgent);
+		}
+
+		void OnAgentUpdated(Agent updatedAgent)
+		{
+			AgentUpdated?.Invoke(updatedAgent);
 		}
 	}
 }

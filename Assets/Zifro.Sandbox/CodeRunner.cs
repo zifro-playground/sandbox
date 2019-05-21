@@ -9,6 +9,8 @@ using PM;
 using PM.GlobalFunctions;
 using UnityEngine;
 using Zifro.Sandbox.Entities;
+using Zifro.Sandbox.UI;
+using Zifro.Sandbox.UI.Config;
 
 namespace Zifro.Sandbox
 {
@@ -26,20 +28,16 @@ namespace Zifro.Sandbox
 			new GetTime()
 		};
 
-		readonly List<IProcessor> processors = new List<IProcessor>();
+		readonly List<AgentProcessor> agentProcessors = new List<AgentProcessor>();
 
 		public bool isRunning { get; private set; }
 
 		public bool isPaused { get; private set; }
 
 		public VariableWindow variableWindow;
+		public ConfigMenuList configMenuList;
 
 		AgentBank bank;
-
-		void Awake()
-		{
-			Debug.Assert(variableWindow, "Variable window undefined.");
-		}
 
 		void OnEnable()
 		{
@@ -49,20 +47,22 @@ namespace Zifro.Sandbox
 
 		void Start()
 		{
+			Debug.Assert(variableWindow, $"{nameof(variableWindow)} not defined in '{name}'.", this);
+			Debug.Assert(configMenuList, $"{nameof(configMenuList)} not defined in '{name}'.", this);
 			enabled = false;
 		}
 
 		void FixedUpdate()
 		{
 			int ended = 0;
-			for (int i = processors.Count - 1; i >= 0; i--)
+			for (int i = agentProcessors.Count - 1; i >= 0; i--)
 			{
-				IProcessor processor = processors[i];
+				IProcessor processor = agentProcessors[i].processor;
 				switch (processor.State)
 				{
 				case ProcessState.Ended:
 				case ProcessState.Error:
-					processors.RemoveAt(i);
+					agentProcessors.RemoveAt(i);
 					ended++;
 					break;
 
@@ -76,9 +76,10 @@ namespace Zifro.Sandbox
 
 					if (result == WalkStatus.Ended)
 					{
-						processors.RemoveAt(i);
+						agentProcessors.RemoveAt(i);
 						ended++;
 					}
+
 					//else
 					//{
 					//	IDELineMarker.SetWalkerPosition(currentLineNumber);
@@ -88,6 +89,7 @@ namespace Zifro.Sandbox
 				{
 					Debug.LogException(e);
 					int lineNumber = processor.CurrentSource.FromRow;
+					SelectCodeWindowForAgent(agentProcessors[i].agent);
 					InternalStopRunning(StopStatus.RuntimeError);
 					PMWrapper.RaiseError(lineNumber + 1, e.Message);
 				}
@@ -95,15 +97,26 @@ namespace Zifro.Sandbox
 				//variableWindow.UpdateList(processors);
 			}
 
-			if (processors.Count == 0)
+			if (agentProcessors.Count == 0)
 			{
 				enabled = false;
 				Debug.Log("COMPILER: ALL PROCESSES ENDED");
 			}
 			else if (ended > 0)
 			{
-				Debug.Log($"COMPILER: {ended} {(ended == 1 ? "PROCESS" : "PROCESSES")} ENDED, {processors.Count} STILL RUNNING");
+				Debug.Log(
+					$"COMPILER: {ended} {(ended == 1 ? "PROCESS" : "PROCESSES")} ENDED, {agentProcessors.Count} STILL RUNNING");
 			}
+		}
+
+		void SelectCodeWindowForAgent(Agent agent)
+		{
+			AgentBank.main.SelectAgent(agent);
+			configMenuList.SelectItem(configMenuList.menuItems
+				.OfType<ConfigCodeWindow>()
+				.First()
+			);
+			Canvas.ForceUpdateCanvases();
 		}
 
 		public void StartRunning()
@@ -113,12 +126,12 @@ namespace Zifro.Sandbox
 				ev.OnPMPreCompilerStarted();
 			}
 
-			try
-			{
-				CompilerSettings compilerSettings = GetSettings();
-				processors.Clear();
+			CompilerSettings compilerSettings = GetSettings();
+			agentProcessors.Clear();
 
-				foreach (Agent agent in bank.agents)
+			foreach (Agent agent in bank.agents)
+			{
+				try
 				{
 					var compiler = new PyCompiler {
 						Settings = compilerSettings
@@ -131,7 +144,8 @@ namespace Zifro.Sandbox
 						if (!agentInstance)
 						{
 							agent.instances.RemoveAt(i);
-							Debug.LogWarning($"Agent instance at index {i} for agent {agent.name} was null. Removing it.", this);
+							Debug.LogWarning(
+								$"Agent instance at index {i} for agent {agent.name} was null. Removing it.", this);
 							continue;
 						}
 
@@ -143,23 +157,25 @@ namespace Zifro.Sandbox
 							AgentBank.GetAgentFunctions(agentInstance)
 						);
 
-						processors.Add(processor);
+						agentProcessors.Add(new AgentProcessor(agent, processor));
 					}
-				}
 
-				//IDELineMarker.SetWalkerPosition(currentLineNumber);
-			}
-			catch (SyntaxException e)
-			{
-				Debug.LogException(e);
-				PMWrapper.RaiseError(e.SourceReference.FromColumn + 1, e.Message);
-				return;
-			}
-			catch (Exception e)
-			{
-				Debug.LogException(e);
-				PMWrapper.RaiseError(0, e.Message);
-				return;
+					//IDELineMarker.SetWalkerPosition(currentLineNumber);
+				}
+				catch (SyntaxException e)
+				{
+					Debug.LogException(e);
+					SelectCodeWindowForAgent(agent);
+					PMWrapper.RaiseError(e.SourceReference.FromColumn + 1, e.Message);
+					return;
+				}
+				catch (Exception e)
+				{
+					Debug.LogException(e);
+					SelectCodeWindowForAgent(agent);
+					PMWrapper.RaiseError(0, e.Message);
+					return;
+				}
 			}
 
 			enabled = true;
@@ -167,7 +183,7 @@ namespace Zifro.Sandbox
 			isRunning = true;
 
 			// Call event
-			Debug.Log($"COMPILER: STARTED {processors.Count} PROCESSORS");
+			Debug.Log($"COMPILER: STARTED {agentProcessors.Count} PROCESSORS");
 			foreach (IPMCompilerStarted ev in UISingleton.FindInterfaces<IPMCompilerStarted>())
 			{
 				ev.OnPMCompilerStarted();
@@ -194,7 +210,7 @@ namespace Zifro.Sandbox
 
 		public void ResumeRunning()
 		{
-			if (processors == null || !isPaused)
+			if (agentProcessors == null || !isPaused)
 			{
 				return;
 			}
@@ -223,7 +239,7 @@ namespace Zifro.Sandbox
 		void InternalStopRunning(StopStatus stopStatus)
 		{
 			enabled = false;
-			processors.Clear();
+			agentProcessors.Clear();
 			isPaused = false;
 			isRunning = false;
 
@@ -242,6 +258,18 @@ namespace Zifro.Sandbox
 			settings.BreakOn |= BreakCause.LoopBlockEnd;
 
 			return settings;
+		}
+
+		struct AgentProcessor
+		{
+			public readonly Agent agent;
+			public readonly IProcessor processor;
+
+			public AgentProcessor(Agent agent, IProcessor processor)
+			{
+				this.agent = agent;
+				this.processor = processor;
+			}
 		}
 	}
 }

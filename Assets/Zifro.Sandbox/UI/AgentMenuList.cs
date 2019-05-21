@@ -1,16 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using PM;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Zifro.Sandbox.Entities;
+using Zifro.Sandbox.UI.WorldEdit;
 using Zifro.Sandbox.Utility;
 
 namespace Zifro.Sandbox.UI
 {
-	public class AgentMenuList : MonoBehaviour, IPMPreCompilerStarted
+	public sealed class AgentMenuList : MenuList<MenuItem>,
+		IPMPreCompilerStarted
 	{
 		public Button addButton;
 		public InputField addInputField;
@@ -18,115 +21,79 @@ namespace Zifro.Sandbox.UI
 		public GameObject buttonPrefab;
 		public ScrollRect scrollRect;
 		public AgentDragAndDrop dragAndDropTool;
-		[Space]
-		public MenuItem current;
-		public List<MenuItem> menuItems = new List<MenuItem>();
 
-		public AgentMenuItem currentAgent => current as AgentMenuItem;
-		AgentBank bank;
+		public AgentMenuItem currentAgent => currentItem as AgentMenuItem;
 
-		void OnValidate()
+		new void Start()
 		{
-			if (current && !menuItems.Contains(current))
-			{
-				menuItems.Add(current);
-			}
-
-			for (int i = menuItems.Count - 1; i >= 0; i--)
-			{
-				if (!menuItems[i])
-				{
-					Debug.LogAssertion($"Menu item at index {i} was null. Removing it from list.");
-					menuItems.RemoveAt(i);
-					continue;
-				}
-
-				MenuItem menuItem = menuItems[i];
-				if (!menuItem.button)
-				{
-					menuItem.button = menuItem.GetComponent<Button>();
-					if (!menuItem.button)
-					{
-						Debug.LogAssertion($"Unable to find button for {menuItem.name}. Removing it from list.");
-						menuItems.RemoveAt(i);
-						continue;
-					}
-				}
-
-				menuItem.button.interactable = menuItem != current;
-			}
-		}
-
-		void Awake()
-		{
+			base.Start();
 			Debug.Assert(addInputPanel, $"{nameof(addInputPanel)} is not assigned for {name}.", this);
 			Debug.Assert(addButton, $"{nameof(addButton)} is not assigned for {name}.", this);
 			Debug.Assert(addInputField, $"{nameof(addInputField)} is not assigned for {name}.", this);
 			Debug.Assert(buttonPrefab, $"{nameof(buttonPrefab)} is not assigned for {name}.", this);
 			Debug.Assert(scrollRect, $"{nameof(scrollRect)} is not assigned for {name}.", this);
 			Debug.Assert(dragAndDropTool, $"{nameof(dragAndDropTool)} is not assigned for {name}.", this);
-		}
-
-		void OnEnable()
-		{
-			bank = AgentBank.main;
 
 			addButton.onClick.AddListener(AddAgentViaUI);
 			addInputField.AddTrigger(EventTriggerType.Submit, delegate { AddAgentViaUI(); });
 
 			foreach (MenuItem item in menuItems)
 			{
-				item.button.onClick.AddListener(() => SelectMenuItem(item));
+				item.button.onClick.AddListener(() => SelectItem(item));
 			}
-		}
 
-		void Start()
-		{
-			SelectMenuItemInternal(current, true);
-		}
-
-		public void SelectMenuItem(MenuItem agent)
-		{
-			SelectMenuItemInternal(agent, false);
-		}
-
-		void SelectMenuItemInternal(MenuItem item, bool force)
-		{
-			Debug.Assert(item, "Agent cannot be null.");
-			if (current == item && !force)
+			foreach (AgentMenuItem agentMenuItem in menuItems.OfType<AgentMenuItem>())
 			{
-				return;
+				agentMenuItem.SetTargetAgent(AgentBank.main.GetAgent(agentMenuItem));
 			}
+		}
 
-			if (current)
+		void Awake()
+		{
+			AgentBank.main.AgentSelected += OnAgentSelected;
+			AgentBank.main.AgentAllDeselected += OnAgentAllDeselected;
+		}
+
+		void OnAgentAllDeselected(Agent deselectedAgent)
+		{
+			if (!isSelecting)
 			{
-				current.button.interactable = true;
-				if (!force && current is AgentMenuItem currentAgentMenu)
-				{
-					currentAgentMenu.OnMenuItemDeselected();
-				}
+				SelectItem(menuItems.First(o => !(o is AgentMenuItem)));
 			}
+		}
 
-			current = item;
-			item.button.interactable = false;
+		void OnAgentSelected(Agent selectedAgent)
+		{
+			if (!isSelecting)
+			{
+				SelectItem(menuItems.OfType<AgentMenuItem>().First(o => o.agent == selectedAgent));
+			}
+		}
 
+		void OnDestroy()
+		{
+			AgentBank.main.AgentSelected -= OnAgentSelected;
+			AgentBank.main.AgentAllDeselected -= OnAgentAllDeselected;
+		}
+
+		protected override void OnSelectedMenuItem(MenuItem lastItem, MenuItem item)
+		{
 			if (item is AgentMenuItem agentMenuItem)
 			{
 				// Is agent
-				if (agentMenuItem.agent == null)
+				agentMenuItem.SetTargetAgent(AgentBank.main.GetAgent(agentMenuItem));
+				if (AgentBank.main.currentAgent != agentMenuItem.agent)
 				{
-					agentMenuItem.agent = bank.GetAgent(agentMenuItem);
+					AgentBank.main.SelectAgent(agentMenuItem.agent);
 				}
-				
-				dragAndDropTool.ShowTool(agentMenuItem.agent);
-
-				agentMenuItem.OnMenuItemSelected();
 			}
 			else
 			{
 				// Is game settings
-				dragAndDropTool.HideTool();
+				AgentBank.main.DeselectAgent();
 			}
+
+			base.OnSelectedMenuItem(lastItem, item);
 		}
 
 		void AddAgentViaUI()
@@ -142,18 +109,66 @@ namespace Zifro.Sandbox.UI
 			GameObject clone = Instantiate(buttonPrefab, transform);
 
 			AgentMenuItem item = clone.GetComponent<AgentMenuItem>();
-			item.button.onClick.AddListener(() => SelectMenuItem(item));
+			item.button.onClick.AddListener(() => SelectItem(item));
 			menuItems.Add(item);
 
 			var agent = new Agent {
 				menuItem = item,
 				name = agentName
 			};
+			AgentBank.main.SetAgentDefaults(agent);
+			AgentBank.main.AddAgent(agent);
+			item.SetTargetAgent(agent);
 
-			bank.SetAgentDefaults(agent);
-			bank.agents.Add(agent);
+			SelectItem(item);
+		}
 
-			SelectMenuItem(item);
+		public void RemoveAgent(AgentMenuItem item)
+		{
+			Debug.Assert(item, "Cannot remove null.", this);
+			Debug.Assert(menuItems.Contains(item), "Can only remove menu items that exists in the menu.", this);
+			Debug.Assert(item.agent != null, "Item to be removed does not have an agent assigned.", this);
+
+			if (item == currentAgent)
+			{
+				int index = menuItems.IndexOf(currentItem);
+
+				MenuItem newSelect = menuItems.OfType<AgentMenuItem>()
+					.Take(index)
+					.Reverse()
+					.Skip(1)
+					.FirstOrDefault();
+
+				if (!newSelect)
+				{
+					newSelect = menuItems.OfType<AgentMenuItem>()
+						.Skip(index)
+						.FirstOrDefault();
+				}
+
+				if (!newSelect)
+				{
+					newSelect = menuItems.FirstOrDefault(o => o != currentItem);
+				}
+
+				if (newSelect && newSelect != currentAgent)
+				{
+					SelectItem(newSelect);
+				}
+				else
+				{
+					DeselectTool();
+				}
+			}
+
+			foreach (AgentInstance instance in item.agent.instances)
+			{
+				Destroy(instance.gameObject);
+			}
+
+			menuItems.Remove(item);
+			AgentBank.main.RemoveAgent(item.agent);
+			Destroy(item.gameObject);
 		}
 
 		void IPMPreCompilerStarted.OnPMPreCompilerStarted()

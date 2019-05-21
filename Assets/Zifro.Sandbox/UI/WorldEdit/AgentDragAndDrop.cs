@@ -1,13 +1,15 @@
 ﻿using System.Collections;
+using System.Globalization;
+using PM;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Zifro.Sandbox.Entities;
-using Zifro.Sandbox.UI.WorldEdit;
 
-namespace Zifro.Sandbox.UI
+namespace Zifro.Sandbox.UI.WorldEdit
 {
-	public class AgentDragAndDrop : WorldEditTool,
+	public sealed class AgentDragAndDrop : WorldEditTool,
 		IBeginDragHandler,
 		IDragHandler,
 		IEndDragHandler,
@@ -19,6 +21,18 @@ namespace Zifro.Sandbox.UI
 		public Material dragMaterial;
 		public Text agentLabel;
 		public RawImage agentPreviewImage;
+
+		[Header("Tooltip")]
+		[FormerlySerializedAs("disabledTooltip")]
+		public UITooltip tooltip;
+		[Multiline]
+		public string tooltipTooManyInstancesFormat =
+			"Du kan inte placera fler.\n" +
+			"Maxgränsen på {0} st instanser är nådd.";
+
+		[Multiline]
+		public string tooltipEnabled =
+			"Hotkey: Mellanslag";
 
 		PlacementMode placeState = PlacementMode.None;
 		WorldEditTool lastTool;
@@ -33,16 +47,29 @@ namespace Zifro.Sandbox.UI
 			ClickAndPlace
 		}
 
-		void Start()
+		void Awake()
 		{
-			Debug.Assert(toolsList, $"{nameof(toolsList)} not defined in {name}.", this);
-			Debug.Assert(agentLabel, $"{nameof(agentLabel)} not defined in {name}.", this);
-			Debug.Assert(agentPreviewImage, $"{nameof(agentPreviewImage)} not defined in {name}.", this);
+			AgentBank.main.AgentSelected += OnAgentSelected;
+			AgentBank.main.AgentUpdated += OnAgentUpdated;
+			AgentBank.main.AgentAllDeselected += OnAgentAllDeselected;
+		}
 
-			if (draggedAgent == null)
-			{
-				HideTool();
-			}
+		void OnDestroy()
+		{
+			AgentBank.main.AgentSelected -= OnAgentSelected;
+			AgentBank.main.AgentUpdated -= OnAgentUpdated;
+			AgentBank.main.AgentAllDeselected -= OnAgentAllDeselected;
+		}
+
+		new void Start()
+		{
+			base.Start();
+			Debug.Assert(toolsList, $"{nameof(toolsList)} not defined in '{name}'.", this);
+			Debug.Assert(agentLabel, $"{nameof(agentLabel)} not defined in '{name}'.", this);
+			Debug.Assert(agentPreviewImage, $"{nameof(agentPreviewImage)} not defined in '{name}'.", this);
+			Debug.Assert(tooltip, $"{nameof(tooltip)} not defined in '{name}'.", this);
+
+			UpdateTooltip();
 		}
 
 		void Update()
@@ -95,9 +122,9 @@ namespace Zifro.Sandbox.UI
 				if (lastTool)
 				{
 					// Switch to last used tool
-					toolsList.SelectTool(lastTool);
+					toolsList.SelectItem(lastTool);
 				}
-				else if (placeState == PlacementMode.ClickAndPlace)
+				else if (placeState == PlacementMode.ClickAndPlace && !toolsList.isSelecting)
 				{
 					// Deselect self
 					toolsList.DeselectTool();
@@ -112,6 +139,8 @@ namespace Zifro.Sandbox.UI
 				Destroy(draggedGhost);
 				draggedGhost = null;
 			}
+
+			UpdateTooltip();
 		}
 
 		void StartPlacement()
@@ -130,30 +159,14 @@ namespace Zifro.Sandbox.UI
 		void EndPlacement()
 		{
 			Vector3 position = draggedGhost.transform.position;
-			GameObject clone = Instantiate(AgentBank.main.agentPrefab, position, draggedGhost.transform.rotation, AgentBank.main.transform);
+			GameObject clone = Instantiate(AgentBank.main.agentPrefab, position, draggedGhost.transform.rotation,
+				AgentBank.main.transform);
 			Instantiate(draggedAgent.modelPrefab, clone.transform.position, clone.transform.rotation, clone.transform);
 
 			AgentInstance agentInstance = clone.GetComponent<AgentInstance>();
 			agentInstance.fractionPosition = (FractionVector3)position;
 
 			draggedAgent.instances.Add(agentInstance);
-		}
-
-		public void ShowTool(Agent agent)
-		{
-			Debug.Assert(ModelPreviewBank.main, "No main model preview bank registered.", this);
-
-			draggedAgent = agent;
-			agentLabel.text = agent.name;
-			gameObject.SetActive(true);
-			agentPreviewImage.texture = ModelPreviewBank.main.GetOrCreateTexture(agent.modelPrefab);
-		}
-
-		public void HideTool()
-		{
-			DragEndOrCancel();
-			draggedAgent = null;
-			gameObject.SetActive(false);
 		}
 
 		void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
@@ -165,7 +178,7 @@ namespace Zifro.Sandbox.UI
 				return;
 			}
 
-			lastTool = toolsList.currentTool;
+			lastTool = toolsList.currentItem;
 
 			if (lastTool)
 			{
@@ -209,7 +222,7 @@ namespace Zifro.Sandbox.UI
 
 		void IPointerClickHandler.OnPointerClick(PointerEventData eventData)
 		{
-			if (isSelected && 
+			if (isSelected &&
 			    placeState == PlacementMode.ClickAndPlace &&
 			    !isActivatingClickAndDragThisFrame)
 			{
@@ -223,26 +236,79 @@ namespace Zifro.Sandbox.UI
 			isActivatingClickAndDragThisFrame = false;
 		}
 
-		public override void OnToolSelectedChange(WorldEditTool last)
+		public override void OnMenuItemSelected(MenuItem lastItem)
 		{
-			if (isSelected && placeState == PlacementMode.None)
+			if (placeState != PlacementMode.None)
 			{
-				placeState = PlacementMode.ClickAndPlace;
-				StartPlacement();
-				lastTool = last;
-				button.interactable = true;
-				isActivatingClickAndDragThisFrame = true;
-				StartCoroutine(DisableClickAndDragBoolNextFrame());
-				EventSystem.current.SetSelectedGameObject(gameObject);
+				return;
 			}
-			else
-			{
-				DragEndOrCancel();
-			}
+
+			placeState = PlacementMode.ClickAndPlace;
+			StartPlacement();
+			lastTool = lastItem as WorldEditTool;
+			isActivatingClickAndDragThisFrame = true;
+			StartCoroutine(DisableClickAndDragBoolNextFrame());
+			EventSystem.current.SetSelectedGameObject(gameObject);
+
+			UpdateTooltip();
+		}
+
+		public override void OnMenuItemDeselected()
+		{
+			DragEndOrCancel();
 		}
 
 		public override void OnMouseOverChange()
 		{
+		}
+
+		void OnAgentSelected(Agent selectedAgent)
+		{
+			draggedAgent = selectedAgent;
+			agentLabel.text = selectedAgent.name;
+			gameObject.SetActive(true);
+			agentPreviewImage.texture = ModelPreviewBank.main.GetOrCreateTexture(selectedAgent.modelPrefab);
+		}
+
+		void OnAgentUpdated(Agent updatedAgent)
+		{
+			if (updatedAgent != draggedAgent)
+			{
+				return;
+			}
+
+			agentLabel.text = updatedAgent.name;
+			agentPreviewImage.texture = ModelPreviewBank.main.GetOrCreateTexture(updatedAgent.modelPrefab);
+			UpdateTooltip();
+		}
+
+		void OnAgentAllDeselected(Agent deselectedAgent)
+		{
+			DragEndOrCancel();
+			draggedAgent = null;
+			gameObject.SetActive(false);
+		}
+
+		void UpdateTooltip()
+		{
+			if (draggedAgent.maxInstanceCount > 0 &&
+			    draggedAgent.instances.Count >= draggedAgent.maxInstanceCount)
+			{
+				string label = string.Format(
+					CultureInfo.CurrentUICulture,
+					tooltipTooManyInstancesFormat,
+					arg0: draggedAgent.maxInstanceCount);
+
+				tooltip.text = label;
+				tooltip.ApplyTooltipTextChange();
+				button.interactable = false;
+			}
+			else
+			{
+				tooltip.text = tooltipEnabled;
+				tooltip.ApplyTooltipTextChange();
+				button.interactable = true;
+			}
 		}
 	}
 }

@@ -9,6 +9,7 @@ namespace Zifro.Sandbox.Entities
 	public class Agent
 	{
 		public string name;
+		public int maxInstanceCount = -1;
 
 		[TextArea]
 		public string code;

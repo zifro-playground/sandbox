@@ -6,7 +6,7 @@ using Zifro.Sandbox.Entities;
 
 namespace Zifro.Sandbox.UI
 {
-	public class AgentMenuItem : MenuItem
+	public sealed class AgentMenuItem : MenuItem
 	{
 		[NonSerialized]
 		public Agent agent;
@@ -14,36 +14,64 @@ namespace Zifro.Sandbox.UI
 		public Text label;
 		public RawImage preview;
 
-		void Start()
+		new void Start()
 		{
-			Debug.Assert(agent != null, $"{nameof(agent)} is not assigned for {name} (Should have been assigned by {nameof(AgentMenuList)}.{nameof(AgentMenuList.SelectMenuItem)}).", this);
-			Debug.Assert(label, $"{nameof(label)} is not assigned for {name}.", this);
-			Debug.Assert(preview, $"{nameof(preview)} is not assigned for {name}.", this);
+			base.Start();
+			Debug.Assert(agent != null, $"{nameof(agent)} is not assigned for '{name}' (Should have been assigned with {nameof(SetTargetAgent)}).", this);
+			Debug.Assert(label, $"{nameof(label)} is not assigned for '{name}'.", this);
+			Debug.Assert(preview, $"{nameof(preview)} is not assigned for '{name}'.", this);
 		}
 
-		public void OnMenuItemSelected()
+		void Awake()
 		{
-			foreach (IPMAgentSelected ev in UISingleton.FindInterfaces<IPMAgentSelected>())
-			{
-				ev.OnPMAgentSelected(agent);
-			}
+			AgentBank.main.AgentUpdated += OnAgentUpdated;
+		}
 
-			PMWrapper.mainCode = agent.code;
-			PMWrapper.preCode = $"# Kod för \"{agent.name}\"";
+		void OnDestroy()
+		{
+			AgentBank.main.AgentUpdated -= OnAgentUpdated;
+		}
 
-			name = $"Agent '{agent?.name ?? "#unnamed"}'";
+		public void SetTargetAgent(Agent newAgent)
+		{
+			agent = newAgent;
+			name = $"Agent '{agent.name}'";
 			label.text = agent.name;
 			preview.texture = ModelPreviewBank.main.GetOrCreateTexture(agent.modelPrefab);
 		}
 
-		public void OnMenuItemDeselected()
+		public override void OnMenuItemSelected(MenuItem lastItem)
 		{
-			foreach (IPMAgentDeselected ev in UISingleton.FindInterfaces<IPMAgentDeselected>())
+			PMWrapper.mainCode = agent.code;
+			PMWrapper.preCode = $"# Kod för \"{agent.name}\"";
+		}
+
+		public override void OnMenuItemDeselected()
+		{
+			agent.code = PMWrapper.mainCode;
+		}
+
+		void OnAgentUpdated(Agent updatedAgent)
+		{
+			if (updatedAgent != agent)
 			{
-				ev.OnPMAgentDeselected(agent);
+				return;
 			}
 
-			agent.code = PMWrapper.mainCode;
+			name = $"Agent '{updatedAgent.name}'";
+			label.text = updatedAgent.name;
+			preview.texture = ModelPreviewBank.main.GetOrCreateTexture(updatedAgent.modelPrefab);
+
+			foreach (AgentInstance instance in agent.instances)
+			{
+				// Assuming the model is child to instance
+				Transform parent = instance.transform;
+				foreach (Transform child in parent)
+				{
+					Destroy(child.gameObject);
+				}
+				Instantiate(agent.modelPrefab, parent.position, parent.rotation, parent);
+			}
 		}
 	}
 }

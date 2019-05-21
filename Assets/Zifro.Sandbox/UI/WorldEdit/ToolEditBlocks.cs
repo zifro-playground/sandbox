@@ -5,29 +5,26 @@ using Zifro.Sandbox.Entities;
 
 namespace Zifro.Sandbox.UI.WorldEdit
 {
-	public class ToolEditBlocks : WorldEditTool
+	public sealed class ToolEditBlocks : WorldEditTool
 	{
 		public GridWorldHighlight selectionHighlight;
 
-		void Awake()
+		new void Start()
 		{
-			gameCamera = Camera.main;
-			Debug.Assert(gameCamera, "Main camera not found.", this);
+			base.Start();
+			enabled = false;
 			Debug.Assert(selectionHighlight, $"{nameof(selectionHighlight)} not assigned.", this);
 		}
 
-		void Start()
+		public override void OnMenuItemDeselected()
 		{
 			enabled = false;
+			selectionHighlight.DeselectAll();
 		}
 
-		public override void OnToolSelectedChange(WorldEditTool lastTool)
+		public override void OnMenuItemSelected(MenuItem lastItem)
 		{
-			enabled = isSelected;
-			if (!isSelected)
-			{
-				selectionHighlight.DeselectAll();
-			}
+			enabled = true;
 		}
 
 		public override void OnMouseOverChange()
