@@ -28,7 +28,7 @@ namespace Zifro.Sandbox.UI
 		{
 			if (confirmCallback == null && abortCallback == null)
 			{
-				HideBox();
+				HideAndReset();
 			}
 
 			confirmButton.onClick.AddListener(OnConfirmButton);
@@ -39,18 +39,17 @@ namespace Zifro.Sandbox.UI
 		void OnConfirmButton()
 		{
 			confirmCallback?.Invoke();
-			HideBox();
+			HideAndReset();
 		}
 
 		void OnAbortButton()
 		{
-			abortCallback?.Invoke();
-			HideBox();
+			Cancel();
 		}
 
 		void OnDeselect(BaseEventData arg0)
 		{
-			HideBox();
+			Cancel();
 		}
 
 		public void ShowBox(string label, Action onConfirm, Action onAbort)
@@ -62,12 +61,17 @@ namespace Zifro.Sandbox.UI
 			EventSystem.current.SetSelectedGameObject(abortButton.gameObject);
 		}
 
-		public void HideBox()
+		public void Cancel()
+		{
+			abortCallback?.Invoke();
+			HideAndReset();
+		}
+
+		void HideAndReset()
 		{
 			gameObject.SetActive(false);
 			confirmCallback = null;
 			abortCallback = null;
 		}
-
 	}
 }

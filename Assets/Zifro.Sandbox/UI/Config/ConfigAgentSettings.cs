@@ -105,5 +105,11 @@ namespace Zifro.Sandbox.UI.Config
 		{
 			buttonLabel.text = string.Format(buttonTextFormat, newAgent.name);
 		}
+
+		public override void OnMenuItemDeselected()
+		{
+			base.OnMenuItemDeselected();
+			fieldDeleteConfirm.Cancel();
+		}
 	}
 }
