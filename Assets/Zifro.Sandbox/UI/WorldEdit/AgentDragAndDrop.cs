@@ -25,6 +25,7 @@ namespace Zifro.Sandbox.UI.WorldEdit
 		[Header("Tooltip")]
 		[FormerlySerializedAs("disabledTooltip")]
 		public UITooltip tooltip;
+
 		[Multiline]
 		public string tooltipTooManyInstancesFormat =
 			"Du kan inte placera fler.\n" +
@@ -38,7 +39,7 @@ namespace Zifro.Sandbox.UI.WorldEdit
 		WorldEditTool lastTool;
 		GameObject draggedGhost;
 		Agent draggedAgent;
-		bool isActivatingClickAndDragThisFrame;
+		bool isActivatingClickAndPlaceThisFrame;
 
 		enum PlacementMode
 		{
@@ -74,12 +75,18 @@ namespace Zifro.Sandbox.UI.WorldEdit
 
 		void Update()
 		{
-			if (placeState == PlacementMode.None || !isMouseOverGame)
+			if (placeState == PlacementMode.None ||
+			    !isMouseOverGame)
 			{
 				return;
 			}
 
-			if (Input.GetButtonDown(cancelInput))
+			if (Input.GetButtonDown(cancelInput) ||
+			    (
+				    placeState == PlacementMode.ClickAndPlace &&
+				    Input.GetKeyDown(hotKey) &&
+				    !isActivatingClickAndPlaceThisFrame
+			    ))
 			{
 				// Cancel drag
 				DragEndOrCancel();
@@ -224,7 +231,7 @@ namespace Zifro.Sandbox.UI.WorldEdit
 		{
 			if (isSelected &&
 			    placeState == PlacementMode.ClickAndPlace &&
-			    !isActivatingClickAndDragThisFrame)
+			    !isActivatingClickAndPlaceThisFrame)
 			{
 				DragEndOrCancel();
 			}
@@ -233,7 +240,7 @@ namespace Zifro.Sandbox.UI.WorldEdit
 		IEnumerator DisableClickAndDragBoolNextFrame()
 		{
 			yield return null;
-			isActivatingClickAndDragThisFrame = false;
+			isActivatingClickAndPlaceThisFrame = false;
 		}
 
 		public override void OnMenuItemSelected(MenuItem lastItem)
@@ -246,7 +253,7 @@ namespace Zifro.Sandbox.UI.WorldEdit
 			placeState = PlacementMode.ClickAndPlace;
 			StartPlacement();
 			lastTool = lastItem as WorldEditTool;
-			isActivatingClickAndDragThisFrame = true;
+			isActivatingClickAndPlaceThisFrame = true;
 			StartCoroutine(DisableClickAndDragBoolNextFrame());
 			EventSystem.current.SetSelectedGameObject(gameObject);
 
