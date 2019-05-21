@@ -9,7 +9,7 @@ public interface IPMAgentSelected
 	/// <summary>
 	/// Fires when an agent is selected in the menu.
 	/// </summary>
-	void OnPMAgentSelected(Agent agent);
+	void OnPMAgentSelected(Agent selectedAgent);
 }
 
 /// <summary>
@@ -23,5 +23,17 @@ public interface IPMAgentDeselected
 	/// Fires when an agent is deselected in the menu.
 	/// Fires just before the selection event <see cref="IPMAgentSelected"/>.
 	/// </summary>
-	void OnPMAgentDeselected(Agent agent);
+	void OnPMAgentDeselected(Agent deselectedAgent);
+}
+
+/// <summary>
+/// Event that fires when an agent is updated. This can be the name, model, etc.
+/// <para>Must be applied to object inheriting from <see cref="Object"/></para>
+/// </summary>
+public interface IPMAgentUpdated
+{
+	/// <summary>
+	/// Fires when an agent is updated. This can be the name, model, etc.
+	/// </summary>
+	void OnPMAgentUpdated(Agent updatedAgent);
 }

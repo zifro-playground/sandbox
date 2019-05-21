@@ -6,7 +6,8 @@ using Zifro.Sandbox.Entities;
 
 namespace Zifro.Sandbox.UI
 {
-	public sealed class AgentMenuItem : MenuItem
+	public sealed class AgentMenuItem : MenuItem,
+		IPMAgentUpdated
 	{
 		[NonSerialized]
 		public Agent agent;
@@ -49,6 +50,17 @@ namespace Zifro.Sandbox.UI
 			}
 
 			agent.code = PMWrapper.mainCode;
+		}
+
+		public void OnPMAgentUpdated(Agent updatedAgent)
+		{
+			if (updatedAgent != agent)
+			{
+				return;
+			}
+
+			name = $"Agent '{updatedAgent.name}'";
+			label.text = updatedAgent.name;
 		}
 	}
 }

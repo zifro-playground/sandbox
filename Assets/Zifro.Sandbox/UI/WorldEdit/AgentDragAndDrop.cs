@@ -10,7 +10,8 @@ namespace Zifro.Sandbox.UI.WorldEdit
 		IBeginDragHandler,
 		IDragHandler,
 		IEndDragHandler,
-		IPointerClickHandler
+		IPointerClickHandler,
+		IPMAgentUpdated
 	{
 		public WorldEditToolsList toolsList;
 		public string placeInput = "Fire1";
@@ -246,6 +247,16 @@ namespace Zifro.Sandbox.UI.WorldEdit
 
 		public override void OnMouseOverChange()
 		{
+		}
+
+		void IPMAgentUpdated.OnPMAgentUpdated(Agent updatedAgent)
+		{
+			if (updatedAgent != draggedAgent)
+			{
+				return;
+			}
+
+			agentLabel.text = updatedAgent.name;
 		}
 	}
 }
