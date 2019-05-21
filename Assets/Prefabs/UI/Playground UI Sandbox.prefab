@@ -553,7 +553,7 @@ MonoBehaviour:
     m_Bottom: 0
   m_ChildAlignment: 0
   m_Spacing: 0
-  m_ChildForceExpandWidth: 1
+  m_ChildForceExpandWidth: 0
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
   m_ChildControlHeight: 1
@@ -5708,6 +5708,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6565376119338207727}
     m_Modifications:
+    - target: {fileID: 8476387596398510007, guid: d8ba99cda0449914880e7adf911242f4,
+        type: 3}
+      propertyPath: m_FlexibleWidth
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8476387596398510007, guid: d8ba99cda0449914880e7adf911242f4,
+        type: 3}
+      propertyPath: m_PreferredWidth
+      value: 150
+      objectReference: {fileID: 0}
     - target: {fileID: 168767082196763889, guid: d8ba99cda0449914880e7adf911242f4,
         type: 3}
       propertyPath: m_Name
