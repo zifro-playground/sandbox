@@ -52,6 +52,14 @@ namespace Zifro.Sandbox.UI
 			name = $"Agent '{updatedAgent.name}'";
 			label.text = updatedAgent.name;
 			preview.texture = ModelPreviewBank.main.GetOrCreateTexture(updatedAgent.modelPrefab);
+
+			foreach (AgentInstance instance in agent.instances)
+			{
+				// Assuming the model is it's first child
+				Transform parent = instance.transform;
+				Destroy(parent.GetChild(0).gameObject);
+				Instantiate(agent.modelPrefab, parent.position, parent.rotation, parent);
+			}
 		}
 	}
 }
