@@ -23,11 +23,6 @@ namespace Zifro.Sandbox.UI
 		public event Action<T> DeselectedItem;
 		public event Action DeselectedAllItems;
 
-		protected void Awake()
-		{
-			Debug.Assert(menuItems.Count > 0, $"No tools found in {name}.", this);
-		}
-
 #if UNITY_EDITOR
 		protected void OnValidate()
 		{
@@ -69,6 +64,8 @@ namespace Zifro.Sandbox.UI
 #endif
 		protected void Start()
 		{
+			Debug.Assert(menuItems.Count > 0, $"No tools found in {name}.", this);
+
 			foreach (T tool in menuItems)
 			{
 				// Initialize tool
@@ -111,8 +108,8 @@ namespace Zifro.Sandbox.UI
 
 				tool.button.interactable = true;
 				tool.isSelected = false;
-				tool.OnMenuItemDeselected();
 				OnDeselectedItem(tool);
+				tool.OnMenuItemDeselected();
 			}
 
 			EventSystem.current.SetSelectedGameObject(null);
@@ -120,8 +117,8 @@ namespace Zifro.Sandbox.UI
 			currentItem = selectThis;
 			currentItem.button.interactable = false;
 			currentItem.isSelected = true;
-			currentItem.OnMenuItemSelected(lastItem);
 			OnSelectedMenuItem(currentItem);
+			currentItem.OnMenuItemSelected(lastItem);
 
 			isSelecting = false;
 		}
@@ -135,10 +132,10 @@ namespace Zifro.Sandbox.UI
 
 			currentItem.button.interactable = true;
 			currentItem.isSelected = false;
-			currentItem.OnMenuItemDeselected();
 			OnDeselectedItem(currentItem);
-			currentItem = null;
 			OnDeselectedAllItems();
+			currentItem.OnMenuItemDeselected();
+			currentItem = null;
 		}
 
 		public void DeselectToolWithoutUIUpdate()
@@ -149,10 +146,10 @@ namespace Zifro.Sandbox.UI
 			}
 
 			currentItem.isSelected = false;
-			currentItem.OnMenuItemDeselected();
 			OnDeselectedItem(currentItem);
-			currentItem = null;
 			OnDeselectedAllItems();
+			currentItem.OnMenuItemDeselected();
+			currentItem = null;
 		}
 
 		void IPMCompilerStarted.OnPMCompilerStarted()

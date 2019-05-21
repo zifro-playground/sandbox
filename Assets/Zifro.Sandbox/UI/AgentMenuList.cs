@@ -23,7 +23,6 @@ namespace Zifro.Sandbox.UI
 		public AgentDragAndDrop dragAndDropTool;
 
 		public AgentMenuItem currentAgent => currentItem as AgentMenuItem;
-		AgentBank bank;
 
 		new void Start()
 		{
@@ -35,8 +34,6 @@ namespace Zifro.Sandbox.UI
 			Debug.Assert(scrollRect, $"{nameof(scrollRect)} is not assigned for {name}.", this);
 			Debug.Assert(dragAndDropTool, $"{nameof(dragAndDropTool)} is not assigned for {name}.", this);
 
-			bank = AgentBank.main;
-
 			addButton.onClick.AddListener(AddAgentViaUI);
 			addInputField.AddTrigger(EventTriggerType.Submit, delegate { AddAgentViaUI(); });
 
@@ -47,7 +44,7 @@ namespace Zifro.Sandbox.UI
 
 			foreach (AgentMenuItem agentMenuItem in menuItems.OfType<AgentMenuItem>())
 			{
-				agentMenuItem.SetTargetAgent(bank.GetAgent(agentMenuItem));
+				agentMenuItem.SetTargetAgent(AgentBank.main.GetAgent(agentMenuItem));
 			}
 		}
 
@@ -58,7 +55,7 @@ namespace Zifro.Sandbox.UI
 			if (item is AgentMenuItem agentMenuItem)
 			{
 				// Is agent
-				agentMenuItem.SetTargetAgent(bank.GetAgent(agentMenuItem));
+				agentMenuItem.SetTargetAgent(AgentBank.main.GetAgent(agentMenuItem));
 				dragAndDropTool.ShowTool(agentMenuItem.agent);
 			}
 			else
@@ -88,9 +85,8 @@ namespace Zifro.Sandbox.UI
 				menuItem = item,
 				name = agentName
 			};
-
-			bank.SetAgentDefaults(agent);
-			bank.agents.Add(agent);
+			AgentBank.main.SetAgentDefaults(agent);
+			AgentBank.main.agents.Add(agent);
 			item.SetTargetAgent(agent);
 
 			SelectItem(item);

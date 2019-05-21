@@ -14,16 +14,11 @@ namespace Zifro.Sandbox.UI
 	{
 		public EventTrigger gameWindowTrigger;
 
-		new void Awake()
-		{
-			base.Awake();
-			Debug.Assert(gameWindowTrigger, $"{nameof(gameWindowTrigger)} not defined in {name}.", this);
-		}
-		
 		new void Start()
 		{
 			base.Start();
 
+			Debug.Assert(gameWindowTrigger, $"{nameof(gameWindowTrigger)} not defined in {name}.", this);
 			Debug.Assert(Camera.main, $"Missing main camera in {name}.", this);
 			Debug.Assert(GridWorld.main, $"Missing main grid world in {name}.", this);
 
