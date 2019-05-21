@@ -58,8 +58,9 @@ namespace Zifro.Sandbox.UI
 
 		protected override void OnSelectedMenuItem(MenuItem lastItem, MenuItem item)
 		{
-			if (lastItem is AgentMenuItem lastAgentMenuItem)
+			if (lastItem != item && lastItem is AgentMenuItem lastAgentMenuItem)
 			{
+				print($"OnPMAgentDeselected({lastAgentMenuItem.agent.name})");
 				foreach (IPMAgentDeselected ev in UISingleton.FindInterfaces<IPMAgentDeselected>())
 				{
 					ev.OnPMAgentDeselected(lastAgentMenuItem.agent);
@@ -71,6 +72,7 @@ namespace Zifro.Sandbox.UI
 				// Is agent
 				agentMenuItem.SetTargetAgent(AgentBank.main.GetAgent(agentMenuItem));
 
+				print($"OnPMAgentSelected({agentMenuItem.agent.name})");
 				foreach (IPMAgentSelected ev in UISingleton.FindInterfaces<IPMAgentSelected>())
 				{
 					ev.OnPMAgentSelected(agentMenuItem.agent);
@@ -81,6 +83,7 @@ namespace Zifro.Sandbox.UI
 				// Is game settings
 				if (lastItem is AgentMenuItem lastAgentMenuItem2)
 				{
+					print("OnPMAgentAllDeselected");
 					foreach (IPMAgentAllDeselected ev in UISingleton.FindInterfaces<IPMAgentAllDeselected>())
 					{
 						ev.OnPMAgentAllDeselected(lastAgentMenuItem2.agent);
@@ -116,6 +119,54 @@ namespace Zifro.Sandbox.UI
 			item.SetTargetAgent(agent);
 
 			SelectItem(item);
+		}
+
+		public void RemoveAgent(AgentMenuItem item)
+		{
+			Debug.Assert(item, "Cannot remove null.", this);
+			Debug.Assert(menuItems.Contains(item), "Can only remove menu items that exists in the menu.", this);
+			Debug.Assert(item.agent != null, "Item to be removed does not have an agent assigned.", this);
+
+			if (item == currentAgent)
+			{
+				int index = menuItems.IndexOf(currentItem);
+
+				MenuItem newSelect = menuItems.OfType<AgentMenuItem>()
+					.Take(index)
+					.Reverse()
+					.Skip(1)
+					.FirstOrDefault();
+
+				if (!newSelect)
+				{
+					newSelect = menuItems.OfType<AgentMenuItem>()
+						.Skip(index)
+						.FirstOrDefault();
+				}
+
+				if (!newSelect)
+				{
+					newSelect = menuItems.FirstOrDefault(o => o != currentItem);
+				}
+
+				if (newSelect && newSelect != currentAgent)
+				{
+					SelectItem(newSelect);
+				}
+				else
+				{
+					DeselectTool();
+				}
+			}
+
+			foreach (AgentInstance instance in item.agent.instances)
+			{
+				Destroy(instance.gameObject);
+			}
+
+			menuItems.Remove(item);
+			AgentBank.main.agents.Remove(item.agent);
+			Destroy(item.gameObject);
 		}
 
 		void IPMPreCompilerStarted.OnPMPreCompilerStarted()

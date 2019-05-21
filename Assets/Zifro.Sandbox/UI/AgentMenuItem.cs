@@ -18,9 +18,9 @@ namespace Zifro.Sandbox.UI
 		new void Start()
 		{
 			base.Start();
-			Debug.Assert(agent != null, $"{nameof(agent)} is not assigned for {name} (Should have been assigned with {nameof(SetTargetAgent)}).", this);
-			Debug.Assert(label, $"{nameof(label)} is not assigned for {name}.", this);
-			Debug.Assert(preview, $"{nameof(preview)} is not assigned for {name}.", this);
+			Debug.Assert(agent != null, $"{nameof(agent)} is not assigned for '{name}' (Should have been assigned with {nameof(SetTargetAgent)}).", this);
+			Debug.Assert(label, $"{nameof(label)} is not assigned for '{name}'.", this);
+			Debug.Assert(preview, $"{nameof(preview)} is not assigned for '{name}'.", this);
 		}
 
 		public void SetTargetAgent(Agent newAgent)
