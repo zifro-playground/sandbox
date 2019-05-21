@@ -7209,7 +7209,7 @@ PrefabInstance:
     - target: {fileID: 7063071313444778238, guid: d8ba99cda0449914880e7adf911242f4,
         type: 3}
       propertyPath: m_Text
-      value: Kod
+      value: Skript
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 7628847131292075746, guid: d8ba99cda0449914880e7adf911242f4, type: 3}
