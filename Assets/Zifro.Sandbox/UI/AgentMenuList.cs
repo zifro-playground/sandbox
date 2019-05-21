@@ -7,6 +7,7 @@ using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Zifro.Sandbox.Entities;
+using Zifro.Sandbox.UI.WorldEdit;
 using Zifro.Sandbox.Utility;
 
 namespace Zifro.Sandbox.UI

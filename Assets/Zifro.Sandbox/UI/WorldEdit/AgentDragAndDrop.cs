@@ -3,9 +3,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Zifro.Sandbox.Entities;
-using Zifro.Sandbox.UI.WorldEdit;
 
-namespace Zifro.Sandbox.UI
+namespace Zifro.Sandbox.UI.WorldEdit
 {
 	public sealed class AgentDragAndDrop : WorldEditTool,
 		IBeginDragHandler,
