@@ -64,9 +64,12 @@ namespace Zifro.Sandbox.UI
 
 			foreach (AgentInstance instance in agent.instances)
 			{
-				// Assuming the model is it's first child
+				// Assuming the model is child to instance
 				Transform parent = instance.transform;
-				Destroy(parent.GetChild(0).gameObject);
+				foreach (Transform child in parent)
+				{
+					Destroy(child.gameObject);
+				}
 				Instantiate(agent.modelPrefab, parent.position, parent.rotation, parent);
 			}
 		}

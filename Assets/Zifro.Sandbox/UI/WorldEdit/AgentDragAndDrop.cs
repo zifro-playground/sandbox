@@ -124,7 +124,7 @@ namespace Zifro.Sandbox.UI.WorldEdit
 					// Switch to last used tool
 					toolsList.SelectItem(lastTool);
 				}
-				else if (placeState == PlacementMode.ClickAndPlace)
+				else if (placeState == PlacementMode.ClickAndPlace && !toolsList.isSelecting)
 				{
 					// Deselect self
 					toolsList.DeselectTool();

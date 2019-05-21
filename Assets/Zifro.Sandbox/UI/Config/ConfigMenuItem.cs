@@ -29,7 +29,7 @@ namespace Zifro.Sandbox.UI.Config
 		}
 
 #endif
-
+		
 		public override void OnMenuItemSelected(MenuItem lastItem)
 		{
 			if (activeWhenSelected)

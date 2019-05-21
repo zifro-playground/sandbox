@@ -13,11 +13,14 @@ namespace Zifro.Sandbox.UI
 		IPMCompilerStopped
 		where T: MenuItem
 	{
+		public bool disableDuringCodeRun = true;
+
 		public T currentItem;
 		public List<T> menuItems = new List<T>();
 
 		[NonSerialized]
 		public bool isSelecting;
+
 
 		public event Action<T> SelectedItem;
 		public event Action<T> DeselectedItem;
@@ -130,12 +133,14 @@ namespace Zifro.Sandbox.UI
 				return;
 			}
 
+			isSelecting = true;
 			currentItem.button.interactable = true;
 			currentItem.isSelected = false;
 			OnDeselectedItem(currentItem);
 			OnDeselectedAllItems();
 			currentItem.OnMenuItemDeselected();
 			currentItem = null;
+			isSelecting = false;
 		}
 
 		public void DeselectToolWithoutUIUpdate()
@@ -154,6 +159,11 @@ namespace Zifro.Sandbox.UI
 
 		void IPMCompilerStarted.OnPMCompilerStarted()
 		{
+			if (!disableDuringCodeRun)
+			{
+				return;
+			}
+
 			DeselectTool();
 			foreach (T tool in menuItems)
 			{
@@ -165,6 +175,11 @@ namespace Zifro.Sandbox.UI
 
 		void IPMCompilerStopped.OnPMCompilerStopped(StopStatus status)
 		{
+			if (!disableDuringCodeRun)
+			{
+				return;
+			}
+
 			foreach (T tool in menuItems)
 			{
 				if (currentItem != tool)

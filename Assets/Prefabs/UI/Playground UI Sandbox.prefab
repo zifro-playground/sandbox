@@ -536,6 +536,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46651f76c2c6e9e498c623a912c78517, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  disableDuringCodeRun: 0
   currentItem: {fileID: 8525346478063944614}
   menuItems:
   - {fileID: 2572786611654607011}
@@ -777,6 +778,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 519415b73b854e95812f4d7b5ffd7c3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  disableDuringCodeRun: 0
   currentItem: {fileID: 7865720394261978580}
   menuItems:
   - {fileID: 7865720394261978580}
@@ -6425,6 +6427,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccad7bcc42105554b89713684aa4b1ef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  disableDuringCodeRun: 1
   currentItem: {fileID: 4640131675437474282}
   menuItems:
   - {fileID: 4640131675437474282}
