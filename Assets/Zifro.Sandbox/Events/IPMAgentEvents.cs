@@ -27,6 +27,22 @@ public interface IPMAgentDeselected
 }
 
 /// <summary>
+/// Event that fires when all agents are deselected in the menu.
+/// Means that when called, no agent is selected.
+/// Fires just after the individual deselection event <see cref="IPMAgentDeselected"/>.
+/// <para>Must be applied to object inheriting from <see cref="Object"/></para>
+/// </summary>
+public interface IPMAgentAllDeselected
+{
+	/// <summary>
+	/// Fires when all agents are deselected in the menu.
+	/// Means that when called, no agent is selected.
+	/// Fires just after the individual deselection event <see cref="IPMAgentDeselected"/>.
+	/// </summary>
+	void OnPMAgentAllDeselected(Agent deselectedAgent);
+}
+
+/// <summary>
 /// Event that fires when an agent is updated. This can be the name, model, etc.
 /// <para>Must be applied to object inheriting from <see cref="Object"/></para>
 /// </summary>

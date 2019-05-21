@@ -46,25 +46,51 @@ namespace Zifro.Sandbox.UI
 			{
 				agentMenuItem.SetTargetAgent(AgentBank.main.GetAgent(agentMenuItem));
 			}
+
+			if (!currentAgent)
+			{
+				foreach (IPMAgentAllDeselected ev in UISingleton.FindInterfaces<IPMAgentAllDeselected>())
+				{
+					ev.OnPMAgentAllDeselected(null);
+				}
+			}
 		}
 
-		protected override void OnSelectedMenuItem(MenuItem item)
+		protected override void OnSelectedMenuItem(MenuItem lastItem, MenuItem item)
 		{
+			if (lastItem is AgentMenuItem lastAgentMenuItem)
+			{
+				foreach (IPMAgentDeselected ev in UISingleton.FindInterfaces<IPMAgentDeselected>())
+				{
+					ev.OnPMAgentDeselected(lastAgentMenuItem.agent);
+				}
+			}
+
 			if (item is AgentMenuItem agentMenuItem)
 			{
 				// Is agent
 				agentMenuItem.SetTargetAgent(AgentBank.main.GetAgent(agentMenuItem));
-				dragAndDropTool.ShowTool(agentMenuItem.agent);
+
+				foreach (IPMAgentSelected ev in UISingleton.FindInterfaces<IPMAgentSelected>())
+				{
+					ev.OnPMAgentSelected(agentMenuItem.agent);
+				}
 			}
 			else
 			{
 				// Is game settings
-				dragAndDropTool.HideTool();
+				if (lastItem is AgentMenuItem lastAgentMenuItem2)
+				{
+					foreach (IPMAgentAllDeselected ev in UISingleton.FindInterfaces<IPMAgentAllDeselected>())
+					{
+						ev.OnPMAgentAllDeselected(lastAgentMenuItem2.agent);
+					}
+				}
 			}
 
-			base.OnSelectedMenuItem(item);
+			base.OnSelectedMenuItem(lastItem, item);
 		}
-		
+
 		void AddAgentViaUI()
 		{
 			addInputPanel.SetActive(false);

@@ -117,7 +117,7 @@ namespace Zifro.Sandbox.UI
 			currentItem = selectThis;
 			currentItem.button.interactable = false;
 			currentItem.isSelected = true;
-			OnSelectedMenuItem(currentItem);
+			OnSelectedMenuItem(lastItem, currentItem);
 			currentItem.OnMenuItemSelected(lastItem);
 
 			isSelecting = false;
@@ -176,7 +176,7 @@ namespace Zifro.Sandbox.UI
 			enabled = true;
 		}
 
-		protected virtual void OnSelectedMenuItem(T item)
+		protected virtual void OnSelectedMenuItem(T lastItem, T item)
 		{
 			SelectedItem?.Invoke(item);
 		}

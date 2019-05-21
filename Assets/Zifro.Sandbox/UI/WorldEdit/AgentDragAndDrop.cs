@@ -11,7 +11,9 @@ namespace Zifro.Sandbox.UI.WorldEdit
 		IDragHandler,
 		IEndDragHandler,
 		IPointerClickHandler,
-		IPMAgentUpdated
+		IPMAgentSelected,
+		IPMAgentUpdated,
+		IPMAgentAllDeselected
 	{
 		public WorldEditToolsList toolsList;
 		public string placeInput = "Fire1";
@@ -39,11 +41,6 @@ namespace Zifro.Sandbox.UI.WorldEdit
 			Debug.Assert(toolsList, $"{nameof(toolsList)} not defined in {name}.", this);
 			Debug.Assert(agentLabel, $"{nameof(agentLabel)} not defined in {name}.", this);
 			Debug.Assert(agentPreviewImage, $"{nameof(agentPreviewImage)} not defined in {name}.", this);
-
-			if (draggedAgent == null)
-			{
-				HideTool();
-			}
 		}
 
 		void Update()
@@ -140,23 +137,6 @@ namespace Zifro.Sandbox.UI.WorldEdit
 			draggedAgent.instances.Add(agentInstance);
 		}
 
-		public void ShowTool(Agent agent)
-		{
-			Debug.Assert(ModelPreviewBank.main, "No main model preview bank registered.", this);
-
-			draggedAgent = agent;
-			agentLabel.text = agent.name;
-			gameObject.SetActive(true);
-			agentPreviewImage.texture = ModelPreviewBank.main.GetOrCreateTexture(agent.modelPrefab);
-		}
-
-		public void HideTool()
-		{
-			DragEndOrCancel();
-			draggedAgent = null;
-			gameObject.SetActive(false);
-		}
-
 		void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
 		{
 			if (placeState != PlacementMode.None || draggedAgent == null)
@@ -249,6 +229,14 @@ namespace Zifro.Sandbox.UI.WorldEdit
 		{
 		}
 
+		void IPMAgentSelected.OnPMAgentSelected(Agent selectedAgent)
+		{
+			draggedAgent = selectedAgent;
+			agentLabel.text = selectedAgent.name;
+			gameObject.SetActive(true);
+			agentPreviewImage.texture = ModelPreviewBank.main.GetOrCreateTexture(selectedAgent.modelPrefab);
+		}
+
 		void IPMAgentUpdated.OnPMAgentUpdated(Agent updatedAgent)
 		{
 			if (updatedAgent != draggedAgent)
@@ -257,6 +245,14 @@ namespace Zifro.Sandbox.UI.WorldEdit
 			}
 
 			agentLabel.text = updatedAgent.name;
+			agentPreviewImage.texture = ModelPreviewBank.main.GetOrCreateTexture(updatedAgent.modelPrefab);
+		}
+
+		void IPMAgentAllDeselected.OnPMAgentAllDeselected(Agent deselectedAgent)
+		{
+			DragEndOrCancel();
+			draggedAgent = null;
+			gameObject.SetActive(false);
 		}
 	}
 }

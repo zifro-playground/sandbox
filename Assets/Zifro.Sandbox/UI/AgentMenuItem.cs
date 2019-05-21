@@ -33,26 +33,16 @@ namespace Zifro.Sandbox.UI
 
 		public override void OnMenuItemSelected(MenuItem lastItem)
 		{
-			foreach (IPMAgentSelected ev in UISingleton.FindInterfaces<IPMAgentSelected>())
-			{
-				ev.OnPMAgentSelected(agent);
-			}
-
 			PMWrapper.mainCode = agent.code;
 			PMWrapper.preCode = $"# Kod för \"{agent.name}\"";
 		}
 
 		public override void OnMenuItemDeselected()
 		{
-			foreach (IPMAgentDeselected ev in UISingleton.FindInterfaces<IPMAgentDeselected>())
-			{
-				ev.OnPMAgentDeselected(agent);
-			}
-
 			agent.code = PMWrapper.mainCode;
 		}
 
-		public void OnPMAgentUpdated(Agent updatedAgent)
+		void IPMAgentUpdated.OnPMAgentUpdated(Agent updatedAgent)
 		{
 			if (updatedAgent != agent)
 			{
@@ -61,6 +51,7 @@ namespace Zifro.Sandbox.UI
 
 			name = $"Agent '{updatedAgent.name}'";
 			label.text = updatedAgent.name;
+			preview.texture = ModelPreviewBank.main.GetOrCreateTexture(updatedAgent.modelPrefab);
 		}
 	}
 }
