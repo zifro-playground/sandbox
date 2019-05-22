@@ -174,6 +174,7 @@ namespace Zifro.Sandbox.UI.WorldEdit
 			agentInstance.fractionPosition = (FractionVector3)position;
 
 			draggedAgent.instances.Add(agentInstance);
+			AgentBank.main.UpdateAgent(draggedAgent);
 		}
 
 		void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)

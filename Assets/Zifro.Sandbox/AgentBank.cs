@@ -44,6 +44,7 @@ namespace Zifro.Sandbox
 		public delegate void AgentDeselectedDelegate(Agent deselectedAgent);
 		public delegate void AgentSelectedDelegate(Agent selectedAgent);
 		public delegate void AgentUpdatedDelegate(Agent updatedAgent);
+		public delegate void AgentRemovedDelegate(Agent removedAgent);
 
 		/// <summary>
 		/// Fires when an agent is deselected.
@@ -67,6 +68,11 @@ namespace Zifro.Sandbox
 		/// Fires when an agent is updated. This can be the name, model, etc.
 		/// </summary>
 		public event AgentUpdatedDelegate AgentUpdated;
+
+		/// <summary>
+		/// Fires when an agent is removed.
+		/// </summary>
+		public event AgentRemovedDelegate AgentRemoved;
 
 		void OnEnable()
 		{
@@ -157,6 +163,7 @@ namespace Zifro.Sandbox
 			}
 
 			_agents.Remove(agent);
+			OnAgentRemoved(agent);
 		}
 
 		public void SelectAgent(Agent agent)
@@ -264,6 +271,11 @@ namespace Zifro.Sandbox
 		void OnAgentUpdated(Agent updatedAgent)
 		{
 			AgentUpdated?.Invoke(updatedAgent);
+		}
+
+		void OnAgentRemoved(Agent removedAgent)
+		{
+			AgentRemoved?.Invoke(removedAgent);
 		}
 	}
 }
