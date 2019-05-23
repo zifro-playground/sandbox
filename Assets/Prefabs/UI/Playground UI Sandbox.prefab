@@ -2054,9 +2054,11 @@ MonoBehaviour:
   button: {fileID: 7536823380811996024}
   isForAgents: 0
   activeWhenSelected: {fileID: 5719606733276422878}
-  optionNoInstancesToFollow: "<i><color=#999999>/inga instanser att f\xF6lja/</color></i>"
-  optionFollowNone: "<i><color=#999999>-f\xF6lj ingen instans-</color></i>"
-  optionDefaultFormat: <color=#323232>{0}</color>
+  optionNoInstancesToFollow: "<i>/inga instanser att f\xF6lja/</i>"
+  optionFollowNone: "<i>-f\xF6lj ingen instans-</i>"
+  optionDefaultFormat: '{0}: {1}'
+  colorDefault: {r: 0.2, g: 0.2, b: 0.2, a: 1}
+  colorGrayedOut: {r: 0.6, g: 0.6, b: 0.6, a: 1}
   fieldCameraFollow: {fileID: 2749143346553713738}
   _optionLookups: []
 --- !u!1 &2317697970342309260

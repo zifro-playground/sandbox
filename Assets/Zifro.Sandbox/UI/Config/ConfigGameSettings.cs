@@ -9,10 +9,16 @@ namespace Zifro.Sandbox.UI.Config
 {
 	public sealed class ConfigGameSettings : ConfigMenuItem
 	{
+		const string COLOR_FORMAT = "<color=#{0}>{1}</color>";
+		
 		public string optionNoInstancesToFollow = "<i>/inga instanser att följa/</i>";
 		public string optionFollowNone = "<i>-följ ingen instans-</i>";
-		public string optionDefaultFormat = "<color=#323232>{0}</color>";
+		public string optionDefaultFormat = "{0}: {1}";
 
+		public Color optionColorDefault = new Color(.2f, .2f, .2f);
+		public Color optionColorGrayedOut = new Color(.6f, .6f, .6f);
+
+		[Header("Settings input fields")]
 		public Dropdown fieldCameraFollow;
 
 		[SerializeField, HideInInspector]
@@ -75,15 +81,27 @@ namespace Zifro.Sandbox.UI.Config
 			{
 				fieldCameraFollow.interactable = false;
 				fieldCameraFollow.options = new List<Dropdown.OptionData> {
-					new Dropdown.OptionData(optionNoInstancesToFollow)
+					new Dropdown.OptionData(string.Format(COLOR_FORMAT,
+						ColorUtility.ToHtmlStringRGB(optionColorGrayedOut),
+						optionNoInstancesToFollow
+					))
 				};
 			}
 			else
 			{
 				fieldCameraFollow.interactable = true;
 				fieldCameraFollow.options = _optionLookups
-					.Skip(1).Select(o => new Dropdown.OptionData(string.Format(optionDefaultFormat, o.ToString())))
-					.Prepend(new Dropdown.OptionData(optionFollowNone))
+					.Skip(1).Select(o => 
+						new Dropdown.OptionData(
+							string.Format(COLOR_FORMAT,
+								ColorUtility.ToHtmlStringRGB(optionColorDefault),
+								string.Format(optionDefaultFormat, o.agent.name, o.instanceIndex + 1)
+							)
+						))
+					.Prepend(new Dropdown.OptionData(string.Format(COLOR_FORMAT,
+						ColorUtility.ToHtmlStringRGB(optionColorGrayedOut),
+						optionFollowNone
+					)))
 					.ToList();
 			}
 		}
@@ -100,8 +118,8 @@ namespace Zifro.Sandbox.UI.Config
 				this.instanceIndex = instanceIndex;
 			}
 
-			public Agent agent => agentIndex >= 0 ? AgentBank.main.agents[agentIndex] : null;
-			public AgentInstance instance => agentIndex >= 0 && instanceIndex >= 0 ? agent.instances[instanceIndex] : null;
+			public Agent agent => agentIndex < 0 ? null : AgentBank.main.agents[agentIndex];
+			public AgentInstance instance => isEmpty ? null : agent.instances[instanceIndex];
 
 			public bool isEmpty => agentIndex < 0 || instanceIndex < 0;
 
